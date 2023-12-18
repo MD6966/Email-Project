@@ -2,6 +2,7 @@ import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material'
 import React from 'react'
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Link } from 'react-router-dom';
 const Header = () => {
     return (
         <>
@@ -24,9 +25,12 @@ const Header = () => {
                         <Typography >
                             Plans
                         </Typography>
-                        <Typography >
-                            Resources
-                        </Typography>
+                        <Button variant='outlined' 
+                        component={Link}
+                        to='/blogs'
+                        >
+                            Blogs
+                        </Button>
                     </Box>
                     <Box sx={{ display: 'flex', gap: '10px', }}>
 
