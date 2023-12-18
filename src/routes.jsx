@@ -1,6 +1,8 @@
 import { useRoutes } from "react-router"
 import Landing from "./Components/Landing"
 import Blogs from "./Views/Blogs/Blogs"
+import GroupChat from "./Views/GroupChat"
+
 export default function Router() {
     let element = useRoutes([
         {
@@ -13,7 +15,12 @@ export default function Router() {
         },
        
     
-      
+      {
+            path: '/group-chat',
+            element: <GroupChat />
+        }
+
+
 
     ])
     return element
