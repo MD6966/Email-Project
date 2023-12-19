@@ -27,15 +27,15 @@ const StyledSub = styled(Typography)(({theme})=> ({
     width:'790px',
     marginTop:theme.spacing(5)
 })) 
-const CustomCreativeAgencies = () => {
+const CustomITAndSupp = () => {
   return (
     <StyledRoot>
         <Box>
 
         <StyledTypo>
-        Discover Sparkamis's Features Tailored for 
-        Streamlined  Workflows and Amplified
-        Connectivity in Creative Agencies. 
+        Dive into Sparkamis's Features for Enhanced
+        Technical Workflows and Seamless
+        Team Connectivity.
         </StyledTypo>
         <Box sx={{display:'flex', justifyContent:'center', alignItems:'center'}}>
         <StyledSub>
@@ -44,10 +44,10 @@ const CustomCreativeAgencies = () => {
         that redefine how teams collaborate and achieve unparalleled productivity.
         </StyledSub>
         </Box>
-        <img src='/agencies-custom.png' style={{height:'100vh', width:'100%', overflow:'hidden', marginTop:'35px'}}/>
+        <img src='/it-custom.png' style={{height:'100vh', width:'100%', overflow:'hidden', marginTop:'35px'}}/>
         </Box>
     </StyledRoot>
   )
 }
 
-export default CustomCreativeAgencies
+export default CustomITAndSupp

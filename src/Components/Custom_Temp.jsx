@@ -104,7 +104,7 @@ const Custom_Temp = (props) => {
 
                 </Box>
                 {
-                    props.c3Txt &&
+                    props.c3Heading &&
                 <Box sx={{ height: '100vh', backgroundColor: '#E9D1DF', margin: '50px 50px', padding: '20px 0px', borderRadius: '80px' }}>
                     <Grid container spacing={5} sx={{ padding: '50px 60px' }}>
                         <Grid item lg={6} >
