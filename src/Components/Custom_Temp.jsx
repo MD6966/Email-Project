@@ -1,6 +1,7 @@
 import React from 'react'
 import Header from '../Components/Header'
-import { Avatar, Box, Button, Grid, Typography } from '@mui/material'
+import { Avatar, Box, Button, Grid, Rating, Stack, Typography } from '@mui/material'
+import DoneIcon from '@mui/icons-material/Done';
 import Footer from './Footer';
 const gridData = [
     {
@@ -20,39 +21,61 @@ const gridData = [
         name: 'Ajay Patel'
     }
 ];
-const Custom_Temp = () => {
+const Custom_Temp = (props) => {
     return (
         <>
             <Box>
                 <Header />
-                <Box sx={{ height: '100vh', backgroundColor: '#040255', color: 'white', padding: '160px 50px' }}>
+                <Box sx={{ height: '100vh', backgroundColor: props?.color ? props.color :'#040255', color: 'white', padding: '160px 50px' }}>
                     <Grid container spacing={10}>
-                        <Grid item lg={6} >
-                            <Typography sx={{ fontSize: '52px', fontWeight: 700 }}>Unite Colleagues,<br /> Clients, and Partners</Typography>
-                            <Typography sx={{ fontSize: '14px', fontWeight: 400 }}>Elevate collaboration by bringing colleagues, clients, and partners together through dedicated workspaces and intuitive group features. Foster seamless communication,shared insights, and collective productivity with Sparkamis's innovative group capabilities.</Typography>
+                        {
+                            props.mainImage == false ? 
+                        <Grid item lg={12} >
+                        <Box sx={{display:'flex', flexDirection:'column', justifyContent:'center', px:15}}>
+                            <Typography 
+                            sx={{ fontSize: '62px', fontWeight: 'bold', color:props.txtColor ? props.txtColor : '' }}>{props?.txt1} {props?.txt2}</Typography>
+                            <Typography sx={{ fontSize: '14px', fontWeight: 400 , color:props.txtColor ? props.txtColor : ''}}>{props?.sub}</Typography>
+                            </Box></Grid> :
+                            <>
+                            <Grid item lg={6} >
+                                <Typography 
+                                sx={{ fontSize: '52px', fontWeight: 700, color:props.txtColor ? props.txtColor : '' }}>{props?.txt1} {props?.txt2}</Typography>
+                                <Typography sx={{ fontSize: '14px', fontWeight: 400 , color:props.txtColor ? props.txtColor : ''}}>{props?.sub}</Typography>
+                                </Grid>
+                                <Grid item lg={6}>
+                            <img src={props?.img} alt="" style={{ height: '323px', width: '100%' }} />
                         </Grid>
-                        <Grid item lg={6}>
-                            <img src="public/image 349.png" alt="" style={{ height: '323px', width: '100%' }} />
-                        </Grid>
+                                </> 
+                            
+
+                        }
+                       
 
                     </Grid>
-
                 </Box>
+                {
+                    props.customMarketing && 
+                    <props.customMarketing /> 
+                }
+                {
+                    props.customAgencies &&
+                    <props.customAgencies />
+                }
                 <Box sx={{ height: '100vh', backgroundColor: '#C9C8EE', margin: '50px 50px', padding: '30px 0px', borderRadius: '80px' }}>
                     <Grid container spacing={5} sx={{ padding: '50px 60px' }}>
                         <Grid item lg={6} >
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', justifyContent: 'center', alignItems: 'start' }}>
 
 
-                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>Chat in group</Typography>
-                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>Streamlining Action Item Assignments for Enhanced Productivity. </Typography>
-                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>Elevate collaboration to new heights with Sparkamis,where AI-driven automation transforms workflows for unparalleled efficiency.</Typography>
+                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>{props?.c1Txt}</Typography>
+                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>{props?.c1Heading} </Typography>
+                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>{props?.c1Sub}</Typography>
                                 <Button sx={{ backgroundColor: '#040255', color: 'white', justifyContent: 'center', padding: '12px 16px', fontSize: '16px', fontWeight: 700, borderRadius: '8px' }}>Learn More</Button>
                             </Box>
                         </Grid>
                         <Grid item lg={6} sx={{ marginTop: '40px' }}>
                             <video controls autoPlay muted width="100%" height="auto" style={{ borderRadius: '40px' }}>
-                                <source src="public/groupchat-video.mp4" type="video/mp4" />
+                                <source src={props?.c1Vid} type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
                         </Grid>
@@ -64,15 +87,15 @@ const Custom_Temp = () => {
                     <Grid container spacing={5} sx={{ padding: '50px 60px' }}>
 
                         <Grid item lg={6} sx={{ marginTop: '40px' }}>
-                            <img src="public/chatg-img.png" alt="" style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '40px' }} />
+                            <img src={props?.c2img} alt="" style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '40px' }} />
                         </Grid>
                         <Grid item lg={6} >
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', justifyContent: 'center', alignItems: 'start' }}>
 
 
-                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>share things</Typography>
-                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>Share Links, Embeds, and Beyond for Seamless Seamless Engagement.</Typography>
-                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>Facilitate dynamic collaboration by effortlessly sharing project and engaged team environment.</Typography>
+                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>{props?.c2txt}</Typography>
+                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>{props?.c2Heading}</Typography>
+                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>{props?.c2Sub}</Typography>
                                 <Button sx={{ backgroundColor: '#040255', color: 'white', justifyContent: 'center', padding: '12px 16px', fontSize: '16px', fontWeight: 700, borderRadius: '8px' }}>Learn More</Button>
                             </Box>
                         </Grid>
@@ -80,21 +103,23 @@ const Custom_Temp = () => {
                     </Grid>
 
                 </Box>
+                {
+                    props.c3Txt &&
                 <Box sx={{ height: '100vh', backgroundColor: '#E9D1DF', margin: '50px 50px', padding: '20px 0px', borderRadius: '80px' }}>
                     <Grid container spacing={5} sx={{ padding: '50px 60px' }}>
                         <Grid item lg={6} >
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', justifyContent: 'center', alignItems: 'start' }}>
 
 
-                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>Editing</Typography>
-                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>Unlocking the Power of Rich Editing for Impactful Communication.</Typography>
-                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>Transform your communication style with Sparkamis`s rich editing, effortlessly elevating your messages to convey impact and clarity.</Typography>
+                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>{props?.c3Txt}</Typography>
+                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>{props?.c3Heading}</Typography>
+                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>{props?.c3Sub}</Typography>
                                 <Button sx={{ backgroundColor: '#040255', color: 'white', justifyContent: 'center', padding: '12px 16px', fontSize: '16px', fontWeight: 700, borderRadius: '8px' }}>Learn More</Button>
                             </Box>
                         </Grid>
                         <Grid item lg={6} sx={{ marginTop: '40px' }}>
                             <video controls autoPlay muted width="100%" height="auto" style={{ borderRadius: '40px' }}>
-                                <source src="public/group-chatvideo1.mp4" type="video/mp4" />
+                                <source src={props?.c3Vid} type="video/mp4" />
                                 Your browser does not support the video tag.
                             </video>
                         </Grid>
@@ -102,19 +127,20 @@ const Custom_Temp = () => {
                     </Grid>
 
                 </Box>
+                }
                 <Box sx={{ height: '100vh', backgroundColor: '#D2FFCB', margin: '50px 50px', padding: '20px 0px', borderRadius: '80px' }}>
                     <Grid container spacing={5} sx={{ padding: '50px 60px' }}>
 
                         <Grid item lg={6} sx={{ marginTop: '40px' }}>
-                            <img src="public/CU_AI_LP_Agile_V3 1 (1).png" alt="" style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '40px' }} />
+                            <img src={props?.c4Img} alt="" style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: '40px' }} />
                         </Grid>
                         <Grid item lg={6} >
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', justifyContent: 'center', alignItems: 'start' }}>
 
 
-                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>organize</Typography>
-                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>Chat in Context with Relevant Work for Enhanced Productivity.</Typography>
-                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>Sparkamis streamlines bug and issue tracking, ensuring a smooth and efficient development process. </Typography>
+                                <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>{props?.c4Txt}</Typography>
+                                <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>{props?.c4Heading}</Typography>
+                                <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>{props?.c4Sub} </Typography>
                                 <Button sx={{ backgroundColor: '#040255', color: 'white', justifyContent: 'center', padding: '12px 16px', fontSize: '16px', fontWeight: 700, borderRadius: '8px' }}>Learn More</Button>
                             </Box>
                         </Grid>
@@ -143,15 +169,41 @@ const Custom_Temp = () => {
                                     <Typography sx={{ fontSize: '16px' }}>{item.text}</Typography>
                                     {item.avatarSrc && (
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '50px' }}>
+                                            <Stack>
                                             <Typography sx={{ color: '#3D77EA' }}>{item.name}</Typography>
+                                            <Rating name="half-rating-read" defaultValue={5}  readOnly sx={{mt:1.5}}/>
+                                            </Stack>
                                             <Avatar alt="Avatar" src={item.avatarSrc} />
+
                                         </Box>
                                     )}
                                 </Box>
+                                
                             </Grid>
                         ))}
                     </Grid>
                 </Box>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: "40px", backgroundColor: '#525194', color: 'white', padding: '40px', borderRadius: '80px 80px 0px 0px' }}>
+                <Typography sx={{ fontSize: '32px', fontWeight: 800, }}>{props?.headingP}</Typography>
+                <Button sx={{ backgroundColor: '#02013B', fontSize: '16px', fontWeight: 700, color: 'white', padding: '10px' }}>Get Started Today</Button>
+                <Box sx={{
+                    display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', '& > :not(:last-child)': {
+                        marginRight: '30px',
+                    },
+                }}>
+                    <Typography>
+                        <DoneIcon /> Unified Collaboration Platform
+                    </Typography>
+                    <Typography sx={{ ':not(:last-child)': { marginRight: '20px' } }}>
+                        <DoneIcon /> Enhanced Communication Efficiency
+                    </Typography>
+                    <Typography> <DoneIcon />Boosted Productivity and Performance</Typography>
+                </Box>
+                <div style={{ position: 'relative', height: '70vh', width: '100%' }}>
+                    <img src="/bottom1.png" alt="" style={{ height: '100%', width: '100%', objectFit: 'contain' }} />
+                    <img src="bottom2.png" alt="" style={{ height: '50vh', position: 'absolute', top: '50%', left: '65%', transform: 'translate(-50%, -50%)' }} />
+                </div>
             </Box>
             <Footer />
         </>
