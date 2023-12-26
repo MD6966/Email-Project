@@ -1,10 +1,11 @@
 import { Avatar, Box, Button, Grid, Typography, useMediaQuery, useTheme } from '@mui/material'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Header from './Header'
 import RepeatCom from './RepeatCom';
 import PlayCircleOutlinedIcon from '@mui/icons-material/PlayCircleOutlined';
 import Footer from './Footer';
 import Tool from './Tool';
+import LoadingBar from 'react-top-loading-bar'
 const gridData = [
     {
         text: "Sparkamis transformed our team collaboration efficient, organized, and the AI assistant is a game-changer. Invaluable for boosting productivity.make it a must have for streamlined collaboration.",
@@ -40,10 +41,16 @@ const buttonStyle2 = {
     fontSize: '16px',
     padding: '10px'
 }
-const Landing = () => {
+const Landing = ({setprogress}) => {
     const theme = useTheme()
     const isMedium = useMediaQuery(theme.breakpoints.down('lg'))
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
+    useEffect(()=> {
+        setprogress(20)
+        setTimeout(()=> {
+          setprogress(100)
+        }, 1000)
+    }, [])
     return (
         <>
             <Box sx={{ mt: 9, height: '100vh', backgroundColor: '#FFF', overflow: 'hidden', padding: '0px 50px', }}>

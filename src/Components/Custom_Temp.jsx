@@ -109,8 +109,6 @@ const Custom_Temp = (props) => {
                     <Grid container spacing={5} sx={{ padding: '50px 60px' }}>
                         <Grid item lg={6} >
                             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '25px', justifyContent: 'center', alignItems: 'start' }}>
-
-
                                 <Typography sx={{ fontSize: '12px', fontWeight: 700 }}>{props?.c3Txt}</Typography>
                                 <Typography sx={{ color: '#04034B', fontSize: '45px', fontWeight: 800, lineHeight: '50px' }}>{props?.c3Heading}</Typography>
                                 <Typography sx={{ fontSize: '14px', fontWeight: 400, color: '#033562' }}>{props?.c3Sub}</Typography>

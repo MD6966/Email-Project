@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../../Components/Header';
 import { Box, Typography, styled, Tab, Tabs } from '@mui/material';
 import AllPosts from './components/AllPosts';
 import Footer from '../../Components/Footer';
-
 const StyledRoot = styled(Box)(({ theme }) => ({
   minHeight: '100vh',
   padding: theme.spacing(15, 5),
@@ -24,9 +23,15 @@ const StyledTab = styled(Tab)(({ theme }) => ({
   fontWeight: 700, // Adjust the fontWeight as needed
 }));
 
-const Blogs = () => {
+const Blogs = ({setprogress}) => {
   const [value, setValue] = useState(0);
+  useEffect(()=> {
+    setprogress(20)
+    setTimeout(()=> {
+      setprogress(100)
 
+    }, 1000)
+}, [])
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
