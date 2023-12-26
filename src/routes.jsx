@@ -9,6 +9,7 @@ import GroupAndChat from './Views/GroupAndChat/GroupAndChat';
 import Marketing from './Views/Marketing/Marketing';
 import CreativeAgencies from './Views/CreativeAgencies/CreativeAgencies';
 import ItAndSupport from './Views/ItAndSupport/ItAndSupport';
+import Dashboard from './Layouts/dashboard';
 
 export default function Router() {
     const [progress, setProgress] = useState(0);
@@ -53,6 +54,10 @@ export default function Router() {
                     path: '/it-n-support',
                     element: <ItAndSupport />,
                 },
+                {
+                    path:'/dashboard',
+                    element: <Dashboard setprogress={setProgress}/>
+                }
             ])}
         </>
     );
