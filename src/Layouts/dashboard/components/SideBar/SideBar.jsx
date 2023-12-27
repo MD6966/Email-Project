@@ -67,12 +67,7 @@ const SideBar = () => {
             }
         </Box>
     </Box>
-    {/* <Box sx={{display:'flex'}}>
-    <Box sx={SideBarStyles}>
-       
-    </Box>
     
-        </Box> */}
     </>
   )
 }

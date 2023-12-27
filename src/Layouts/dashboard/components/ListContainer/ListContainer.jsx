@@ -1,4 +1,4 @@
-import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from '@mui/material'
+import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
 import { Add, Edit, StarBorder } from '@mui/icons-material'
@@ -18,6 +18,7 @@ import ListItemText from '@mui/material/ListItemText';
 import LabelIcon from '@mui/icons-material/Label';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
+import ComposePopup from './components/ComposePopup';
 const ListContainer = () => {
   const listData = [
     { icon: <AllInboxIcon />, title: 'Inbox', content: 'Inbox content goes here' },
@@ -29,17 +30,48 @@ const ListContainer = () => {
     { icon: <SpeakerNotesIcon />, title: 'Notes', content: 'Notes content goes here' },
     { icon: <QuestionAnswerIcon />, title: 'Conversation', content: 'Conversation content goes here' },
   ];
-
   const [selectedItem, setSelectedItem] = useState(listData[0]); // Initially select the first item
   const [open, setOpen] = React.useState(true);
+  const [openG, setOpenG] = React.useState(true);
+  const [composeOpen, setComposeOpen] = useState(false);
+
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [dTitle, setDtitle] = useState('')
+  const [name, setName] = useState('')
+  const handleComposeClick = () => {
+    setComposeOpen(true);
+  };
+
+  const handleComposeClose = () => {
+    setComposeOpen(false);
+  };
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };
   const handleClick = () => {
     setOpen(!open);
   };
-
+  const handleClickG = () => {
+    setOpenG(!openG);
+  };
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const openM = Boolean(anchorEl);
+  const handleClickM = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleDialogOpen = (title, name) => {
+    setDtitle(title)
+    setName(name)
+    setDialogOpen(true)
+  }
+  const handleCloseDialog =()=> {
+    setDialogOpen(false)
+    setDtitle('')
+    setName('')
+  }
   return (
     <>
     <Box sx={listContainer}>
@@ -48,9 +80,14 @@ const ListContainer = () => {
           sx={buttonStyles}
           variant='contained'
           startIcon={<Edit />}
+          onClick={handleComposeClick}
         >
           Compose
         </Button>
+        {composeOpen && 
+        
+        <ComposePopup open={composeOpen} onClose={handleComposeClose} />
+        }
       </Box>
       <Box sx={{ mt: 2 }}>
         <List>
@@ -91,7 +128,7 @@ const ListContainer = () => {
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
         <Button size='small' variant='outlined' sx={{my:1}} fullWidth
-        onClick={()=>setDialogOpen(true)}
+        onClick={()=>handleDialogOpen('Label', 'label' )}
         startIcon={
           <Add />
         }
@@ -103,7 +140,63 @@ const ListContainer = () => {
             <ListItemIcon>
               <LabelIcon />
             </ListItemIcon>
-            <ListItemText primary="Mudasser" />
+            <ListItemText primary={
+              <Box sx={{display:'flex', alignItems:'center'}}>
+                <Typography sx={{ml:-3}}>
+                Mudasser
+                </Typography>
+                <Add sx={{fontSize:'15px', ml:3}}
+                onClick={
+                  handleClickM
+                }
+                />
+              </Box>
+            } />
+          </ListItemButton>
+        </List>
+      </Collapse>
+          </List>
+        </Box>
+        <Box>
+          <List>
+          <ListItemButton onClick={handleClickG}
+          sx={{
+            height:'35px',
+            background:open ? '#B5DCFF' : 'none',
+            '&:hover': {
+              backgroundColor: '#B5DCFF',
+            }
+          }}
+          >
+        <ListItemText primary="Groups" />
+        {openG ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Collapse in={openG} timeout="auto" unmountOnExit>
+        <Button size='small' variant='outlined' sx={{my:1}} fullWidth
+         onClick={()=>handleDialogOpen('Group', 'group' )}
+        startIcon={
+          <Add />
+        }
+        >
+          Add Group
+        </Button>
+        <List component="div" disablePadding>
+          <ListItemButton sx={{ pl: 4, height:'35px' }}>
+            <ListItemIcon>
+              <LabelIcon />
+            </ListItemIcon>
+            <ListItemText primary={
+              <Box sx={{display:'flex', alignItems:'center'}}>
+                <Typography sx={{ml:-3}}>
+                Mudasser
+                </Typography>
+                <Add sx={{fontSize:'15px', ml:3}}
+                onClick={
+                  handleClickM
+                }
+                />
+              </Box>
+            } />
           </ListItemButton>
         </List>
       </Collapse>
@@ -114,12 +207,12 @@ const ListContainer = () => {
         </Box>
       </Box>
     </Box>
-    <Dialog open={dialogOpen} fullWidth onClose={()=> setDialogOpen(false)}>
+    <Dialog open={dialogOpen} fullWidth onClose={handleCloseDialog}>
         <DialogTitle>
-          New Label
+          New {dTitle}
         </DialogTitle>
         <DialogContent>
-          <TextField size='small' label="Enter new label name" fullWidth/>
+          <TextField size='small' label={`Enter new ${name} name`} fullWidth/>
         </DialogContent>
         <DialogActions>
           <Button variant='outlined'>
@@ -130,6 +223,19 @@ const ListContainer = () => {
           </Button>
         </DialogActions>
     </Dialog>
+    <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={openM}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={handleClose}>My account</MenuItem>
+        <MenuItem onClick={handleClose}>Logout</MenuItem>
+      </Menu>
     </>
   );
 }

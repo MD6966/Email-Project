@@ -1,5 +1,5 @@
 export const listContainer = {
-    width:'20%',
+    width:'25%',
     height:'100vh',
     borderRight:'2px solid #DEDEE7',
     padding:'15px'
