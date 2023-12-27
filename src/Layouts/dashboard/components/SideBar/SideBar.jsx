@@ -36,15 +36,17 @@ const SideBar = () => {
         sx: drawerStyles ,
       }}
     >
+        <Box sx={{mt:11}}>
              {
-            icons.map((icon)=> {
-                return(
-                    <Stack sx={{display:'flex', alignItems:'center'}}>
+                 icons.map((icon)=> {
+                     return(
+                    <Stack sx={{display:'flex', alignItems:'center',}}>
                         {icon.icon}
                     </Stack>
                 )
             })
         }
+        </Box>
     </Drawer>
     <Box>
         <Box style={bottomBar}>

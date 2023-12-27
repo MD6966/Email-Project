@@ -5,3 +5,19 @@ export const listDataContainer = {
     padding:'15px'
 
 }
+export const textStlyes = {
+    color: '#000',
+    textAlign: 'justify',
+    fontFamily: 'Inter',
+    fontSize: '16px',
+    fontStyle: 'normal',
+    fontWeight: 700,
+    lineHeight: 'normal',
+}
+
+export const iconStyles = {
+    fontSize: '1.35rem',
+    marginLeft:'15px',
+    cursor:'pointer'
+}
+

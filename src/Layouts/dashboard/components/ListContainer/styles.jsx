@@ -16,3 +16,10 @@ export const buttonStyles = {
         color:'#000'
     }
 }
+
+export const labelList = {
+    cursor:'pointer',
+    '&:hover' : {
+        background:'#e2e2e2'
+    }
+}
