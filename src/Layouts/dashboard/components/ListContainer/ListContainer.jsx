@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
-import { Add, Edit, StarBorder } from '@mui/icons-material'
+import { Add, Edit, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import DraftsIcon from '@mui/icons-material/Drafts';
@@ -31,8 +31,8 @@ const ListContainer = () => {
     { icon: <QuestionAnswerIcon />, title: 'Conversation', content: 'Conversation content goes here' },
   ];
   const [selectedItem, setSelectedItem] = useState(listData[0]); // Initially select the first item
-  const [open, setOpen] = React.useState(true);
-  const [openG, setOpenG] = React.useState(true);
+  const [open, setOpen] = React.useState(false);
+  const [openG, setOpenG] = React.useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
 
   const [dialogOpen, setDialogOpen] = useState(false)
