@@ -1,5 +1,5 @@
 import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
 import { Add, Edit, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
@@ -19,6 +19,8 @@ import LabelIcon from '@mui/icons-material/Label';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
+import { useDispatch } from 'react-redux';
+import { setList } from '../../../../store/actions/listActions';
 const ListContainer = () => {
   const listData = [
     { icon: <AllInboxIcon />, title: 'Inbox', content: 'Inbox content goes here' },
@@ -34,10 +36,10 @@ const ListContainer = () => {
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
-
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dTitle, setDtitle] = useState('')
   const [name, setName] = useState('')
+  const dispatch = useDispatch()
   const handleComposeClick = () => {
     setComposeOpen(true);
   };
@@ -47,6 +49,7 @@ const ListContainer = () => {
   };
   const handleItemClick = (item) => {
     setSelectedItem(item);
+    dispatch(setList(item.title))
   };
   const handleClick = () => {
     setOpen(!open);
@@ -72,9 +75,14 @@ const ListContainer = () => {
     setDtitle('')
     setName('')
   }
+  const topRef = useRef(null);
+  const hnadleGroupBtn = (val) => {
+    dispatch(setList(val))
+    topRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
   return (
     <>
-    <Box sx={listContainer}>
+    <Box sx={listContainer} ref={topRef}>
       <Box sx={{ display: 'flex', justifyContent: 'center' }}>
         <Button
           sx={buttonStyles}
@@ -181,7 +189,9 @@ const ListContainer = () => {
           Add Group
         </Button>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4, height:'35px' }}>
+          <ListItemButton sx={{ pl: 4, height:'35px' }}
+          onClick={()=>hnadleGroupBtn('Group')}
+          >
             <ListItemIcon>
               <LabelIcon />
             </ListItemIcon>

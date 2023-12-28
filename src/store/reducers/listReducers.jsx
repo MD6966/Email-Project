@@ -1,16 +1,16 @@
 
 const initialState = {
-    list_type:'inbox'
+    list_type:'Inbox'
 }
 
 const listReducer = (state=initialState, action) => {
     switch(action.type) {
         case 'SET_LIST': {
 
-            console.log("ADMIN_LOGIN", action)
+            // console.log("ADMIN_LOGIN", action.payload.title)
             return {
                 ...state,
-                ...action.payload.payload,
+                ...action.payload,
                 list_type:action.payload
             };
         };

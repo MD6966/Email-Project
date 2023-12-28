@@ -20,4 +20,9 @@ export const iconStyles = {
     marginLeft:'15px',
     cursor:'pointer'
 }
+export const icon = {
+    color:'#878787',
+    marginRight:'20px',
+    fontSize:'20px'
+}
 

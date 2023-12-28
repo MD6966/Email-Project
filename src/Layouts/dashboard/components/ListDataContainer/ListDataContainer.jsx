@@ -11,6 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import {listDataContainer} from './styles'
+import { useSelector } from 'react-redux';
+import Groups from './components/Groups/Groups';
 const ListDataContainer = () => {
   const listData = [
     { title: 'React Js Developer', desc: 'Required React Js developer at Saeedan Technology.com', time: '2:48 pm' },
@@ -35,9 +37,12 @@ const ListDataContainer = () => {
   const isSelected = (index) => {
     return selectedItem === index;
   };
-
+  const list_type = useSelector((state)=>state.list_type.list_type)
+  console.log(list_type)
   return (
     <Box sx={listDataContainer}>
+      {list_type === 'Inbox' ?
+      <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
           Inbox
@@ -107,7 +112,14 @@ const ListDataContainer = () => {
             </React.Fragment>
           ))}
         </List>
-      </Box>
+      </Box> 
+      </> 
+      :
+      list_type === 'Group' ?
+      <Groups /> :
+      null
+      
+    }
     </Box>
   );
 };
