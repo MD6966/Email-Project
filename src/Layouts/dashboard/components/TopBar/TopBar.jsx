@@ -3,6 +3,7 @@ import React from 'react'
 import { boxStyles, iconStyles, inputStyles, internalText } from './styles/styles'
 import HelpIcon from '@mui/icons-material/Help';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsDialog from './components/SettingsDialog';
 const TopBar = () => {
   return (
     <div>
@@ -35,6 +36,7 @@ const TopBar = () => {
 
             </Toolbar>
         </AppBar>
+        <SettingsDialog />
     </div>
   )
 }
