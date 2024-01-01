@@ -20,23 +20,12 @@ api.interceptors.request.use(
     return Promise.reject(error);
   }
 );
-export const setList = (list_type) => (dispatch) => {
-    // console.log(list_type.title)
-    dispatch({
-        type: 'SET_LIST',
-        payload:list_type,
-      });
-  }
-
-
-  export const getListData = (folder_id) => async (dispatch) => {
-    const body = {
-        folder_id:folder_id
-    }
+export const getAllFolders = () => async (dispatch) => {
+  
     try {
-      const res = await api.post('api/outlook-email', body);
+      const res = await api.post('api/outlook-folders');
       dispatch({
-        type: 'FOLDER_ID_SUCCESS',
+        type: 'FOLDER_SUCCESS',
         payload: res.data.payload,
       });
   

@@ -1,10 +1,11 @@
 import { AppBar, Avatar, Box, Toolbar, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { boxStyles, iconStyles, inputStyles, internalText } from './styles/styles'
 import HelpIcon from '@mui/icons-material/Help';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsDialog from './components/SettingsDialog';
 const TopBar = () => {
+  const [open, setOpen] = useState(false)
   return (
     <div>
         <AppBar sx={{background:'#F0EDED', position:'static'}} elevation={0}>
@@ -21,7 +22,9 @@ const TopBar = () => {
               </Box>
               <Box sx={{display:'flex', alignItems:'center', color:'#4A4848',}}>
                 <HelpIcon style={iconStyles} />
-                <SettingsIcon style={iconStyles}/>
+                <SettingsIcon style={iconStyles}
+                onClick={()=>setOpen(true)}
+                />
                 <Box style={iconStyles}>
                   <Typography >
                     Mudasser Jaafri
@@ -36,7 +39,7 @@ const TopBar = () => {
 
             </Toolbar>
         </AppBar>
-        <SettingsDialog />
+        <SettingsDialog open={open} close={()=>setOpen(false)} />
     </div>
   )
 }

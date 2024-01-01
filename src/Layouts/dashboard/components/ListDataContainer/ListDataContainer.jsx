@@ -38,10 +38,12 @@ const ListDataContainer = () => {
     return selectedItem === index;
   };
   const list_type = useSelector((state)=>state.list_type.list_type)
-  console.log(list_type)
+  // console.log(list_type)
+  const list_data = useSelector((state)=>state.folder.folderData)
+  // console.log(list_data)
   return (
     <Box sx={listDataContainer}>
-      {list_type === 'Inbox' ?
+      {/* {list_type === 'Inbox' ?
       <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
@@ -119,7 +121,80 @@ const ListDataContainer = () => {
       <Groups /> :
       null
       
-    }
+    } */}
+    <>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
+          Inbox
+        </Typography>
+        <Box>
+          <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
+          <FilterListIcon style={{ fontSize: '24px' }} />
+        </Box>
+      </Box>
+      <Box sx={{ mt: 2 }}>
+        <Typography style={{ fontSize: '14px' }}>
+          Today
+        </Typography>
+        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+          {list_data.map((val, index) => (
+            <React.Fragment key={index}>
+              <ListItem
+                alignItems="flex-start"
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                    background: isSelected(index) ? '#e2e2e2' : 'inherit',
+                  },
+                  background: isSelected(index) ? '#e2e2e2' : 'inherit',
+                }}
+                onMouseDown={() => handleMouseDown(index)}
+                onMouseUp={handleMouseUp}
+              >
+                {console.log(val)}
+                <ListItemAvatar>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                </ListItemAvatar>
+                <Box>
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography>
+                          {val.sender_name}
+                        </Typography>
+                        {isSelected(index) ? (
+                          <>
+                            <DeleteIcon style={{ fontSize: '20px', marginRight: '-45px' }} />
+                            <ArchiveIcon style={{ fontSize: '20px' }} />
+                          </>
+                        ) : (
+                          <Typography sx={{ fontSize: '12px' }}>
+                            {val.sentDateTime}
+                          </Typography>
+                        )}
+                      </Box>
+                    }
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          sx={{ display: 'inline' }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          {val.desc}
+                        </Typography>
+                      </React.Fragment>
+                    }
+                  />
+                </Box>
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      </Box> 
+      </> 
     </Box>
   );
 };

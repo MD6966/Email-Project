@@ -1,15 +1,15 @@
 import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
-import { Add, Edit, } from '@mui/icons-material'
+import { Add, Edit, History, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import DraftsIcon from '@mui/icons-material/Drafts';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
-import SpeakerNotesIcon from '@mui/icons-material/SpeakerNotes';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
+import SnoozeIcon from '@mui/icons-material/Snooze';
+import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -19,20 +19,13 @@ import LabelIcon from '@mui/icons-material/Label';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
-import { useDispatch } from 'react-redux';
-import { setList } from '../../../../store/actions/listActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { getListData, setList } from '../../../../store/actions/listActions';
 const ListContainer = () => {
-  const listData = [
-    { icon: <AllInboxIcon />, title: 'Inbox', content: 'Inbox content goes here' },
-    { icon: <DeleteSweepIcon />, title: 'Junk Mail', content: 'Junk Mail content goes here' },
-    { icon: <DraftsIcon />, title: 'Drafts', content: 'Drafts content goes here' },
-    { icon: <SendIcon />, title: 'Sent Items', content: 'Sent Items content goes here' },
-    { icon: <DeleteIcon />, title: 'Deleted Items', content: 'Deleted Items content goes here' },
-    { icon: <ArchiveIcon />, title: 'Archived', content: 'Archived content goes here' },
-    { icon: <SpeakerNotesIcon />, title: 'Notes', content: 'Notes content goes here' },
-    { icon: <QuestionAnswerIcon />, title: 'Conversation', content: 'Conversation content goes here' },
-  ];
-  const [selectedItem, setSelectedItem] = useState(listData[0]); // Initially select the first item
+  const data = useSelector((state)=>state.folder)
+  // console.log(data.folders, 'DATAREDUX')
+  const [selectedItem, setSelectedItem] = useState(data.folders[4]);
+  const [folderId, setFolderId] = useState(data.folders[4]) 
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -49,7 +42,7 @@ const ListContainer = () => {
   };
   const handleItemClick = (item) => {
     setSelectedItem(item);
-    dispatch(setList(item.title))
+    // dispatch(getListData(item.folder_id))
   };
   const handleClick = () => {
     setOpen(!open);
@@ -80,6 +73,10 @@ const ListContainer = () => {
     dispatch(setList(val))
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
+  useEffect(()=> {
+    dispatch(getListData(selectedItem?.folder_id))
+  },[selectedItem])
+  // console.log(data.folders, "Selected")
   return (
     <>
     <Box sx={listContainer} ref={topRef}>
@@ -99,26 +96,50 @@ const ListContainer = () => {
       </Box>
       <Box sx={{ mt: 2 }}>
         <List>
-          {listData.map((val, ind) => (
-            <ListItem
+          {
+          data.folders.length > 0 ?
+          data.folders?.map((val, ind) => {
+            return(
+              <ListItem
               key={ind}
               disablePadding
               onClick={() => handleItemClick(val)}
               sx={{
-                backgroundColor: selectedItem.title === val.title ? '#B5DCFF' : 'transparent',
+                backgroundColor: selectedItem.folder_name === val?.folder_name ? '#B5DCFF' : 'transparent',
                 height: '35px',
                 cursor:'pointer',
                 px:1,
                 '&:hover': {
-                  backgroundColor: selectedItem.title === val.title ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)',
+                  backgroundColor: selectedItem.folder_name === val?.folder_name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)',
                 },
               }}
             >
               
-                <ListItemIcon>{val.icon}</ListItemIcon>
-                <ListItemText primary={val.title} />
+                <ListItemIcon>
+                {
+                  val.folder_name == 'Archive' ?
+                  <ArchiveIcon /> : val.folder_name === 'Conversation History' ?
+                  <History /> : val.folder_name === 'Deleted Items' ?
+                  <DeleteIcon /> : val.folder_name === 'Drafts' ?
+                  <DraftsIcon /> : val.folder_name === 'Inbox' ?
+                  <AllInboxIcon />  : val.folder_name === 'Junk Email' ?
+                  <DeleteSweepIcon /> : val.folder_name === 'Outbox' ?
+                  <SendIcon /> :val.folder_name === 'Sent Items' ?
+                  <MarkChatReadIcon /> : val.folder_name === 'Snoozed' ?
+                  <SnoozeIcon /> : null
+   
+              }
+                 </ListItemIcon>
+                <ListItemText primary={
+                  <Typography sx={{fontSize:'12px', fontWeight:'bold'}}>
+                    {val.folder_name}
+                  </Typography>
+                } />
             </ListItem>
-          ))}
+            )
+          })
+        :'Please Login First'
+        }
         </List>
         <Box sx={{mt:2}}>
           <List>
@@ -212,9 +233,9 @@ const ListContainer = () => {
       </Collapse>
           </List>
         </Box>
-        <Box sx={{ mt: 2 }}>
+        {/* <Box sx={{ mt: 2 }}>
           <div>{selectedItem.content}</div>
-        </Box>
+        </Box> */}
       </Box>
     </Box>
     <Dialog open={dialogOpen} fullWidth onClose={handleCloseDialog}>

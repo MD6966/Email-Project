@@ -2,7 +2,8 @@ export const listDataContainer = {
     width:'35%',
     height:'100vh',
     borderRight:'2px solid #DEDEE7',
-    padding:'15px'
+    padding:'15px',
+    overflowY:'scroll'
 
 }
 export const textStlyes = {
