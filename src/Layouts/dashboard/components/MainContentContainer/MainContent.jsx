@@ -19,6 +19,7 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
+import { useSelector } from 'react-redux';
 
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -41,7 +42,8 @@ const MainContent = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [text, setText] = useState('');
   const [editorVisible, setEditorVisible] = useState(false);
-
+  const content = useSelector((state)=>state.folder.content)
+  console.log(content, "This")
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -55,7 +57,6 @@ const MainContent = () => {
   };
 
   const handleEditorSubmit = () => {
-    // Add your logic for handling editor submission here
     setEditorVisible(false);
   };
 
@@ -64,27 +65,29 @@ const MainContent = () => {
       <Box
         sx={{
           width: '50vw',
-          height: '90vh',
+          maxHeight: '90vh',
           border: '1px solid rgba(0,0,0,0.2)',
           borderRadius: '15px',
           overflow: 'hidden',
+          overflowY:'scroll'
+          
         }}
       >
         <Box
           sx={{
             background: '#e2e2e2',
-            height: '15%',
+            height: '10vh',
             p: 1,
           }}
         >
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar sx={{ background: '#040263', height: '45px', width: '45px', p: 2, fontSize: '16px' }}>
+              <Avatar sx={{ background: '#040263', height: '35px', width: '35px', p: 2, fontSize: '16px' }}>
                 MD
               </Avatar>
               <Box sx={{ ml: 1 }}>
-                <Typography sx={{ fontSize: '13px', mb: -0.5 }}>Mudasser to you</Typography>
-                <Typography sx={{ fontWeight: 'bold' }}>React Js developer</Typography>
+                <Typography sx={{ fontSize: '13px', mb: -0.5 }}>{content.sender_name} to you</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>{content.subject}</Typography>
               </Box>
             </Box>
             <Box sx={{ display: 'flex' }}>
@@ -106,7 +109,11 @@ const MainContent = () => {
             p: 5,
           }}
         >
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div
+          style={{minHeight:'80%', marginBottom:5}}
+        dangerouslySetInnerHTML={{ __html: content.description }}
+      />
+          {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography fontWeight="bold">Hey Syed!</Typography>
             <Typography color="#777">4:42 pm</Typography>
           </Box>
@@ -116,9 +123,9 @@ const MainContent = () => {
               industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and
               scrambled it to make a type specimen book. It has survived not only five centuries,
             </Typography>
-          </Box>
+          </Box> */}
           {editorVisible && (
-            <Box>
+            <Box sx={{mt:4}}>
               <Editor value={text} onTextChange={(e) => setText(e.htmlValue)} style={{ height: '120px' }} />
               <Button variant="outlined" onClick={handleEditorSubmit} sx={{ mt: 2 }}>
                 Submit
@@ -126,7 +133,7 @@ const MainContent = () => {
             </Box>
           )}
           {!editorVisible && (
-            <Box>
+            <Box sx={{mt:4}}>
               <Button
                 variant="outlined"
                 sx={{ mr: 2 }}

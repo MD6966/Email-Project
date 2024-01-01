@@ -21,6 +21,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, setList } from '../../../../store/actions/listActions';
+import { folderName, resetLoading } from '../../../../store/actions/folderActions';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   // console.log(data.folders, 'DATAREDUX')
@@ -42,6 +43,7 @@ const ListContainer = () => {
   };
   const handleItemClick = (item) => {
     setSelectedItem(item);
+    dispatch(folderName(item.folder_name))
     // dispatch(getListData(item.folder_id))
   };
   const handleClick = () => {
@@ -75,8 +77,9 @@ const ListContainer = () => {
   }
   useEffect(()=> {
     dispatch(getListData(selectedItem?.folder_id))
+    dispatch(resetLoading())
   },[selectedItem])
-  // console.log(data.folders, "Selected")
+  // console.log(selectedItem.folder_name, "Selected")
   return (
     <>
     <Box sx={listContainer} ref={topRef}>

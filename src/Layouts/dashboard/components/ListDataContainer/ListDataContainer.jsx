@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,36 +11,37 @@ import ListItemText from '@mui/material/ListItemText';
 import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import {listDataContainer} from './styles'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
+import { content, resetLoading } from '../../../../store/actions/folderActions';
+import { RotatingLines } from 'react-loader-spinner';
 const ListDataContainer = () => {
-  const listData = [
-    { title: 'React Js Developer', desc: 'Required React Js developer at Saeedan Technology.com', time: '2:48 pm' },
-    { title: 'Frontend Engineer', desc: 'Exciting opportunity for a Frontend Engineer at ABC Corporation', time: '10:15 am' },
-    { title: 'Full Stack Developer', desc: 'Join our team as a Full Stack Developer with experience in MERN stack', time: '4:30 pm' },
-  ];
+ 
 
-  const [selectedItem, setSelectedItem] = useState(null);
-
-  const handleMouseDown = (index) => {
-    const timeoutId = setTimeout(() => {
-      setSelectedItem(index);
-    }, 500);
-
-    return () => clearTimeout(timeoutId);
-  };
-
-  const handleMouseUp = () => {
-    setSelectedItem(null);
-  };
-
+  const [selectedItem, setSelectedItem] = useState(0);
+  const list_data = useSelector((state)=>state.folder.folderData)
+  const isLoading = useSelector((state)=>state.folder.isLoading)
+  const folder_name = useSelector((state)=>state.folder.folder_name)
+  const [selectedContent, setSelectedContent] = useState(list_data[0])
+  const dispatch = useDispatch()
   const isSelected = (index) => {
     return selectedItem === index;
   };
-  const list_type = useSelector((state)=>state.list_type.list_type)
-  // console.log(list_type)
-  const list_data = useSelector((state)=>state.folder.folderData)
-  // console.log(list_data)
+  useEffect(()=> {
+    dispatch(content(selectedContent))
+  }, [selectedContent])
+  useLayoutEffect(()=> {
+    setSelectedItem(0)
+  }, [list_data])
+  const formatTime = (dateTimeString) => {
+    const options = { hour: 'numeric', minute: '2-digit', hour12: true };
+    return new Date(dateTimeString).toLocaleTimeString([], options);
+  };
+  const handleContent = (content, index) => {
+    setSelectedItem(index)
+    setSelectedContent(content)
+  }
+  // console.log(selectedContent)
   return (
     <Box sx={listDataContainer}>
       {/* {list_type === 'Inbox' ?
@@ -125,7 +126,7 @@ const ListDataContainer = () => {
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
-          Inbox
+          {folder_name}
         </Typography>
         <Box>
           <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
@@ -133,12 +134,29 @@ const ListDataContainer = () => {
         </Box>
       </Box>
       <Box sx={{ mt: 2 }}>
-        <Typography style={{ fontSize: '14px' }}>
+        {/* <Typography style={{ fontSize: '14px' }}>
           Today
-        </Typography>
+        </Typography> */}
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-          {list_data.map((val, index) => (
-            <React.Fragment key={index}>
+          {
+            isLoading ? 
+            <Box sx={{display:'flex', alignItems:'center', justifyContent:'center'}}>
+            <RotatingLines
+                strokeColor="#040263"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="20"
+                visible={isLoading} 
+                /> 
+                <Typography  sx={{ml:1, fontWeight:'bold'}}>Please wait</Typography>
+                </Box>
+            : 
+            list_data.length < 1 ?
+            <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
+          list_data.map((val, index) => {
+            
+            return(
+              <React.Fragment key={index}>
               <ListItem
                 alignItems="flex-start"
                 sx={{
@@ -148,50 +166,43 @@ const ListDataContainer = () => {
                   },
                   background: isSelected(index) ? '#e2e2e2' : 'inherit',
                 }}
-                onMouseDown={() => handleMouseDown(index)}
-                onMouseUp={handleMouseUp}
+                onClick={()=>handleContent(val, index)}
               >
-                {console.log(val)}
+                {/* {console.log(val.description, "This is")} */}
                 <ListItemAvatar>
                   <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
                 </ListItemAvatar>
                 <Box>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography>
-                          {val.sender_name}
-                        </Typography>
-                        {isSelected(index) ? (
-                          <>
-                            <DeleteIcon style={{ fontSize: '20px', marginRight: '-45px' }} />
-                            <ArchiveIcon style={{ fontSize: '20px' }} />
-                          </>
-                        ) : (
-                          <Typography sx={{ fontSize: '12px' }}>
-                            {val.sentDateTime}
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: 'inline' }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {val.desc}
-                        </Typography>
-                      </React.Fragment>
-                    }
-                  />
+                <ListItemText
+                primary={
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Typography sx={{ minWidth: 0, flexGrow: 1, fontWeight:val.isRead == '0' ? 'bold' : 'null'  }}>
+                      {val.sender_name}
+                    </Typography>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                      <Typography sx={{ fontSize: '11px', textAlign: 'right', fontWeight:val.isRead == '0' ? 'bold' : 'null' }}>
+                        {formatTime(val.createdDateTime)}
+                      </Typography>
+                    </Box>
+                  </Box>
+                }
+  secondary={
+    <React.Fragment>
+      <Typography
+  sx={{ display: 'inline' }}
+  component="span"
+  variant="body2"
+  color="text.primary"
+/>
+    </React.Fragment>
+  }
+/>
                 </Box>
               </ListItem>
               <Divider variant="inset" component="li" />
             </React.Fragment>
-          ))}
+            )
+          })}
         </List>
       </Box> 
       </> 

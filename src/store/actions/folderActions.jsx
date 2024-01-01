@@ -34,3 +34,25 @@ export const getAllFolders = () => async (dispatch) => {
       throw err;
     }
   };
+  export const resetLoading = () => (dispatch) => {
+    dispatch({
+      type: 'RESET_LOADING',
+    });
+
+  };
+  export const folderName = (name) => (dispatch) => {
+    // console.log(name, "FROM ACTIONS")
+    dispatch({
+      type: 'FOLDER_NAME',
+      payload:name,
+    });
+
+  };
+
+  export const content = (cont) => (dispatch) => {
+    dispatch({
+      type: 'CONTENT_SETTER',
+      payload:cont,
+    });
+
+  };
