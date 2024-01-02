@@ -1,4 +1,4 @@
-import { AppBar, Avatar, Box, Toolbar, Typography } from '@mui/material'
+import { AppBar, Avatar, Box, Button, Toolbar, Typography } from '@mui/material'
 import React, { useState } from 'react'
 import { boxStyles, iconStyles, inputStyles, internalText } from './styles/styles'
 import HelpIcon from '@mui/icons-material/Help';
@@ -35,6 +35,9 @@ const TopBar = () => {
                         SMA
                     </Typography>
                   </Box>
+                  <Button variant='contained' sx={{ml:1}}>
+                    Sign Out
+                  </Button>
               </Box>
 
             </Toolbar>

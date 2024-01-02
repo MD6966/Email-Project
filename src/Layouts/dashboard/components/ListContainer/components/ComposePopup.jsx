@@ -11,8 +11,21 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import AddToDriveIcon from '@mui/icons-material/AddToDrive';
+import { useDispatch } from 'react-redux';
+import { sendMail } from '../../../../../store/actions/mailActions';
+import { useSnackbar } from 'notistack';
+import { ReportGmailerrorred } from '@mui/icons-material';
 const options = [ 'Schedule Send'];
+const initialValues = {
+  email:'',
+  subject:'',
+  description:'',
+  attachment:''
+}
 const ComposePopup = ({onClose }) => {
+    const [formValues, setFormValues] = useState(initialValues)
+    const [attachment, setAttachment] = useState(null);
+    const [loading, setLoading] = useState(false)
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
     const [open, setOpen] = React.useState(false);
@@ -21,7 +34,8 @@ const ComposePopup = ({onClose }) => {
     const anchorRef = React.useRef(null);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const [dialog, setDialog] = React.useState(false)
-   
+    const dispatch = useDispatch()
+    const {enqueueSnackbar} = useSnackbar()
     const handleClick = () => {
       console.info(`You clicked ${options[selectedIndex]}`);
     };
@@ -62,6 +76,37 @@ const ComposePopup = ({onClose }) => {
         console.log('Sending email:', { subject, message });
         onClose();
       };
+      const handleChange = (e) => {
+        const {name, value} = e.target
+        setFormValues({
+          ...formValues,
+          [name]:value,
+          attachment: attachment,
+        })
+      }
+      const handleSubmit = (e) => {
+          e.preventDefault()
+          setLoading(true)
+          const formData = new FormData()
+          formData.append('email', formValues.email)
+          formData.append('subject', formValues.subject)
+          formData.append('description', formValues.description)
+          formData.append('ccEmail', 'bh31874@gmail.com')
+          formData.append('bccEmail', 'mudasser.dev44@gmail.com')
+          if (attachment) {
+            formData.append('attachment', attachment);
+          }
+          dispatch(sendMail(formData)).then((result) => {
+            enqueueSnackbar(result.data.message, {
+              variant:'success'
+            })
+            onClose()
+            setLoading(false)
+            setFormValues(initialValues)
+          }).catch((err) => {
+              console.log(err)
+          });
+      }
   return (
     <Box className="compose-popup"
     sx={{
@@ -84,10 +129,19 @@ const ComposePopup = ({onClose }) => {
     </Box>
     <Box sx={{mt:3, background:'#fff', height:'86%', borderRadius:'20px', display:'flex', overflow:'hidden', p:3}}>
         <Box sx={{width:'100%'}}>
-
+      <form onSubmit={handleSubmit}>
         <Box sx={{ height: '95%', overflowY: 'auto' }}>
-        <InputLabel htmlFor="to-field">To</InputLabel>
-        <TextField
+          <TextField 
+          label="To"
+          variant='standard'
+          fullWidth
+          name='email'
+          value={formValues.email}
+          onChange={handleChange}
+          required
+          type='email'
+          />
+        {/* <TextField
           id="to-field"
           variant="standard"
           fullWidth
@@ -118,29 +172,43 @@ const ComposePopup = ({onClose }) => {
             ),
           }}
           sx={{ mt: 1 }}
-        />
+        /> */}
         <TextField 
         label="subject"
         fullWidth
         variant='standard'
+        name='subject'
+        value={formValues.subject}
+        onChange={handleChange}
+        required
         />
         <TextField 
         multiline
-        rows={10}
+        rows={attachment ? 8 : 10}
         variant='standard'
+        name='description'
+        value={formValues.description}
+        onChange={handleChange}
         fullWidth
-        sx={{boder:'none'}}
+        required
+        sx={{mb:2}}
         />
+        {attachment && (
+        <Box sx={{mb:2}}>
+      <Typography >Selected File: {attachment.name}</Typography>
+        </Box>
+    )}
       </Box>
-      
         <Box sx={{display:'flex', alignItems:'center'}}>
             <Box>
         <ButtonGroup variant="contained" ref={anchorRef} aria-label="split button"
           sx={{borderRadius:'20px'}}
         
         >
-        <Button onClick={handleClick}
+        <Button
           sx={{borderRadius:'20px'}}
+          type='submit'
+          variant={loading ? 'disabled' : 'contained'}
         
         >Send</Button>
         <Button
@@ -151,7 +219,7 @@ const ComposePopup = ({onClose }) => {
           aria-haspopup="menu"
           onClick={handleToggle}
           sx={{borderRadius:'20px'}}
-
+          
         >
           <ArrowDropDownIcon />
         </Button>
@@ -194,13 +262,25 @@ const ComposePopup = ({onClose }) => {
             </Box>
             <Box sx={{ml:2}}>
                 <Box>
-                    <AttachFileIcon sx={{fontSize:'20px', mr:2, cursor:'pointer'}}/>
+                <label htmlFor="file-upload" style={{ cursor: 'pointer' }}>
+      <AttachFileIcon sx={{ fontSize: '20px', mr: 2 }} />
+    </label>
+    <input
+      type="file"
+      id="file-upload"
+      accept=".pdf, .doc, .docx, .txt" 
+      onChange={(e) => setAttachment(e.target.files[0])}
+      style={{ display: 'none' }}
+    />
+                    {/* <AttachFileIcon sx={{fontSize:'20px', mr:2, cursor:'pointer'}}/> */}
                     <InsertLinkIcon sx={{fontSize:'20px', mr:2, cursor:'pointer'}}/>
                     <EmojiEmotionsIcon sx={{fontSize:'20px', mr:2, cursor:'pointer'}}/>
                     <AddToDriveIcon sx={{fontSize:'20px', mr:2, cursor:'pointer'}}/>
                 </Box>
             </Box>
         </Box>
+      </form>
+      
         </Box>
      <Dialog open={dialog} onClose={()=>setDialog(false)} fullWidth>
         <DialogTitle>

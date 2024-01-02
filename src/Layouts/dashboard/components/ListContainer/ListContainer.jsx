@@ -22,18 +22,30 @@ import ComposePopup from './components/ComposePopup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, setList } from '../../../../store/actions/listActions';
 import { folderName, resetLoading } from '../../../../store/actions/folderActions';
+import G_L_Dialog from './components/G_L_Dialog';
+import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   // console.log(data.folders, 'DATAREDUX')
   const [selectedItem, setSelectedItem] = useState(data.folders[4]);
-  const [folderId, setFolderId] = useState(data.folders[4]) 
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dTitle, setDtitle] = useState('')
   const [name, setName] = useState('')
+  const [groups, setGroups] = useState([])
   const dispatch = useDispatch()
+  const groupsData = () => {
+    dispatch(getAllGroups()).then((result) => {
+      setGroups(result.data.payload)
+    }).catch((err) => {
+      console.log(err)
+    });
+  }
+  useEffect(()=> {
+    groupsData()
+  }, [])
   const handleComposeClick = () => {
     setComposeOpen(true);
   };
@@ -194,7 +206,7 @@ const ListContainer = () => {
           <ListItemButton onClick={handleClickG}
           sx={{
             height:'35px',
-            background:open ? '#B5DCFF' : 'none',
+            background:openG ? '#B5DCFF' : 'none',
             '&:hover': {
               backgroundColor: '#B5DCFF',
             }
@@ -213,25 +225,35 @@ const ListContainer = () => {
           Add Group
         </Button>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4, height:'35px' }}
-          onClick={()=>hnadleGroupBtn('Group')}
-          >
-            <ListItemIcon>
-              <LabelIcon />
-            </ListItemIcon>
-            <ListItemText primary={
-              <Box sx={{display:'flex', alignItems:'center'}}>
-                <Typography sx={{ml:-3}}>
-                Mudasser
-                </Typography>
-                <Add sx={{fontSize:'15px', ml:3}}
-                onClick={
-                  handleClickM
-                }
-                />
-              </Box>
-            } />
-          </ListItemButton>
+            {
+              groups[0]?.map((val)=> {
+                // console.log(val)
+                return(
+                  <>
+                  <ListItemButton sx={{ pl: 4, height:'35px' }}
+                  onClick={()=>hnadleGroupBtn('Group')}
+                  >
+                  <ListItemIcon>
+                    <LabelIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={
+                    <Box sx={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+                        <Typography sx={{ ml: -3 }}>
+                        {val.name.length > 8 ? val.name.slice(0, 8) + '...' : val.name}
+                      </Typography>
+                      <Add sx={{fontSize:'15px', ml:3}}
+                      onClick={
+                        handleClickM
+                      }
+                      />
+                    </Box>
+                  } />
+                  
+                  </ListItemButton>
+                  </>
+                )
+              })
+            }
         </List>
       </Collapse>
           </List>
@@ -241,22 +263,12 @@ const ListContainer = () => {
         </Box> */}
       </Box>
     </Box>
-    <Dialog open={dialogOpen} fullWidth onClose={handleCloseDialog}>
-        <DialogTitle>
-          New {dTitle}
-        </DialogTitle>
-        <DialogContent>
-          <TextField size='small' label={`Enter new ${name} name`} fullWidth/>
-        </DialogContent>
-        <DialogActions>
-          <Button variant='outlined'>
-            Cancel
-          </Button>
-          <Button variant='contained'>
-            Create
-          </Button>
-        </DialogActions>
-    </Dialog>
+    <G_L_Dialog 
+    open={dialogOpen}
+    close={handleCloseDialog}
+    name={dTitle}
+    group={groupsData}
+    />
     <Menu
         id="basic-menu"
         anchorEl={anchorEl}

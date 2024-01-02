@@ -1,8 +1,9 @@
 export const listContainer = {
     width:'25%',
-    height:'100vh',
+    maxHeight:'100vh',
     borderRight:'2px solid #DEDEE7',
-    padding:'15px'
+    padding:'15px',
+    overflowY:'scroll'
 }
 
 export const buttonStyles = {

@@ -3,14 +3,15 @@ import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlL
 import { useDispatch } from 'react-redux';
 import { login } from '../../../../../store/actions/emailActions';
 import { getAllFolders } from '../../../../../store/actions/folderActions';
+import { RotatingLines } from 'react-loader-spinner';
 const initialValues = {
     email:'',
     password:''
 }
 const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
-const [showFields, setShowFields] = useState(false)
-const [formValues, SetFormValues] = useState(initialValues)
+  const [loading, setLoading] = useState(false)
+  const [formValues, SetFormValues] = useState(initialValues)
 const dispatch = useDispatch()
 const handleChange = (e) => {
     const {name, value} = e.target
@@ -20,11 +21,16 @@ const handleChange = (e) => {
     })
 }
 const handleSubmit = (e) => {
+  setLoading(true)
     e.preventDefault()
     dispatch(login(formValues)).then((result) => {
         // console.log(result)
         dispatch(getAllFolders()).then((result) => {
-            console.log(result, "GET FOLDERS")
+            // console.log(result, "GET FOLDERS")
+            setLoading(false)
+            close()
+            setSelectedOption(null)
+            SetFormValues(initialValues)
         }).catch((err) => {
             console.log(err)
         });
@@ -51,9 +57,21 @@ const handleSubmit = (e) => {
           onChange={handleChange}
           required
           />
+          {
+            loading ? 
+            <RotatingLines
+                strokeColor="#040263"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="20"
+                visible={loading} 
+                />
+            :
+
           <Button variant='contained' sx={{mt:1}} size='small' type='submit'>
             Submit
           </Button>
+          }
           </form>
         </div>
   )
