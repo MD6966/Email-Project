@@ -86,8 +86,8 @@ const MainContent = () => {
                 MD
               </Avatar>
               <Box sx={{ ml: 1 }}>
-                <Typography sx={{ fontSize: '13px', mb: -0.5 }}>{content.sender_name} to you</Typography>
-                <Typography sx={{ fontWeight: 'bold' }}>{content.subject}</Typography>
+                <Typography sx={{ fontSize: '13px', mb: -0.5 }}>{content?.sender_name || ''} to you</Typography>
+                <Typography sx={{ fontWeight: 'bold' }}>{content?.subject || ''}</Typography>
               </Box>
             </Box>
             <Box sx={{ display: 'flex' }}>
@@ -111,7 +111,7 @@ const MainContent = () => {
         >
           <div
           style={{minHeight:'80%', marginBottom:5}}
-        dangerouslySetInnerHTML={{ __html: content.description }}
+        dangerouslySetInnerHTML={{ __html: content?.description || '' }}
       />
           {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography fontWeight="bold">Hey Syed!</Typography>

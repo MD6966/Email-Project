@@ -3,23 +3,23 @@ import { Box, Grid, Typography, useMediaQuery, useTheme } from '@mui/material';
 import React from 'react'
 const gridItems = [
     {
-        imgSrc: '/public/image 338.png',
+        imgSrc: '/image 338.png',
         heading: 'Unified Team Alignment',
         description: 'Ensures all team members operate within a unified platform.Email, chat, file sharing,video conferencing, and task management are seamlessly integrated, fostering consistent communication.'
     },
     {
-        imgSrc: '/public/image 339 (1).png',
+        imgSrc: '/image 339 (1).png',
         heading: 'Enhanced Productivity',
         description: 'Centralized task management promotes organization and productivity.AI powered features assist in generating content, scheduling meetings, and managing tasks efficiently.',
     },
 
     {
-        imgSrc: '/public/image 341 (1).png',
+        imgSrc: '/image 341 (1).png',
         heading: 'Time-Efficient Workflow',
         description: 'Minimizes the need to switch between multiple tools, allowing teams to concentrateon their tasks. Prioritizes important messages, optimizing time management.',
     },
     {
-        imgSrc: '/public/image 343.png',
+        imgSrc: '/image 343.png',
         heading: 'Customized Workspaces',
         description: 'Customizable workspaces allow teams to create dedicated areas for specific projects projects or teams. Workspaces ensure focus and organization,bringing teams together on shared objectives.',
     },

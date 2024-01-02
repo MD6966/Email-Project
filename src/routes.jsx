@@ -10,6 +10,7 @@ import Marketing from './Views/Marketing/Marketing';
 import CreativeAgencies from './Views/CreativeAgencies/CreativeAgencies';
 import ItAndSupport from './Views/ItAndSupport/ItAndSupport';
 import Dashboard from './Layouts/dashboard';
+import Register from './Views/Auth/Register';
 
 export default function Router() {
     const [progress, setProgress] = useState(0);
@@ -57,6 +58,10 @@ export default function Router() {
                 {
                     path:'/dashboard',
                     element: <Dashboard setprogress={setProgress}/>
+                },
+                {
+                    path:'/register',
+                    element:<Register setprogress={setProgress}/>
                 }
             ])}
         </>

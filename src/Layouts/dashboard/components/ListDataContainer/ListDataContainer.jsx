@@ -177,11 +177,11 @@ const ListDataContainer = () => {
                 primary={
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography sx={{ minWidth: 0, flexGrow: 1, fontWeight:val.isRead == '0' ? 'bold' : 'null'  }}>
-                      {val.sender_name}
+                      {val.sender_name ? val.sender_name : ''}
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                       <Typography sx={{ fontSize: '11px', textAlign: 'right', fontWeight:val.isRead == '0' ? 'bold' : 'null' }}>
-                        {formatTime(val.createdDateTime)}
+                        {formatTime(val.createdDateTime || '')}
                       </Typography>
                     </Box>
                   </Box>

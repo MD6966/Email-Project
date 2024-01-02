@@ -38,6 +38,10 @@ const Header = () => {
                         component={Link}
                         to='/dashboard'
                         >Login</Button>
+                        <Button sx={{ fontSize: '12px', fontWeight: 700, color: '#000' }}
+                        component={Link}
+                        to='/register'
+                        >SignUp</Button>
                         <Button sx={{ border: '1px solid #023A6D', padding: '12px 16px', fontSize: '12px', color: '#000', fontWeight: 700 }}>Book a Demo</Button>
                         <Button sx={{ fontSize: '12px', fontWeight: 700, color: '#000' }}>Get Sparkamis for Free</Button>
                     </Box>

@@ -67,7 +67,7 @@ const Landing = ({setprogress}) => {
                         </Box>
                     </Grid>
                     <Grid item lg={5}>
-                        <img src="/public/TrelloUICollage_4x 1.png" style={{ objectFit: 'contain', height: '70vh', width: '110%' }} alt="" />
+                        <img src="/TrelloUICollage_4x 1.png" style={{ objectFit: 'contain', height: '70vh', width: '110%' }} alt="" />
                     </Grid>
                 </Grid>
             </Box >
@@ -110,7 +110,7 @@ const Landing = ({setprogress}) => {
                         <Grid item lg={5} md={6} xs={12} sm={12}>
                             <Box>
                                 <img
-                                    src="/public/image-main.png"
+                                    src="/image-main.png"
                                     alt="abc"
                                     style={{ objectFit: 'cover', width: '100%', height: '333px' }}
 

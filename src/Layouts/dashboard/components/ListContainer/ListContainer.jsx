@@ -108,12 +108,12 @@ const ListContainer = () => {
               disablePadding
               onClick={() => handleItemClick(val)}
               sx={{
-                backgroundColor: selectedItem.folder_name === val?.folder_name ? '#B5DCFF' : 'transparent',
+                backgroundColor: selectedItem?.folder_name === val?.folder_name ? '#B5DCFF' : 'transparent' || '',
                 height: '35px',
                 cursor:'pointer',
                 px:1,
                 '&:hover': {
-                  backgroundColor: selectedItem.folder_name === val?.folder_name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)',
+                  backgroundColor: selectedItem?.folder_name === val?.folder_name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)' || '',
                 },
               }}
             >
