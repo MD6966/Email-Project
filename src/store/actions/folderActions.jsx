@@ -56,3 +56,19 @@ export const getAllFolders = () => async (dispatch) => {
     });
 
   };
+  export const logout = () => (dispatch) => {
+    dispatch({
+      type: 'LOG_OUT',
+    });
+
+  };
+
+  export const authenticate = (code) => async (dispatch) => {
+  
+    try {
+      const res = await api.post('api/outlook-authenticate', code);
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

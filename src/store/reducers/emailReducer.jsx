@@ -19,6 +19,13 @@ const emailReducer = (state=initialState, action) => {
                 isAuthenticatedUser:true
             };
         };
+        case 'LOG_OUT': {
+            localStorage.removeItem('token');
+            return {
+               token:null,
+               isAuthenticatedUser:false
+            };
+        };
         default :  return state
         
     }

@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { login } from '../../../../../store/actions/emailActions';
-import { getAllFolders } from '../../../../../store/actions/folderActions';
+import { authenticate, getAllFolders } from '../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
+import { useParams } from 'react-router';
 const initialValues = {
     email:'',
     password:''
@@ -12,7 +13,21 @@ const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(false)
   const [formValues, SetFormValues] = useState(initialValues)
-const dispatch = useDispatch()
+  const currentUrl = new URL(window.location.href);
+  const codeParam = currentUrl.searchParams.get('code');
+  const dispatch = useDispatch()
+  if (codeParam) {
+    const formData = new FormData()
+    formData.append('code', codeParam)
+    dispatch(authenticate(formData)).then((result) => {
+      console.log(result)
+    }).catch((err) => {
+    console.log(err)    
+    });
+
+  } else {
+    console.log('Code parameter is not present in the URL');
+  }
 const handleChange = (e) => {
     const {name, value} = e.target
     SetFormValues({
@@ -24,7 +39,8 @@ const handleSubmit = (e) => {
   setLoading(true)
     e.preventDefault()
     dispatch(login(formValues)).then((result) => {
-        // console.log(result)
+      console.log(result, 'LOGIN RESULT')
+      if(result.data.payload.user.outlook_access_token) {
         dispatch(getAllFolders()).then((result) => {
             // console.log(result, "GET FOLDERS")
             setLoading(false)
@@ -34,7 +50,17 @@ const handleSubmit = (e) => {
         }).catch((err) => {
             console.log(err)
         });
+      }
+      else{
+        setLoading(false)
+        SetFormValues(initialValues)
+        setSelectedOption(null)
+        // alert('NO TOKEN')
+        close()
+        window.location.href = import.meta.env.VITE_REDIRECT_URL;
+      }
     }).catch((err) => {
+        setLoading(false)
         console.log(err)
     });
 }

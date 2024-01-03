@@ -8,6 +8,8 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
+  IconButton,
+  InputAdornment,
   TextField,
   Typography,
   styled,
@@ -25,10 +27,12 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail } from '../../../../store/actions/mailActions';
+import { deleteMail, replyMail } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
+import { Close } from '@mui/icons-material';
+import SkeletonComponent from './components/SkeletonComponent';
 
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -46,21 +50,29 @@ const menuData = [
   { icon: <CallIcon />, title: 'Call' },
   { icon: <VideoCallIcon />, title: 'Video' },
 ];
-
+const initialValues = {
+  reply_email:'',
+  ccEmail:'',
+  bccEmail:'',
+  description:'',
+}
 const MainContent = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [text, setText] = useState('');
   const [editorVisible, setEditorVisible] = useState(false);
   const [open, setOpen] = useState(false)
   const [forwardOpen, setForwardOpen] = useState(false)
+  const [formValues, setFormValues] = useState(initialValues)
+  const [showCcText, setShowCc] = useState(true);
+  const [showBccText, setShowBcc] = useState(true);
+  const [loading, setloading]= useState(false)
   const content = useSelector((state)=>state.folder.content)
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
-  // console.log(content, "This")
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -87,18 +99,59 @@ const MainContent = () => {
       console.log(err)
     });
   }
-  const [showCc, setShowCc] = useState(false);
-  const [showBcc, setShowBcc] = useState(false);
-
+  const handleChangeFields = (e)=> {
+    const {name, value} = e.target
+    setFormValues({
+      ...formValues,
+      [name]:value
+    })
+  }
   const handleCcClick = () => {
+    setShowCc(false);
+  };
+  const handleCloseCC = () => {
     setShowCc(true);
-  };
-
+  }
+  const handleCloseBCC = () => {
+    setShowBcc(true)
+  }
   const handleBccClick = () => {
-    setShowBcc(true);
+    setShowBcc(false);
   };
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setloading(true)
+    const formData = new FormData()
+    formData.append('message_id',content.mail_id)
+    formData.append('reply_email', formValues.reply_email)
+    if(formValues.bccEmail)
+    {
+      formData.append('bccEmail', formValues.bccEmail)
+    }
+    if(formValues.ccEmail)
+    {
+      formData.append('ccEmail', formValues.ccEmail)
+    }
+    formData.append('description', text)
+    dispatch(replyMail(formData)).then((result) => {
+      setloading(false)
+      enqueueSnackbar(result.data.message, {
+        variant:'success'
+      })
+      setFormValues(initialValues)
+      setEditorVisible(false);
+      setText('')
+
+    }).catch((err) => {
+      setloading(false)
+      console.log(err)
+    });
+
+  }
   return (
     <StyledRoot>
+      {
+        content ?
       <Box
         sx={{
           width: '50vw',
@@ -165,11 +218,86 @@ const MainContent = () => {
           </Box> */}
           {editorVisible && (
             <Card sx={{mt:4}}>
-              <TextField label="To" variant='standard' fullWidth />
-              <Editor value={text} onTextChange={(e) => setText(e.htmlValue)} style={{ height: '120px' }} />
-              <Button variant="outlined" onClick={handleEditorSubmit} sx={{ mt: 2 }}>
+              <form onSubmit={handleSubmit}>
+              <TextField label="To" variant='standard' fullWidth
+              name='reply_email'
+              value={formValues.reply_email}
+              onChange={handleChangeFields}
+              required
+              sx={{mb:2}} 
+               InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {showCcText &&
+                    <Typography sx={{cursor:'pointer', '&:hover':{textDecoration:'underline'}}}
+                    onClick={handleCcClick}
+                    >
+                      Cc/ 
+                    </Typography>
+                    }
+                    {
+                      showBccText &&
+                    <Typography sx={{cursor:'pointer', '&:hover':{textDecoration:'underline'}}}
+                    onClick={handleBccClick}
+                    
+                    >
+                      Bcc 
+                    </Typography>
+                    }
+                  </InputAdornment>
+                ),
+              }}
+              />
+              {
+                !showCcText &&
+              <TextField label="Cc Email" fullWidth variant='standard' sx={{mb:2}}
+              name='ccEmail'
+              value={formValues.ccEmail}
+              onChange={handleChangeFields}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleCloseCC}>
+                      <Close />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }} 
+              />
+              }
+              {
+                !showBccText &&
+                <TextField label="Bcc Email" fullWidth variant='standard' sx={{mb:2}}
+                name='bccEmail'
+                value={formValues.bccEmail}
+                onChange={handleChangeFields}
+
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleCloseBCC}>
+                        <Close />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                />
+              }
+              <Editor value={text} onTextChange={(e) => setText(e.htmlValue)} style={{ height: '120px', }}/>
+              {
+                loading ? 
+                <RotatingLines
+                strokeColor="#040263"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="30"
+                visible={loading} 
+                /> :
+              <Button variant="outlined" type='submit' sx={{ mt: 2 }}>
                 Submit
               </Button>
+              }
+              </form>
             </Card>
           )}
           {!editorVisible && (
@@ -193,7 +321,9 @@ const MainContent = () => {
             </Box>
           )}
         </Box>
-      </Box>
+      </Box> :
+      <SkeletonComponent />
+      }
       <Menu
         id="basic-menu"
         anchorEl={anchorEl}

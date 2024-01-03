@@ -51,6 +51,17 @@ const folderReducer = (state=initialState, action) => {
         case 'RESET_STATE': {
             return initialState;
         }
+        case 'LOG_OUT': {
+            localStorage.removeItem('token');
+            return {
+               folders:[],
+               folderData:[],
+               folder_name:'',
+               content:''
+
+            }; 
+        }
+
         default :  return state
         
     }

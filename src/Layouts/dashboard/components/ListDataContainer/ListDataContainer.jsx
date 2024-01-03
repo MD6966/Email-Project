@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Skeleton, Typography } from '@mui/material';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -41,7 +41,7 @@ const ListDataContainer = () => {
     setSelectedItem(index)
     setSelectedContent(content)
   }
-  // console.log(selectedContent)
+  // console.log(list_data)
   return (
     <Box sx={listDataContainer}>
       {/* {list_type === 'Inbox' ?
@@ -126,7 +126,10 @@ const ListDataContainer = () => {
     <>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
-          {folder_name}
+          {folder_name ?
+          folder_name:
+          <Skeleton variant='text' width={50} />  
+        }
         </Typography>
         <Box>
           <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
@@ -139,7 +142,7 @@ const ListDataContainer = () => {
         </Typography> */}
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
           {
-            isLoading ? 
+            (isLoading && list_data.length >0) ? 
             <Box sx={{display:'flex', alignItems:'center', justifyContent:'center'}}>
             <RotatingLines
                 strokeColor="#040263"
