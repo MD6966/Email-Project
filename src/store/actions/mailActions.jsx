@@ -34,3 +34,43 @@ api.interceptors.request.use(
       throw err;
     }
   };
+
+  export const deleteMail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-delete-email', body);
+      dispatch({
+        type: 'DELETE_EMAIL',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const forwardMail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-forward-email', body);
+      dispatch({
+        type: 'DELETE_EMAIL',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const replyMail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-reply-email', body);
+      dispatch({
+        type: 'REPLY_EMAIL',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

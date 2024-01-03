@@ -3,7 +3,12 @@ import {
   Avatar,
   Box,
   Button,
+  Card,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Grid,
+  TextField,
   Typography,
   styled,
 } from '@mui/material';
@@ -19,7 +24,11 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteMail } from '../../../../store/actions/mailActions';
+import { RotatingLines } from 'react-loader-spinner';
+import { useSnackbar } from 'notistack';
+import ForwardEmail from './components/ForwardEmail';
 
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -42,8 +51,12 @@ const MainContent = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [text, setText] = useState('');
   const [editorVisible, setEditorVisible] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [forwardOpen, setForwardOpen] = useState(false)
   const content = useSelector((state)=>state.folder.content)
-  console.log(content, "This")
+  const dispatch = useDispatch()
+  const {enqueueSnackbar} = useSnackbar()
+  // console.log(content, "This")
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -60,6 +73,30 @@ const MainContent = () => {
     setEditorVisible(false);
   };
 
+  const handleDelete = () => {
+    setOpen(true)
+    const formData = new FormData()
+    formData.append('message_id', content?.mail_id || '')
+    formData.append("mail_id", content.id)
+    dispatch(deleteMail(formData)).then((result) => {
+      enqueueSnackbar(result.data.message, {
+        variant:'success'
+      })
+      setOpen(false)
+    }).catch((err) => {
+      console.log(err)
+    });
+  }
+  const [showCc, setShowCc] = useState(false);
+  const [showBcc, setShowBcc] = useState(false);
+
+  const handleCcClick = () => {
+    setShowCc(true);
+  };
+
+  const handleBccClick = () => {
+    setShowBcc(true);
+  };
   return (
     <StyledRoot>
       <Box
@@ -92,8 +129,10 @@ const MainContent = () => {
             </Box>
             <Box sx={{ display: 'flex' }}>
               <ReplyIcon sx={{ mr: 2 }} />
-              <DeleteIcon sx={{ mr: 2 }} />
-              <ReplyIcon sx={{ mr: 2, transform: 'scaleX(-1)' }} />
+              <DeleteIcon sx={{ mr: 2, cursor:'pointer' }} onClick={handleDelete}/>
+              <ReplyIcon sx={{ mr: 2, transform: 'scaleX(-1)', cursor:'pointer' }}
+              onClick={()=>setForwardOpen(true)}
+              />
               <StarBorderIcon sx={{ mr: 2 }} />
               <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer' }} onClick={handleClick} />
             </Box>
@@ -125,12 +164,13 @@ const MainContent = () => {
             </Typography>
           </Box> */}
           {editorVisible && (
-            <Box sx={{mt:4}}>
+            <Card sx={{mt:4}}>
+              <TextField label="To" variant='standard' fullWidth />
               <Editor value={text} onTextChange={(e) => setText(e.htmlValue)} style={{ height: '120px' }} />
               <Button variant="outlined" onClick={handleEditorSubmit} sx={{ mt: 2 }}>
                 Submit
               </Button>
-            </Box>
+            </Card>
           )}
           {!editorVisible && (
             <Box sx={{mt:4}}>
@@ -145,7 +185,8 @@ const MainContent = () => {
               <Button
                 variant="outlined"
                 endIcon={<ReplyIcon sx={{ transform: 'scaleX(-1)' }} />}
-                onClick={() => {} }
+                onClick={()=>setForwardOpen(true)}
+
               >
                 Forward
               </Button>
@@ -190,6 +231,29 @@ const MainContent = () => {
             }
        </Grid>
       </Menu>
+       <Dialog open={open}>
+        <DialogTitle>Deleting please wait...</DialogTitle>
+        <DialogContent>
+          <Box sx={{
+            display:'flex',
+            justifyContent:'center',
+            alignItems:'center'
+          }}>
+             <RotatingLines
+                strokeColor="#040263"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="30"
+                visible={true} 
+                />
+          </Box>
+        </DialogContent>
+       </Dialog>
+       <ForwardEmail 
+       open={forwardOpen}
+       close={()=>setForwardOpen(false)}
+       id={content?.mail_id || ''}
+       />
     </StyledRoot>
   );
 };
