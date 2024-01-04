@@ -1,88 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { login } from '../../../../../store/actions/emailActions';
 import { authenticate, getAllFolders } from '../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
-import { useParams } from 'react-router';
-const initialValues = {
-    email:'',
-    password:''
-}
+import { useLocation } from 'react-router';
+
 const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(false)
-  const [formValues, SetFormValues] = useState(initialValues)
   const currentUrl = new URL(window.location.href);
   const codeParam = currentUrl.searchParams.get('code');
   const dispatch = useDispatch()
-  if (codeParam) {
-    const formData = new FormData()
-    formData.append('code', codeParam)
-    dispatch(authenticate(formData)).then((result) => {
-      console.log(result)
-    }).catch((err) => {
-    console.log(err)    
-    });
-
-  } else {
-    console.log('Code parameter is not present in the URL');
+  const {state} = useLocation()
+  if(state) {
+    dispatch(getAllFolders()).then((result) => {
+      setLoading(false)
+      close()
+      setSelectedOption(null)
+  }).catch((err) => {
+      console.log(err)
+  });
   }
-const handleChange = (e) => {
-    const {name, value} = e.target
-    SetFormValues({
-        ...formValues,
-        [name]:value
-    })
-}
-const handleSubmit = (e) => {
-  setLoading(true)
-    e.preventDefault()
-    dispatch(login(formValues)).then((result) => {
-      console.log(result, 'LOGIN RESULT')
-      if(result.data.payload.user.outlook_access_token) {
-        dispatch(getAllFolders()).then((result) => {
-            // console.log(result, "GET FOLDERS")
-            setLoading(false)
-            close()
-            setSelectedOption(null)
-            SetFormValues(initialValues)
-        }).catch((err) => {
-            console.log(err)
-        });
-      }
-      else{
-        setLoading(false)
-        SetFormValues(initialValues)
-        setSelectedOption(null)
-        // alert('NO TOKEN')
-        close()
-        window.location.href = import.meta.env.VITE_REDIRECT_URL;
-      }
-    }).catch((err) => {
-        setLoading(false)
-        console.log(err)
-    });
-}
+  // useEffect(() => {
+  //   if (codeParam) {
+  //     const formData = new FormData()
+  //     formData.append('code', codeParam)
+  //     dispatch(authenticate(formData)).then((result) => {
+  //       dispatch(getAllFolders()).then((result) => {
+  //         setLoading(false)
+  //         close()
+  //         setSelectedOption(null)
+  //         SetFormValues(initialValues)
+  //         navigate('/dashboard', { replace: true });
+  //     }).catch((err) => {
+  //         console.log(err)
+  //     });
+  //     }).catch((err) => {
+  //       setLoading(false)
+  //       console.log(err);
+  //     });
+  //   } else {
+  //     console.log('Code parameter is not present in the URL');
+  //   }
+  // }, [codeParam]); 
+
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
+  const handleOptionClick = (type) => {
+    // if(type=='Outlook') {
+    //   window.location.href = import.meta.env.VITE_REDIRECT_URL;
+    // }
+  }
   const renderFields = (
         <div>
-          <Typography variant='h6' fontWeight="bold">{selectedOption}</Typography>
-          <form onSubmit={handleSubmit}>
-          <TextField label="Email" fullWidth size="small" sx={{my:1}} 
-          name="email"
-          value={formValues.email}
-          onChange={handleChange}
-          required
-          />
-          <TextField label="Password" fullWidth type="password" size='small' 
-          name="password"
-          value={formValues.password}
-          onChange={handleChange}
-          required
-          />
           {
             loading ? 
             <RotatingLines
@@ -94,11 +65,13 @@ const handleSubmit = (e) => {
                 />
             :
 
-          <Button variant='contained' sx={{mt:1}} size='small' type='submit'>
-            Submit
+          <Button variant='contained' sx={{mt:1}} size='small'
+          onClick={()=>handleOptionClick(selectedOption)}
+          >
+            Sign In with {selectedOption}
           </Button>
           }
-          </form>
+          
         </div>
   )
   return (

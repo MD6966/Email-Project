@@ -36,7 +36,7 @@ const Header = () => {
 
                         <Button sx={{ fontSize: '12px', fontWeight: 700, color: '#000' }}
                         component={Link}
-                        to='/dashboard'
+                        to='/login'
                         >Login</Button>
                         <Button sx={{ fontSize: '12px', fontWeight: 700, color: '#000' }}
                         component={Link}

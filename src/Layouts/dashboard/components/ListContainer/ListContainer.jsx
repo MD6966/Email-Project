@@ -26,7 +26,7 @@ import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
-  // console.log(data.folders, 'DATAREDUX')
+  // console.log(data.folders, 'DATAREDUX+++++++')
   const [selectedItem, setSelectedItem] = useState(data.folders[4]);
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);

@@ -43,10 +43,11 @@ const Register = ({ setprogress }) => {
   const textStyles = {
     color: '#FFF',
     fontFamily: 'Inter',
-    fontSize: '24px',
+    fontSize: '44px',
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
+    textAlign:'center'
   }
   const subText = {
     color: '#FFF',
@@ -55,7 +56,8 @@ const Register = ({ setprogress }) => {
     fontStyle: 'normal',
     fontWeight: 400,
     lineHeight: '19px',
-    marginTop:'5px'
+    marginTop:'5px',
+    width:'50%'
   }
   const textFieldStyle = {
     backgroundColor: "#8D8CD2",
@@ -77,6 +79,9 @@ const Register = ({ setprogress }) => {
     fontStyle: 'normal',
     fontWeight: 700,
     lineHeight: 'normal',
+    marginTop:'20px',
+    height:'50px',
+    width:'150px'
   }
   const handleClick = () => {
     navigate('/')
@@ -94,30 +99,48 @@ const Register = ({ setprogress }) => {
         </Typography>
         <Box sx={{display:'flex', mt:5, height:'100%',}}>
             <Box flex={1}
-            sx={{height:'70%',borderRight:'2px solid #B2B9F5', pr:5}}
+            sx={{height:'70%', px:5, mt:2}}
             >
-                <Typography style={textStyles}>
-                Sign in with your email
+                <Typography sx={{mb:2}} style={textStyles}>
+                Register
                 </Typography>
-                <Typography style={subText}>
-                Sign in with your email for instant entry into sparkamis
-                powerful collaboration hub. Elevate your communication
-                and productivity experience effortlessly.
-                </Typography>
+               
                 <TextField 
                 fullWidth
                style={textFieldStyle}
+               label="Name"
+               placeholder='Write full name here'
+               sx={{
+                mb:2,
+                "& fieldset": { border: 'none' },
+              }}
+              InputLabelProps={{
+                style: {color:'#fff'},
+              }}
+                />
+                <TextField 
+                fullWidth
+               style={textFieldStyle}
+               label="Email"
                placeholder='Write email here'
                sx={{
+                mb:2,
                 "& fieldset": { border: 'none' },
+              }}
+              InputLabelProps={{
+                style: {color:'#fff'},
               }}
                 />
                  <TextField 
                 fullWidth
+                label="password"
                style={textFieldStyle}
                placeholder='********'
                sx={{
                 "& fieldset": { border: 'none' },
+              }}
+              InputLabelProps={{
+                style: {color:'#fff'},
               }}
                 />
                 <Box style={center} >
@@ -125,51 +148,8 @@ const Register = ({ setprogress }) => {
                 variant='contained'
                 style={btnStyles}
                 >Sign In</Button>
-                <i style={{marginTop:'8px'}}><b>Or</b></i>
-                <Typography sx={{fontFamily:'inter'}}> Sign in with</Typography>
-                <Box sx={{mt:2, display:'flex'}}>
-                    <Avatar sx={{mr:1, background:'#d9d9d9',
-                    '& img': {
-                        width: '22px',
-                        height: '26px', 
-                      },
-                }} src="/google.png"/>
-                    <Avatar 
-                    src='/fb.png'
-                    sx={{mr:1, background:'#d9d9d9',
-                    '& img': {
-                        width: '15px',
-                        height: '30px', 
-                      },
-                }}/>
-                    <Avatar sx={{mr:1, background:'#d9d9d9'}}>
-                        S
-                    </Avatar>
-
-                </Box>
-                </Box>
-            </Box>
-            <Box flex={1} sx={{pl:4}}>
-                <Typography style={textStyles}>Unified Workspace</Typography>
-                <Typography style={subText}>
-                Experience unparalleled cohesion and efficiency with
-                Sparkamis's Unified Workspace, where communication, 
-                collaboration, and productivity seamlessly converge
-                for teams to thrive. 
-                </Typography>
-                <Box sx={{px:5, mt:4}}>
-                    <Box sx={{p:2, background:'#8D8CD2', borderRadius:'10px', display:'flex', alignItems:'center'}}>
-                        <Group sx={{mr:1, color:'#272690'}}/>
-                        <Typography sx={{fontWeight:'bold', color:'#272690'}}>
-                            <i>Create new workspace</i>
-                        </Typography>
-                    </Box>
-                    <Box style={center}>
-                        <Button
-                variant='contained'
-                style={btnStyles}
-                >Sign In</Button>
-                </Box>
+                
+                
                 </Box>
             </Box>
         </Box>

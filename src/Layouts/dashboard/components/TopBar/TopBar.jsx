@@ -8,6 +8,8 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { logout } from '../../../../store/actions/folderActions';
 import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router';
+import SettingsPage from './components/SettingsPage';
 const TopBar = () => {
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()

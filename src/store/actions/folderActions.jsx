@@ -24,6 +24,7 @@ export const getAllFolders = () => async (dispatch) => {
   
     try {
       const res = await api.post('api/outlook-folders');
+      // console.log(res, "RESPONSE OF FOLDER SUCCESSSS ")
       dispatch({
         type: 'FOLDER_SUCCESS',
         payload: res.data.payload,
