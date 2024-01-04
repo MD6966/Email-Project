@@ -33,7 +33,7 @@ const SettingsPage = () => {
         console.log(err);
       });
     } else {
-      console.log('Code parameter is not present in the URL');
+      console.log('Code parameter is not present in the URL FROM SETTINGS',);
     }
   }, [codeParam]);
   const renderFields = (

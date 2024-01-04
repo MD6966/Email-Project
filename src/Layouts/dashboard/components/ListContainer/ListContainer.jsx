@@ -1,5 +1,5 @@
 import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
 import { Add, Edit, History, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
@@ -21,13 +21,13 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, setList } from '../../../../store/actions/listActions';
-import { folderName, resetLoading } from '../../../../store/actions/folderActions';
+import { authenticate, folderName, getAllFolders, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
+import DialogLoader from './components/DialogLoader';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
-  // console.log(data.folders, 'DATAREDUX+++++++')
-  const [selectedItem, setSelectedItem] = useState(data.folders[4]);
+  const [selectedItem, setSelectedItem] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -36,6 +36,8 @@ const ListContainer = () => {
   const [name, setName] = useState('')
   const [groups, setGroups] = useState([])
   const dispatch = useDispatch()
+  const currentUrl = new URL(window.location.href);
+  const codeParam = currentUrl.searchParams.get('code');
   const groupsData = () => {
     dispatch(getAllGroups()).then((result) => {
       setGroups(result.data.payload)
@@ -64,6 +66,11 @@ const ListContainer = () => {
   const handleClickG = () => {
     setOpenG(!openG);
   };
+  useEffect(() => {
+    if (data.folders.length > 0) {
+      setSelectedItem(data.folders[4]); 
+    }
+  }, [data.folders]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openM = Boolean(anchorEl);
   const handleClickM = (event) => {
@@ -91,7 +98,30 @@ const ListContainer = () => {
     dispatch(getListData(selectedItem?.folder_id))
     dispatch(resetLoading())
   },[selectedItem])
-  // console.log(selectedItem.folder_name, "Selected")
+  useLayoutEffect(()=> {
+    dispatch(getAllFolders())
+  },[])
+  useEffect(() => {
+    if (codeParam) {
+      const formData = new FormData()
+      formData.append('code', codeParam)
+      dispatch(authenticate(formData)).then((result) => {
+        console.log('AUTH RESULT', result)
+        dispatch(getAllFolders()).then((result) => {
+
+          console.log(result, "RESULT AFTER AUTH")
+          navigate('/dashboard', { replace: true });
+      }).catch((err) => {
+          console.log(err)
+      });
+      }).catch((err) => {
+        console.log(err);
+      });
+    } else {
+      console.log('Code parameter is not present in the URL');
+    }
+  }, [codeParam]); 
+  // console.log(selectedItem.folder_id, "Selected")
   return (
     <>
     <Box sx={listContainer} ref={topRef}>
@@ -282,6 +312,7 @@ const ListContainer = () => {
         <MenuItem onClick={handleClose}>My account</MenuItem>
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
+      <DialogLoader />
     </>
   );
 }

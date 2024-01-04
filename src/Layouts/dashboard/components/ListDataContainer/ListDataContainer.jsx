@@ -27,6 +27,11 @@ const ListDataContainer = () => {
   const isSelected = (index) => {
     return selectedItem === index;
   };
+  useEffect(() => {
+    if (list_data.length > 0 && !selectedContent) {
+      setSelectedContent(list_data[0]);
+    }
+  }, [list_data, selectedContent]);
   useEffect(()=> {
     dispatch(content(selectedContent))
   }, [selectedContent])

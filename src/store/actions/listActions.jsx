@@ -39,7 +39,6 @@ export const setList = (list_type) => (dispatch) => {
         type: 'FOLDER_ID_SUCCESS',
         payload: res.data.payload,
       });
-  
       return res ;
     } catch (err) {
       throw err;

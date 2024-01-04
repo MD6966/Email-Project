@@ -11,38 +11,7 @@ const SettingsDialog = ({open,close}) => {
   const currentUrl = new URL(window.location.href);
   const codeParam = currentUrl.searchParams.get('code');
   const dispatch = useDispatch()
-  const {state} = useLocation()
-  if(state) {
-    dispatch(getAllFolders()).then((result) => {
-      setLoading(false)
-      close()
-      setSelectedOption(null)
-  }).catch((err) => {
-      console.log(err)
-  });
-  }
-  // useEffect(() => {
-  //   if (codeParam) {
-  //     const formData = new FormData()
-  //     formData.append('code', codeParam)
-  //     dispatch(authenticate(formData)).then((result) => {
-  //       dispatch(getAllFolders()).then((result) => {
-  //         setLoading(false)
-  //         close()
-  //         setSelectedOption(null)
-  //         SetFormValues(initialValues)
-  //         navigate('/dashboard', { replace: true });
-  //     }).catch((err) => {
-  //         console.log(err)
-  //     });
-  //     }).catch((err) => {
-  //       setLoading(false)
-  //       console.log(err);
-  //     });
-  //   } else {
-  //     console.log('Code parameter is not present in the URL');
-  //   }
-  // }, [codeParam]); 
+   
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);

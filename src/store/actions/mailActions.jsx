@@ -74,3 +74,17 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  
+  export const scheduleEmail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/schedule-email', body);
+      dispatch({
+        type: 'SCHEDULE_EMAIL',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

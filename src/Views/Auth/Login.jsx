@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { login } from '../../store/actions/emailActions';
 import { useDispatch } from 'react-redux';
+import { useSnackbar } from 'notistack';
 const initialValues = {
     email:'',
     password:''
@@ -13,6 +14,7 @@ const Login = ({ setprogress }) => {
   const [formValues, SetFormValues] = useState(initialValues)
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
+  const {enqueueSnackbar} = useSnackbar()
   const handleChange = (e) => {
     const {name, value} = e.target
     SetFormValues({
@@ -33,7 +35,10 @@ const Login = ({ setprogress }) => {
         }
         // console.log(result.data.payload.user.outlook_access_token, "LOGIN RESULT")
       }).catch((err) => {
-        console.log(err)
+        setLoading(false)
+        enqueueSnackbar(err.response.data.message, {
+            variant:'error'
+        })
       });
     //   dispatch(login(formValues)).then((result) => {
     //     console.log(result, 'LOGIN RESULT')
@@ -152,7 +157,6 @@ const Login = ({ setprogress }) => {
             sx={{height:'70%',borderRight:'2px solid #B2B9F5', pr:5}}
             >
                 <form onSubmit={handleSubmit}>
-
                 <Typography style={textStyles}>
                 Sign in with your email
                 </Typography>
@@ -167,6 +171,8 @@ const Login = ({ setprogress }) => {
                 onChange={handleChange}
                 fullWidth
                 style={textFieldStyle}
+                required
+                type='email'
                 placeholder='Write email here'
                 sx={{
                     "& fieldset": { border: 'none' },
@@ -178,6 +184,7 @@ const Login = ({ setprogress }) => {
                  onChange={handleChange}
                 fullWidth
                 style={textFieldStyle}
+                required
                placeholder='********'
                sx={{
                 "& fieldset": { border: 'none' },
