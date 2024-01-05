@@ -157,7 +157,7 @@ const ListDataContainer = () => {
         </Typography> */}
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
           {
-            (isLoading && list_data.length >0) ? 
+            (isLoading) ? 
             <Box sx={{display:'flex', alignItems:'center', justifyContent:'center'}}>
             <RotatingLines
                 strokeColor="#040263"
