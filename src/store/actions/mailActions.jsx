@@ -88,3 +88,16 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  export const markAsRead = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-read-email', body);
+      dispatch({
+        type: 'READ_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

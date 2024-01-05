@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
+import { markAsRead } from '../../../../store/actions/mailActions';
 const ListDataContainer = () => {
  
 
@@ -45,7 +46,16 @@ const ListDataContainer = () => {
   const handleContent = (content, index) => {
     setSelectedItem(index)
     setSelectedContent(content)
+    const formData = new FormData()
+    formData.append('message_id', content.mail_id)
+    formData.append('mail_id',content.id )
+    dispatch(markAsRead(formData)).then((result) => {
+      console.log(result)
+    }).catch((err) => {
+      console.log(err)
+    });
   }
+  
   // console.log(list_data)
   return (
     <Box sx={listDataContainer}>

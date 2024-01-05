@@ -1,17 +1,45 @@
 import { Close, Group } from '@mui/icons-material';
 import { Avatar, Box, Button, TextField, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { register } from '../../store/actions/emailActions';
 
+const initialValues = {
+  name:'',
+  email:'',
+  password:''
+}
 const Register = ({ setprogress }) => {
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [formValues, setFormValues] = useState(initialValues)
   useEffect(() => {
     setprogress(20);
     setTimeout(() => {
       setprogress(100);
     }, 1000);
   }, []);
-
+  const handleChange = (e) => {
+    const {name, value} = e.target
+    setFormValues({
+      ...formValues,
+      [name]:value
+    })
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const formData = new FormData()
+    formData.append('name',formValues.name)
+    formData.append('email', formValues.email)
+    formData.append('password', formValues.password)
+    dispatch(register(formData)).then((result) => {
+      console.log(result)
+    }).catch((err) => {
+      console.log(err)
+    });
+    console.log(formValues)
+  }
   const containerStyle = {
     backgroundImage: 'url("/register-bg.png")',
     backgroundSize: 'cover',
@@ -97,6 +125,7 @@ const Register = ({ setprogress }) => {
         <Typography style={headingStyles}>
         Welcome to Sparkamis 👋
         </Typography>
+        <form onSubmit={handleSubmit}>
         <Box sx={{display:'flex', mt:5, height:'100%',}}>
             <Box flex={1}
             sx={{height:'70%', px:5, mt:2}}
@@ -106,6 +135,9 @@ const Register = ({ setprogress }) => {
                 </Typography>
                
                 <TextField 
+                name="name"
+                value={formValues.name}
+                onChange={handleChange}
                 fullWidth
                style={textFieldStyle}
                label="Name"
@@ -119,6 +151,9 @@ const Register = ({ setprogress }) => {
               }}
                 />
                 <TextField 
+                name="email"
+                value={formValues.email}
+                onChange={handleChange}
                 fullWidth
                style={textFieldStyle}
                label="Email"
@@ -132,6 +167,9 @@ const Register = ({ setprogress }) => {
               }}
                 />
                  <TextField 
+                 name="password"
+                 value={formValues.password}
+                 onChange={handleChange}
                 fullWidth
                 label="password"
                style={textFieldStyle}
@@ -147,12 +185,14 @@ const Register = ({ setprogress }) => {
                 <Button
                 variant='contained'
                 style={btnStyles}
+                type='submit'
                 >Sign In</Button>
                 
                 
                 </Box>
             </Box>
         </Box>
+        </form>
       </Box>
     </Box>
   );

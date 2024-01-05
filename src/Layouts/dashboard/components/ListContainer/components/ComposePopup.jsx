@@ -12,10 +12,14 @@ import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import AddToDriveIcon from '@mui/icons-material/AddToDrive';
 import { useDispatch } from 'react-redux';
-import { sendMail } from '../../../../../store/actions/mailActions';
+import { scheduleEmail, sendMail } from '../../../../../store/actions/mailActions';
 import { useSnackbar } from 'notistack';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content'
 import { ReportGmailerrorred } from '@mui/icons-material';
+import { RotatingLines } from 'react-loader-spinner';
 const options = [ 'Schedule Send'];
+const MySwal = withReactContent(Swal)
 const initialValues = {
   email:'',
   subject:'',
@@ -26,6 +30,7 @@ const ComposePopup = ({onClose }) => {
     const [formValues, setFormValues] = useState(initialValues)
     const [attachment, setAttachment] = useState(null);
     const [loading, setLoading] = useState(false)
+    const [loader, setLoader] = useState(false)
     const [subject, setSubject] = useState('');
     const [message, setMessage] = useState('');
     const [open, setOpen] = React.useState(false);
@@ -36,13 +41,76 @@ const ComposePopup = ({onClose }) => {
     const [dialog, setDialog] = React.useState(false)
     const dispatch = useDispatch()
     const {enqueueSnackbar} = useSnackbar()
+    const [selectedItem, setSelectedItem] = React.useState(null);
+    const [selectedDateTime , setSelectedDateTime] = useState(null)
+    const generateDateOptions = () => {
+      const options = [];
+      const currentDate = new Date();
+  
+      for (let i = 1; i <= 3; i++) {
+        const nextDate = new Date(currentDate);
+        nextDate.setDate(currentDate.getDate() + i);
+        
+        const option = {
+          title: i === 1 ? "Tomorrow morning" : i === 2 ? "Tomorrow evening" : `In ${i} days`,
+          time: nextDate.toLocaleString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+          }),
+        };
+  
+        options.push(option);
+      }
+      return options;
+    }
+    const dateOptions = generateDateOptions();
     const handleClick = () => {
       console.info(`You clicked ${options[selectedIndex]}`);
     };
-  
-    const handleMenuItemClick = () => {
-      setOpen(false);
-      setDialog(true)
+    
+    const isValidEmail = (email) => {
+      // You can implement your own email validation logic here
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+    const handleMenuItemClick = (option) => {
+      console.log(option)
+      if(formValues.email.length < 1) {
+        enqueueSnackbar('Please enter at least one recipient', {
+          variant:'info'
+        })
+      }
+      else if (!isValidEmail(formValues.email)) {
+        // console.log(formValues.email)
+        MySwal.fire({
+          icon: "error",
+          title: "Oops...",
+          html: `It looks like <b>${formValues.email}</b> is not a valid email.`,
+
+        })
+      }
+      else if(formValues.subject.length < 1) {
+        enqueueSnackbar('Please enter subject of email', {
+          variant:'info'
+        })
+      }
+      else if(formValues.description.length < 1) {
+        enqueueSnackbar('Please enter message', {
+          variant:'info'
+        })
+      }
+      else{
+        setOpen(false);
+        setDialog(true)
+        const selectedOption = dateOptions[selectedItem];
+        if (selectedOption) {
+          setSelectedDateTime(selectedOption.time);
+    }
+      }
     };
   
     const handleToggle = () => {
@@ -67,11 +135,6 @@ const ComposePopup = ({onClose }) => {
       setEmails((prevEmails) => prevEmails.filter((email) => email !== emailToDelete));
     };
   
-    const isValidEmail = (email) => {
-      // You can implement your own email validation logic here
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
-    };
     const handleSend = () => {
         console.log('Sending email:', { subject, message });
         onClose();
@@ -106,6 +169,27 @@ const ComposePopup = ({onClose }) => {
           }).catch((err) => {
               console.log(err)
           });
+      }
+      const handleSendSchedule = () => {
+        setLoader(true)
+        const formData = new FormData()
+        formData.append('recipients', formValues.email)
+        formData.append('subject', formValues.subject)
+        formData.append('description', formValues.description)
+        formData.append('time', selectedDateTime)
+        dispatch(scheduleEmail(formData)).then((result) => {
+          setLoader(false)
+          setDialog(false)
+          onClose()
+          enqueueSnackbar(result.data.message, {
+            variant:'success'
+          })
+        }).catch((err) => {
+          setLoader(false)
+          console.log(err)
+        });
+        // console.log(selectedDateTime, 'THIS IS SELECTED')
+
       }
   return (
     <Box className="compose-popup"
@@ -248,7 +332,7 @@ const ComposePopup = ({onClose }) => {
                   {options.map((option, index) => (
                     <MenuItem
                       key={option}
-                      onClick={handleMenuItemClick}
+                      onClick={()=>handleMenuItemClick(option)}
                     >
                       {option}
                     </MenuItem>
@@ -289,19 +373,19 @@ const ComposePopup = ({onClose }) => {
         </DialogTitle>
         <DialogContent>
         <List>
-      {[
-        { title: "Tomorrow morning", time: "Dec 28, 1:00 pm" },
-        { title: "Tomorrow evening", time: "Dec 28, 8:00 pm" },
-        { title: "Monday morning", time: "Dec 1, 8:00 am" },
-      ].map((item, index) => (
+      {dateOptions.map((item, index) => (
         <ListItem
-          key={index}
-          button
-          sx={{
-            "&:hover": {
-              backgroundColor: "#e2e2e2",
-            },
-          }}
+        key={index}
+        button
+        selected={index === selectedItem} // Add selected prop
+        sx={{
+          "&:hover": {
+            backgroundColor: "#e2e2e2",
+          },
+          backgroundColor: index === selectedItem ? "#e2e2e2" : "inherit", 
+          color: index === selectedItem ? "#000" : "#000", 
+        }}
+        onClick={() => setSelectedItem(index)} // Handle item click
         >
           <ListItemText
             primary={item.title}
@@ -317,9 +401,22 @@ const ComposePopup = ({onClose }) => {
         size='small' 
         type='datetime-local'
         sx={{mt:1}}
+        value={selectedDateTime || ""}
+        onChange={(e) => setSelectedDateTime(e.target.value)}
         />
         <Typography sx={{ml:2, mt:1}}>Select Date & Time </Typography>
-        <Button sx={{mt:1, ml:4}} variant='contained'>Schedule</Button>
+        {
+          loader ?
+          <RotatingLines
+              strokeColor="#040263"
+              strokeWidth="5"
+              animationDuration="0.75"
+              width="50"
+              visible={true}
+            />
+            :
+        <Button sx={{mt:1, ml:4}} variant='contained' onClick={handleSendSchedule}>Schedule</Button>
+        }
         </Box>
     
         </DialogContent>
