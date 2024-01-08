@@ -2,6 +2,7 @@
 const initialState = {
     folders:[],
     folderData:[],
+    folderDataG:[],
     isLoading: true,
     folder_name:'Inbox',
     conntent:'',
@@ -15,7 +16,7 @@ const folderReducer = (state=initialState, action) => {
 
     switch(action.type) {
         case 'FOLDER_SUCCESS': {
-            // console.log("ADMIN_LOGIN", action.payload.title)
+            // console.log("ACTION", action.payload.title)
             return {
                 ...state,
                 folders:action.payload,
@@ -24,6 +25,7 @@ const folderReducer = (state=initialState, action) => {
             };
         };
         case 'FOLDER_SUCCESS_GOOGLE': {
+            console.log("ACTION", action.payload[0])
             return {
                 ...state,
                 folders_google:action.payload,
@@ -36,6 +38,15 @@ const folderReducer = (state=initialState, action) => {
             return {
                 ...state,
                 folderData:action.payload,
+                isLoading: false,
+
+            };
+        };
+        case 'FOLDER_ID_SUCCESS_G': {
+            // console.log("Folder", action)
+            return {
+                ...state,
+                folderDataG:action.payload,
                 isLoading: false,
 
             };
@@ -73,7 +84,9 @@ const folderReducer = (state=initialState, action) => {
                folders:[],
                folderData:[],
                folder_name:'',
-               content:''
+               content:'',
+               folders_google:[]
+
 
             }; 
         }

@@ -16,19 +16,34 @@ import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead } from '../../../../store/actions/mailActions';
-const ListDataContainer = ({data}) => {
-  // console.log(data)
+const ListDataContainer = ({data, type}) => {
+  // console.log(data, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
-  const list_data = useSelector((state)=>state.folder.folderData)
+  const [list_data , setList_data] = useState("")
+  const l_data = 
+  type === 'Outlook' ?
+  useSelector((state)=>state.folder.folderData):
+  useSelector((state)=>state.folder.folderDataG)
+  
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const folder_name = useSelector((state)=>state.folder.folder_name)
-  const [selectedContent, setSelectedContent] = useState(list_data[0])
+  const [selectedContent, setSelectedContent] = useState('')
   const dispatch = useDispatch()
   const isSelected = (index) => {
     return selectedItem === index;
   };
+  useLayoutEffect(()=> {
+    if (type === 'Outlook') {
+      // console.log(l_data, 'THIS IS L_DATA')
+      setList_data(l_data)
+    }
+    if (type=='Google'){
+      setList_data(l_data)
+    }
+  }, [l_data])
+  // console.log(list_data, 'HELLOOOOOOO')
   useEffect(() => {
-    if (list_data.length > 0 && !selectedContent) {
+    if (list_data && !selectedContent) {
       setSelectedContent(list_data[0]);
     }
   }, [list_data, selectedContent]);
@@ -168,10 +183,11 @@ const ListDataContainer = ({data}) => {
                 <Typography  sx={{ml:1, fontWeight:'bold'}}>Please wait</Typography>
                 </Box>
             : 
+            list_data && 
             list_data.length < 1 ?
             <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
           data.map((val, index) => {
-            
+            // console.log(val, 'INSIDE')
             return(
               <React.Fragment key={index}>
               <ListItem
@@ -194,11 +210,17 @@ const ListDataContainer = ({data}) => {
                 primary={
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <Typography sx={{ minWidth: 0, flexGrow: 1, fontWeight:val.isRead == '0' ? 'bold' : 'null'  }}>
-                      {val.sender_name ? val.sender_name : ''}
+                      {type === 'Outlook' && val.sender_name ? val.sender_name : ''}
+                      {type === 'Google' && val.from ? val.from : ''}
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                       <Typography sx={{ fontSize: '11px', textAlign: 'right', fontWeight:val.isRead == '0' ? 'bold' : 'null' }}>
-                        {formatTime(val.createdDateTime || '')}
+                        {
+                        type === 'Outlook' &&
+                        formatTime(val.createdDateTime || '')}
+                        {
+                        type === 'Google' &&
+                        formatTime(val.date || '')}
                       </Typography>
                     </Box>
                   </Box>

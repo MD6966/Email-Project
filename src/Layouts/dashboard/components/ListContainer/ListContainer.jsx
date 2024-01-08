@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
-import { Add, Edit, History, } from '@mui/icons-material'
+import { Add, Chat, Edit, History, MarkChatUnread, Star, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import DraftsIcon from '@mui/icons-material/Drafts';
@@ -10,6 +10,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ArchiveIcon from '@mui/icons-material/Archive';
 import SnoozeIcon from '@mui/icons-material/Snooze';
 import MarkChatReadIcon from '@mui/icons-material/MarkChatRead';
+import CategoryIcon from '@mui/icons-material/Category';
+import ErrorIcon from '@mui/icons-material/Error';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -19,16 +21,21 @@ import LabelIcon from '@mui/icons-material/Label';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
+import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import { useDispatch, useSelector } from 'react-redux';
-import { getListData, setList } from '../../../../store/actions/listActions';
-import { authenticate, authenticateGoogle, folderName, getAllFolders, resetLoading } from '../../../../store/actions/folderActions';
+import { getListData, getListDataGoogle, setList } from '../../../../store/actions/listActions';
+import { authenticate, authenticateGoogle, folderName, getAllFolders, getAllFoldersGoogle, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 import DialogLoader from './components/DialogLoader';
 import ListDataContainer from '../ListDataContainer/ListDataContainer';
+import { useNavigate } from 'react-router';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
-  const [selectedItem, setSelectedItem] = useState(null);
+  const type = useSelector((state)=>state.folder.src)
+  const data_google = useSelector((state)=>state.folder.folders_google)
+  console.log(data_google, "GOOGLE FOLDERS")
+  const [selectedItem, setSelectedItem] = useState(null)
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
@@ -38,9 +45,9 @@ const ListContainer = () => {
   const [name, setName] = useState('')
   const [groups, setGroups] = useState([])
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const currentUrl = new URL(window.location.href);
   const codeParam = currentUrl.searchParams.get('code');
-  const type = useSelector((state)=>state.folder.src)
   // console.log(type, "TYPE")
   const groupsData = () => {
     dispatch(getAllGroups()).then((result) => {
@@ -50,7 +57,9 @@ const ListContainer = () => {
     });
   }
   useEffect(()=> {
-    groupsData()
+    if(type === 'Outlook') {
+      groupsData()
+    }
   }, [])
   const handleComposeClick = () => {
     setComposeOpen(true);
@@ -61,7 +70,9 @@ const ListContainer = () => {
   };
   const handleItemClick = (item) => {
     setSelectedItem(item);
-    dispatch(folderName(item.folder_name))
+    if(type==='Outlook') {
+      dispatch(folderName(item.folder_name))
+    }
     // dispatch(getListData(item.folder_id))
   };
   const handleClick = () => {
@@ -71,10 +82,16 @@ const ListContainer = () => {
     setOpenG(!openG);
   };
   useEffect(() => {
-    if (data.folders.length > 0) {
-      setSelectedItem(data.folders[4]); 
+    if(type === 'Outlook') {
+      if (data.folders.length > 0) {
+        setSelectedItem(data.folders[4]); 
+      }
+    } else if (type === 'Google') {
+      if(data_google.length > 0) {
+        setSelectedItem(data_google[0]?.labels[2] || '')
+      }
     }
-  }, [data.folders]);
+  }, [data.folders, data_google]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openM = Boolean(anchorEl);
   const handleClickM = (event) => {
@@ -98,16 +115,32 @@ const ListContainer = () => {
     dispatch(setList(val))
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
-  useEffect(()=> {
-    dispatch(getListData(selectedItem?.folder_id)).then((result) => {
-      setListData(result.data.payload)
-    }).catch((err) => {
-      console.log(err)
-    });
-    dispatch(resetLoading())
+  useLayoutEffect(()=> {
+    if(type==='Outlook') {
+      dispatch(getListData(selectedItem?.folder_id)).then((result) => {
+        setListData(result.data.payload)
+      }).catch((err) => {
+        console.log(err)
+      });
+      dispatch(resetLoading())
+    }
+    else if (type === 'Google') {
+      dispatch(getListDataGoogle(selectedItem?.id)).then((result) => {
+        // console.log(result.data.payload[0], 'RESULT GOOGLE')
+        setListData(result.data.payload[0])
+      }).catch((err) => {
+        console.log(err)
+      });
+      dispatch(resetLoading())
+    }
   },[selectedItem])
   useLayoutEffect(()=> {
-    dispatch(getAllFolders())
+    if(type === 'Outlook') {
+      dispatch(getAllFolders())
+    }
+    else if (type === 'Google') {
+      dispatch(getAllFoldersGoogle())
+    }
   },[])
   useEffect(()=> {
     if (type === 'Outlook') {
@@ -136,7 +169,7 @@ const ListContainer = () => {
         formData.append('code', codeParam)
         dispatch(authenticateGoogle(formData)).then((result) => {
           console.log('AUTH RESULT OF GOOGLE', result)
-          dispatch(getAllFolders()).then((result) => {
+          dispatch(getAllFoldersGoogle()).then((result) => {
   
             console.log(result, "RESULT AFTER AUTH")
             navigate('/dashboard', { replace: true });
@@ -172,7 +205,8 @@ const ListContainer = () => {
   //     console.log('Code parameter is not present in the URL');
   //   }
   // }, [codeParam]); 
-  // console.log(selectedItem.folder_id, "Selected")
+  // console.log(selectedItem, "Selected")
+  // console.log(listData, "LISTDATA")
   return (
     <>
     <Box sx={listContainer} ref={topRef}>
@@ -192,50 +226,104 @@ const ListContainer = () => {
       </Box>
       <Box sx={{ mt: 2 }}>
         <List>
-          {
-          data.folders.length > 0 ?
-          data.folders?.map((val, ind) => {
-            return(
-              <ListItem
-              key={ind}
-              disablePadding
-              onClick={() => handleItemClick(val)}
-              sx={{
-                backgroundColor: selectedItem?.folder_name === val?.folder_name ? '#B5DCFF' : 'transparent' || '',
-                height: '35px',
-                cursor:'pointer',
-                px:1,
-                '&:hover': {
-                  backgroundColor: selectedItem?.folder_name === val?.folder_name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)' || '',
-                },
-              }}
-            >
-              
-                <ListItemIcon>
-                {
-                  val.folder_name == 'Archive' ?
-                  <ArchiveIcon /> : val.folder_name === 'Conversation History' ?
-                  <History /> : val.folder_name === 'Deleted Items' ?
-                  <DeleteIcon /> : val.folder_name === 'Drafts' ?
-                  <DraftsIcon /> : val.folder_name === 'Inbox' ?
-                  <AllInboxIcon />  : val.folder_name === 'Junk Email' ?
-                  <DeleteSweepIcon /> : val.folder_name === 'Outbox' ?
-                  <SendIcon /> :val.folder_name === 'Sent Items' ?
-                  <MarkChatReadIcon /> : val.folder_name === 'Snoozed' ?
-                  <SnoozeIcon /> : null
-   
-              }
-                 </ListItemIcon>
-                <ListItemText primary={
-                  <Typography sx={{fontSize:'12px', fontWeight:'bold'}}>
-                    {val.folder_name}
-                  </Typography>
-                } />
-            </ListItem>
-            )
-          })
-        :'Please Login First'
-        }
+        {
+  type === 'Outlook' && data.folders.length > 0 ? (
+    data.folders.map((val, ind) => (
+      <ListItem
+        key={ind}
+        disablePadding
+        onClick={() => handleItemClick(val)}
+        sx={{
+          backgroundColor: selectedItem?.folder_name === val?.folder_name ? '#B5DCFF' : 'transparent' || '',
+          height: '35px',
+          cursor: 'pointer',
+          px: 1,
+          '&:hover': {
+            backgroundColor: selectedItem?.folder_name === val?.folder_name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)' || '',
+          },
+        }}
+      >
+        <ListItemIcon>
+          {val.folder_name === 'Archive' ? (
+            <ArchiveIcon />
+          ) : val.folder_name === 'Conversation History' ? (
+            <History />
+          ) : val.folder_name === 'Deleted Items' ? (
+            <DeleteIcon />
+          ) : val.folder_name === 'Drafts' ? (
+            <DraftsIcon />
+          ) : val.folder_name === 'Inbox' ? (
+            <AllInboxIcon />
+          ) : val.folder_name === 'Junk Email' ? (
+            <DeleteSweepIcon />
+          ) : val.folder_name === 'Outbox' ? (
+            <SendIcon />
+          ) : val.folder_name === 'Sent Items' ? (
+            <MarkChatReadIcon />
+          ) : val.folder_name === 'Snoozed' ? (
+            <SnoozeIcon />
+          ) : null}
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+              {val.folder_name}
+            </Typography>
+          }
+        />
+      </ListItem>
+    ))
+  ) : type === 'Google' && data_google != 'undefined' && data_google?.length > 0 ? (
+    data_google[0].labels.map((val, ind) => (
+      <ListItem
+        key={ind}
+        disablePadding
+        onClick={() => handleItemClick(val)}
+        sx={{
+          backgroundColor: selectedItem?.name === val?.name ? '#B5DCFF' : 'transparent' || '',
+          height: '35px',
+          cursor: 'pointer',
+          px: 1,
+          '&:hover': {
+            backgroundColor: selectedItem?.name === val?.name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)' || '',
+          },
+        }}
+      >
+        <ListItemIcon>
+          {val.name === 'CHAT' ? (
+            <Chat />
+          ) : val.name === 'SENT' ? (
+            <SendIcon />
+          ) : val.name === 'INBOX' ? (
+            <AllInboxIcon />
+          ) : val.name === 'IMPORTANT' ? (
+            <FolderSpecialIcon />
+          ) : val.name === 'TRASH' ? (
+            <DeleteSweepIcon />
+          ) : val.name === 'DRAFT' ? (
+            <DraftsIcon />
+          ) : val.name === 'SPAM' ? (
+            <ErrorIcon />
+          ) : val.name === 'STARRED' ? (
+            <Star />
+          ) : val.name === 'UNREAD' ? (
+            <MarkChatUnread />
+          ) : <CategoryIcon />}
+        </ListItemIcon>
+        <ListItemText
+          primary={
+            <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+              {val.name}
+            </Typography>
+          }
+        />
+      </ListItem>
+    ))
+  ) : (
+    'No Data'
+  )
+}
+
         </List>
         <Box sx={{mt:2}}>
           <List>
@@ -364,8 +452,10 @@ const ListContainer = () => {
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
       <DialogLoader />
+      
       <ListDataContainer 
       data={listData}
+      type={type}
       />
 
     </>

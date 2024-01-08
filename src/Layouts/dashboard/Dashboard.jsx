@@ -9,7 +9,7 @@ import { useSelector } from 'react-redux'
 
 const Dashboard = ({setprogress}) => {
   const type=useSelector((state)=>state.folder.src)
-  console.log(type)
+  // console.log(type)
     useEffect(()=> {
         setprogress(20)
         setTimeout(()=> {
@@ -22,7 +22,7 @@ const Dashboard = ({setprogress}) => {
         <TopBar />
         <SideBar />
         <Box sx={{ml:'4%', display:'flex'}}>
-          <ListContainer />
+          <ListContainer type={type} />
           {/* <ListDataContainer /> */}
           <MainContent />
         </Box>

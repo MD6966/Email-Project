@@ -38,7 +38,7 @@ export const getAllFolders = () => async (dispatch) => {
   export const getAllFoldersGoogle = () => async (dispatch) => {
   
     try {
-      const res = await api.post('api/google-folders');
+      const res = await api.get('api/google-folders');
       // console.log(res, "RESPONSE OF FOLDER SUCCESSSS ")
       dispatch({
         type: 'FOLDER_SUCCESS_GOOGLE',
@@ -66,6 +66,7 @@ export const getAllFolders = () => async (dispatch) => {
   };
 
   export const content = (cont) => (dispatch) => {
+    console.log(cont, "THIS IS CONTENT")
     dispatch({
       type: 'CONTENT_SETTER',
       payload:cont,

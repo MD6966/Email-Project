@@ -44,3 +44,18 @@ export const setList = (list_type) => (dispatch) => {
       throw err;
     }
   };
+  export const getListDataGoogle = (folder_id) => async (dispatch) => {
+    const body = {
+        folder_id:folder_id
+    }
+    try {
+      const res = await api.post('api/get-google-emails', body);
+      dispatch({
+        type: 'FOLDER_ID_SUCCESS_G',
+        payload: res.data.payload,
+      });
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
