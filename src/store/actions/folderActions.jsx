@@ -35,6 +35,21 @@ export const getAllFolders = () => async (dispatch) => {
       throw err;
     }
   };
+  export const getAllFoldersGoogle = () => async (dispatch) => {
+  
+    try {
+      const res = await api.post('api/google-folders');
+      // console.log(res, "RESPONSE OF FOLDER SUCCESSSS ")
+      dispatch({
+        type: 'FOLDER_SUCCESS_GOOGLE',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
   export const resetLoading = () => (dispatch) => {
     dispatch({
       type: 'RESET_LOADING',
@@ -55,7 +70,14 @@ export const getAllFolders = () => async (dispatch) => {
       type: 'CONTENT_SETTER',
       payload:cont,
     });
-
+    
+  };
+  export const loginSRC = (src) => (dispatch) => {
+    dispatch({
+      type: 'LOGIN_SRC',
+      payload:src,
+    });
+    
   };
   export const logout = () => (dispatch) => {
     dispatch({
@@ -68,6 +90,16 @@ export const getAllFolders = () => async (dispatch) => {
   
     try {
       const res = await api.post('api/outlook-authenticate', code);
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  export const authenticateGoogle = (code) => async (dispatch) => {
+  
+    try {
+      const res = await api.post('api/google-authentication', code);
       return res ;
     } catch (err) {
       throw err;

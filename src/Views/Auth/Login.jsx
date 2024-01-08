@@ -1,10 +1,12 @@
 import { Close, Group } from '@mui/icons-material';
-import { Avatar, Box, Button, TextField, Typography } from '@mui/material';
+import { Avatar, Box, Button, IconButton, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { login } from '../../store/actions/emailActions';
 import { useDispatch } from 'react-redux';
 import { useSnackbar } from 'notistack';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 const initialValues = {
     email:'',
     password:''
@@ -12,6 +14,7 @@ const initialValues = {
 const Login = ({ setprogress }) => {
     const navigate = useNavigate()
   const [formValues, SetFormValues] = useState(initialValues)
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
@@ -22,17 +25,25 @@ const Login = ({ setprogress }) => {
         [name]:value
     })
 }
+const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   const handleSubmit = (e) => {
       e.preventDefault()
       setLoading(true)
       dispatch(login(formValues)).then((result) => {
+        console.log(result)
         setLoading(false)
         if(result.data.payload.user.outlook_access_token) {
-            navigate('/dashboard', {state:true})
-        }
-        else {
+            // navigate('/dashboard', {state:true})
             navigate('/settings-page', {state:false})
         }
+        // else {
+        // }
         // console.log(result.data.payload.user.outlook_access_token, "LOGIN RESULT")
       }).catch((err) => {
         setLoading(false)
@@ -178,18 +189,33 @@ const Login = ({ setprogress }) => {
                     "& fieldset": { border: 'none' },
               }}
               />
-                 <TextField 
-                 name='password'
-                 value={formValues.password}
-                 onChange={handleChange}
-                fullWidth
-                style={textFieldStyle}
-                required
-               placeholder='********'
-               sx={{
-                "& fieldset": { border: 'none' },
-              }}
-                />
+      <TextField 
+      name='password'
+      value={formValues.password}
+      onChange={handleChange}
+      fullWidth
+      style={textFieldStyle}
+      required
+      type={showPassword ? 'text' : 'password'}
+      placeholder='********'
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={handleClickShowPassword}
+              onMouseDown={handleMouseDownPassword}
+              edge="end"
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+      sx={{
+        "& fieldset": { border: 'none' },
+      }}
+    />
                 <Box style={center} >
                     {
                         loading ?

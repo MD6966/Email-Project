@@ -4,7 +4,9 @@ const initialState = {
     folderData:[],
     isLoading: true,
     folder_name:'Inbox',
-    conntent:''
+    conntent:'',
+    src:'',
+    folders_google:[]
 
 }
 
@@ -17,6 +19,14 @@ const folderReducer = (state=initialState, action) => {
             return {
                 ...state,
                 folders:action.payload,
+
+                
+            };
+        };
+        case 'FOLDER_SUCCESS_GOOGLE': {
+            return {
+                ...state,
+                folders_google:action.payload,
 
                 
             };
@@ -46,6 +56,12 @@ const folderReducer = (state=initialState, action) => {
             return {
                 ...state,
                 content:action.payload
+            };
+        }
+        case 'LOGIN_SRC': {
+            return {
+                ...state,
+                src:action.payload
             };
         }
         case 'RESET_STATE': {

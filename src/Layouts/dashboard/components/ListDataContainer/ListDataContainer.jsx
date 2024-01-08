@@ -16,9 +16,8 @@ import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead } from '../../../../store/actions/mailActions';
-const ListDataContainer = () => {
- 
-
+const ListDataContainer = ({data}) => {
+  // console.log(data)
   const [selectedItem, setSelectedItem] = useState(0);
   const list_data = useSelector((state)=>state.folder.folderData)
   const isLoading = useSelector((state)=>state.folder.isLoading)
@@ -171,7 +170,7 @@ const ListDataContainer = () => {
             : 
             list_data.length < 1 ?
             <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
-          list_data.map((val, index) => {
+          data.map((val, index) => {
             
             return(
               <React.Fragment key={index}>

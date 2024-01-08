@@ -5,8 +5,11 @@ import { Box, Stack, Typography } from '@mui/material'
 import ListContainer from './components/ListContainer/ListContainer'
 import ListDataContainer from './components/ListDataContainer/ListDataContainer'
 import MainContent from './components/MainContentContainer/MainContent'
+import { useSelector } from 'react-redux'
 
 const Dashboard = ({setprogress}) => {
+  const type=useSelector((state)=>state.folder.src)
+  console.log(type)
     useEffect(()=> {
         setprogress(20)
         setTimeout(()=> {
@@ -20,7 +23,7 @@ const Dashboard = ({setprogress}) => {
         <SideBar />
         <Box sx={{ml:'4%', display:'flex'}}>
           <ListContainer />
-          <ListDataContainer />
+          {/* <ListDataContainer /> */}
           <MainContent />
         </Box>
       </Stack>

@@ -4,16 +4,20 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { register } from '../../store/actions/emailActions';
-
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content'
+import { RotatingLines } from 'react-loader-spinner';
 const initialValues = {
   name:'',
   email:'',
   password:''
 }
+const MySwal = withReactContent(Swal)
 const Register = ({ setprogress }) => {
+  const [formValues, setFormValues] = useState(initialValues)
+  const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
     const dispatch = useDispatch()
-    const [formValues, setFormValues] = useState(initialValues)
   useEffect(() => {
     setprogress(20);
     setTimeout(() => {
@@ -29,16 +33,28 @@ const Register = ({ setprogress }) => {
   }
   const handleSubmit = (e) => {
     e.preventDefault()
+    setLoading(true)
     const formData = new FormData()
     formData.append('name',formValues.name)
     formData.append('email', formValues.email)
     formData.append('password', formValues.password)
     dispatch(register(formData)).then((result) => {
-      console.log(result)
+      setLoading(false)
+      setFormValues(initialValues)
+      MySwal.fire({
+        position: "top-center",
+        icon: "success",
+        title: result.data.message,
+        showConfirmButton: false,
+        timer: 1500
+      });
+      navigate('/login', {replace:true})
+      // console.log(result.data.message)
     }).catch((err) => {
+      setLoading(false)
       console.log(err)
     });
-    console.log(formValues)
+    // console.log(formValues)
   }
   const containerStyle = {
     backgroundImage: 'url("/register-bg.png")',
@@ -76,16 +92,6 @@ const Register = ({ setprogress }) => {
     fontWeight: 700,
     lineHeight: 'normal',
     textAlign:'center'
-  }
-  const subText = {
-    color: '#FFF',
-    fontFamily: 'Inter',
-    fontSize: '14px',
-    fontStyle: 'normal',
-    fontWeight: 400,
-    lineHeight: '19px',
-    marginTop:'5px',
-    width:'50%'
   }
   const textFieldStyle = {
     backgroundColor: "#8D8CD2",
@@ -134,7 +140,8 @@ const Register = ({ setprogress }) => {
                 Register
                 </Typography>
                
-                <TextField 
+                <TextField
+                required 
                 name="name"
                 value={formValues.name}
                 onChange={handleChange}
@@ -149,8 +156,12 @@ const Register = ({ setprogress }) => {
               InputLabelProps={{
                 style: {color:'#fff'},
               }}
+              inputProps={{
+                style: { color: '#fff' }, 
+              }}
                 />
-                <TextField 
+                <TextField
+                required 
                 name="email"
                 value={formValues.email}
                 onChange={handleChange}
@@ -165,8 +176,12 @@ const Register = ({ setprogress }) => {
               InputLabelProps={{
                 style: {color:'#fff'},
               }}
+              inputProps={{
+                style: { color: '#fff' }, 
+              }}
                 />
-                 <TextField 
+                 <TextField
+                 required 
                  name="password"
                  value={formValues.password}
                  onChange={handleChange}
@@ -180,15 +195,27 @@ const Register = ({ setprogress }) => {
               InputLabelProps={{
                 style: {color:'#fff'},
               }}
+              inputProps={{
+                style: { color: '#fff' }, 
+              }}
                 />
                 <Box style={center} >
+                  {
+                    loading ?
+                    <RotatingLines
+                    strokeColor="#fff"
+                    strokeWidth="5"
+                    animationDuration="0.75"
+                    width="50"
+                    visible={true}
+                  />
+                  :
                 <Button
                 variant='contained'
                 style={btnStyles}
                 type='submit'
                 >Sign In</Button>
-                
-                
+              }
                 </Box>
             </Box>
         </Box>

@@ -21,10 +21,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, setList } from '../../../../store/actions/listActions';
-import { authenticate, folderName, getAllFolders, resetLoading } from '../../../../store/actions/folderActions';
+import { authenticate, authenticateGoogle, folderName, getAllFolders, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 import DialogLoader from './components/DialogLoader';
+import ListDataContainer from '../ListDataContainer/ListDataContainer';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   const [selectedItem, setSelectedItem] = useState(null);
@@ -33,11 +34,14 @@ const ListContainer = () => {
   const [composeOpen, setComposeOpen] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dTitle, setDtitle] = useState('')
+  const [listData, setListData] = useState([])
   const [name, setName] = useState('')
   const [groups, setGroups] = useState([])
   const dispatch = useDispatch()
   const currentUrl = new URL(window.location.href);
   const codeParam = currentUrl.searchParams.get('code');
+  const type = useSelector((state)=>state.folder.src)
+  // console.log(type, "TYPE")
   const groupsData = () => {
     dispatch(getAllGroups()).then((result) => {
       setGroups(result.data.payload)
@@ -95,32 +99,79 @@ const ListContainer = () => {
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
   useEffect(()=> {
-    dispatch(getListData(selectedItem?.folder_id))
+    dispatch(getListData(selectedItem?.folder_id)).then((result) => {
+      setListData(result.data.payload)
+    }).catch((err) => {
+      console.log(err)
+    });
     dispatch(resetLoading())
   },[selectedItem])
   useLayoutEffect(()=> {
     dispatch(getAllFolders())
   },[])
-  useEffect(() => {
-    if (codeParam) {
-      const formData = new FormData()
-      formData.append('code', codeParam)
-      dispatch(authenticate(formData)).then((result) => {
-        console.log('AUTH RESULT', result)
-        dispatch(getAllFolders()).then((result) => {
-
-          console.log(result, "RESULT AFTER AUTH")
-          navigate('/dashboard', { replace: true });
-      }).catch((err) => {
-          console.log(err)
-      });
-      }).catch((err) => {
-        console.log(err);
-      });
-    } else {
-      console.log('Code parameter is not present in the URL');
+  useEffect(()=> {
+    if (type === 'Outlook') {
+      if (codeParam) {
+        const formData = new FormData()
+        formData.append('code', codeParam)
+        dispatch(authenticate(formData)).then((result) => {
+          console.log('AUTH RESULT', result)
+          dispatch(getAllFolders()).then((result) => {
+  
+            console.log(result, "RESULT AFTER AUTH")
+            navigate('/dashboard', { replace: true });
+        }).catch((err) => {
+            console.log(err)
+        });
+        }).catch((err) => {
+          console.log(err);
+        });
+      } else {
+        console.log('Code parameter is not present in the URL');
+      }
     }
-  }, [codeParam]); 
+    else if (type === 'Google') {
+      if (codeParam) {
+        const formData = new FormData()
+        formData.append('code', codeParam)
+        dispatch(authenticateGoogle(formData)).then((result) => {
+          console.log('AUTH RESULT OF GOOGLE', result)
+          dispatch(getAllFolders()).then((result) => {
+  
+            console.log(result, "RESULT AFTER AUTH")
+            navigate('/dashboard', { replace: true });
+        }).catch((err) => {
+            console.log(err)
+        });
+        }).catch((err) => {
+          console.log(err);
+        });
+      } else {
+        console.log('Code parameter is not present in the URL');
+      }
+    }
+    // console.log(type, 'TYPE FROM USEEFFECT')
+  }, [])
+  // useEffect(() => {
+  //   if (codeParam) {
+  //     const formData = new FormData()
+  //     formData.append('code', codeParam)
+  //     dispatch(authenticate(formData)).then((result) => {
+  //       console.log('AUTH RESULT', result)
+  //       dispatch(getAllFolders()).then((result) => {
+
+  //         console.log(result, "RESULT AFTER AUTH")
+  //         navigate('/dashboard', { replace: true });
+  //     }).catch((err) => {
+  //         console.log(err)
+  //     });
+  //     }).catch((err) => {
+  //       console.log(err);
+  //     });
+  //   } else {
+  //     console.log('Code parameter is not present in the URL');
+  //   }
+  // }, [codeParam]); 
   // console.log(selectedItem.folder_id, "Selected")
   return (
     <>
@@ -313,6 +364,10 @@ const ListContainer = () => {
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
       <DialogLoader />
+      <ListDataContainer 
+      data={listData}
+      />
+
     </>
   );
 }

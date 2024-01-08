@@ -67,6 +67,8 @@ const MainContent = () => {
   const [showBccText, setShowBcc] = useState(true);
   const [loading, setloading]= useState(false)
   const content = useSelector((state)=>state.folder.content)
+  const isLoading = useSelector((state)=>state.folder.isLoading)
+
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
 
@@ -151,7 +153,9 @@ const MainContent = () => {
   return (
     <StyledRoot>
       {
-        content ?
+        (!content || isLoading) ?
+        <SkeletonComponent />
+       :
       <Box
         sx={{
           width: '50vw',
@@ -321,8 +325,7 @@ const MainContent = () => {
             </Box>
           )}
         </Box>
-      </Box> :
-      <SkeletonComponent />
+      </Box>
       }
       <Menu
         id="basic-menu"
