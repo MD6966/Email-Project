@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authenticate, getAllFolders } from '../../../../../store/actions/folderActions';
+import { authenticate, getAllFolders, loginSRC } from '../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useLocation } from 'react-router';
+import { addAcount } from '../../../../../store/actions/accountActions';
 
 const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(false)
   const currentUrl = new URL(window.location.href);
   const loginSrc = useSelector((state)=>state.folder.src)
-  console.log(loginSrc, 'LOGIN SRC')
+  // console.log(loginSrc, 'LOGIN SRC')
+  const user = useSelector((state)=>state.email.user)
+  // console.log(user)
   const dispatch = useDispatch()
    
 
@@ -18,6 +21,17 @@ const SettingsDialog = ({open,close}) => {
     setSelectedOption(event.target.value);
   };
   const handleOptionClick = (type) => {
+    // console.log(type)
+    dispatch(loginSRC(type))
+    if(type == 'Google') {
+      if(user.google_access_token == null) {
+        // window.location.href = import.meta.env.VITE_RIDERECT_URL_GOOGLE;
+    }
+    else {
+        // dispatch(addAcount)
+        alert('Hello')
+    }
+    }
     // if(type=='Outlook') {
     //   window.location.href = import.meta.env.VITE_REDIRECT_URL;
     // }

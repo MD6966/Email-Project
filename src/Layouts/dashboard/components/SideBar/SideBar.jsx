@@ -48,7 +48,7 @@ const SideBar = () => {
         }
         </Box>
     </Drawer>
-    <Box sx={{display:'flex', justifyContent:'space-between'}}>
+    <Box>
         <Box style={bottomBar}>
             <Button size='small' variant='contained' sx={{background:'#02013B'}}>
                 All Mails
@@ -66,9 +66,6 @@ const SideBar = () => {
                 })
             }
         </Box>
-            <Box>
-            This
-            </Box>
     </Box>
     
     </>

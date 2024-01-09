@@ -185,9 +185,15 @@ const handleClickShowPassword = () => {
                 required
                 type='email'
                 placeholder='Write email here'
-                sx={{
-                    "& fieldset": { border: 'none' },
-              }}
+                // sx={{
+                //   "& fieldset": { border: 'none' },
+                //   // "& .MuiAutocomplete-input": {
+                //   //   backgroundColor: '#8D8CD2',  // Set the background color for the input
+                //   // },
+                //   // "& .MuiAutocomplete-listbox": {
+                //   //   backgroundColor: '#8D8CD2',  // Set the background color for the suggestion list
+                //   // },
+                // }}
               />
       <TextField 
       name='password'
