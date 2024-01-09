@@ -24,7 +24,6 @@ const TopBar = () => {
     setAnchorEl(null);
     setOpen(true)
   };
-  console.log(user, "USER")
   const handleSignout = () => {
     confirmAlert({
       title: "Log Out?",

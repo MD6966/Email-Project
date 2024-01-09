@@ -66,7 +66,7 @@ export const getAllFolders = () => async (dispatch) => {
   };
 
   export const content = (cont) => (dispatch) => {
-    console.log(cont, "THIS IS CONTENT")
+    // console.log(cont, "THIS IS CONTENT")
     dispatch({
       type: 'CONTENT_SETTER',
       payload:cont,
@@ -78,6 +78,15 @@ export const getAllFolders = () => async (dispatch) => {
       type: 'LOGIN_SRC',
       payload:src,
     });
+    
+  };
+  export const loginHITSRC = (src) => (dispatch) => {
+    console.log(src, "This is SRC ACTION")
+    dispatch({
+      type: 'LOGIN_HIT_SRC',
+      payload:src,
+    });
+    
     
   };
   export const logout = () => (dispatch) => {

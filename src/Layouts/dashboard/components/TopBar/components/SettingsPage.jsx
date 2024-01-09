@@ -2,7 +2,7 @@ import { Box, FormControlLabel, Radio, RadioGroup, Typography, Button, Card, Car
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { loginSRC } from '../../../../../store/actions/folderActions';
+import { loginHITSRC, loginSRC } from '../../../../../store/actions/folderActions';
 
 const SettingsPage = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -18,6 +18,7 @@ const SettingsPage = () => {
   };
   const handleOptionClick = (type) => {
     dispatch(loginSRC(type))
+    dispatch(loginHITSRC(type))
     if(type=='Outlook') {
         if(user.outlook_access_token == null) {
             window.location.href = import.meta.env.VITE_REDIRECT_URL;

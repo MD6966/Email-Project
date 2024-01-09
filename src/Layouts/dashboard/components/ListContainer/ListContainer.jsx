@@ -34,6 +34,10 @@ const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   const type = useSelector((state)=>state.folder.src)
   const data_google = useSelector((state)=>state.folder.folders_google)
+  const hit_src = useSelector((state)=>state.folder.hit_src)
+  const sourceValue = localStorage.getItem('soruce');
+  // console.log(sourceValue)
+  // console.log(hit_src, "HIT SRC")
   // console.log(data_google, "GOOGLE FOLDERS")
   const [selectedItem, setSelectedItem] = useState(null)
   const [open, setOpen] = React.useState(false);
@@ -143,7 +147,7 @@ const ListContainer = () => {
     }
   },[])
   useEffect(()=> {
-    if (type === 'Outlook') {
+    if (sourceValue === 'Outlook') {
       if (codeParam) {
         const formData = new FormData()
         formData.append('code', codeParam)
@@ -163,7 +167,7 @@ const ListContainer = () => {
         console.log('Code parameter is not present in the URL');
       }
     }
-    else if (type === 'Google') {
+    else if (sourceValue === 'Google') {
       if (codeParam) {
         const formData = new FormData()
         formData.append('code', codeParam)

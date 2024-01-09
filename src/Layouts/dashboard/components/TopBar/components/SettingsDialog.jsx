@@ -1,41 +1,122 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authenticate, getAllFolders, loginSRC } from '../../../../../store/actions/folderActions';
+import { authenticate, getAllFolders, getAllFoldersGoogle, loginHITSRC, loginSRC } from '../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useLocation } from 'react-router';
 import { addAcount } from '../../../../../store/actions/accountActions';
-
+import { getListData, getListDataGoogle } from '../../../../../store/actions/listActions';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [google_data, setGoogle_data] = useState(null)
+  const [outlook_data, setOutlook_data] = useState(null)
+  const google_data_folder = useSelector((state)=>state.folder.folders_google)
+  const outlook_data_folder = useSelector((state)=>state.folder.folders)
+  const list = useSelector((state)=>state)
   const [loading, setLoading] = useState(false)
-  const currentUrl = new URL(window.location.href);
   const loginSrc = useSelector((state)=>state.folder.src)
-  // console.log(loginSrc, 'LOGIN SRC')
   const user = useSelector((state)=>state.email.user)
-  // console.log(user)
   const dispatch = useDispatch()
-   
+  const sweetAlertFunc = () => {
+    let timerInterval;
+    MySwal.fire({
+      title: "Adding Account Please Wait",
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup().querySelector("b");
+        timerInterval = setInterval(() => {
+          timer.textContent = `${Swal.getTimerLeft()}`;
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.timer) {
+        MySwal.fire({
+          position: "center",
+          icon: "success",
+          title: "Account has been added Successfuly",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    });
+  }
+  useEffect(()=> {
+    setGoogle_data(google_data_folder[0]?.labels[2] || '')
+    setOutlook_data(outlook_data_folder? outlook_data_folder[0] : '')
+  },[google_data_folder, outlook_data_folder])
 
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
   const handleOptionClick = (type) => {
     // console.log(type)
-    dispatch(loginSRC(type))
-    if(type == 'Google') {
+    dispatch(loginHITSRC(type))
+    if(type === 'Google') {
       if(user.google_access_token == null) {
-        // window.location.href = import.meta.env.VITE_RIDERECT_URL_GOOGLE;
+    dispatch(loginHITSRC(type))
+        window.location.href = import.meta.env.VITE_RIDERECT_URL_GOOGLE;
     }
     else {
         // dispatch(addAcount)
-        alert('Hello')
+        close()
+        setSelectedOption(null)
+        dispatch(getAllFoldersGoogle())
+        dispatch(getListDataGoogle(google_data?.id || ''))
+        sweetAlertFunc()
+        // let timerInterval;
+        // MySwal.fire({
+        //   title: "Adding Account Please Wait",
+        //   timer: 3000,
+        //   timerProgressBar: true,
+        //   didOpen: () => {
+        //     Swal.showLoading();
+        //     const timer = Swal.getPopup().querySelector("b");
+        //     timerInterval = setInterval(() => {
+        //       timer.textContent = `${Swal.getTimerLeft()}`;
+        //     }, 100);
+        //   },
+        //   willClose: () => {
+        //     clearInterval(timerInterval);
+        //   }
+        // }).then((result) => {
+        //   if (result.dismiss === Swal.DismissReason.timer) {
+        //     MySwal.fire({
+        //       position: "center",
+        //       icon: "success",
+        //       title: "Account has been added Successfuly",
+        //       showConfirmButton: false,
+        //       timer: 2000
+        //     });
+        //   }
+        // });
+    }
+    }
+    else if (type === 'Outlook') {
+      if(user.outlook_access_token == null) {
+        window.location.href = import.meta.env.VITE_RIDERECT_URL;
+    }
+    else {
+      close()
+      setSelectedOption(null)
+      dispatch(getAllFolders())
+      dispatch(getListData(outlook_data?.folder_id || ''))
+      sweetAlertFunc()
+
     }
     }
     // if(type=='Outlook') {
     //   window.location.href = import.meta.env.VITE_REDIRECT_URL;
     // }
   }
+  // console.log(outlook_data_folder, 'OUTLOOK FOLDER')
   const renderFields = (
         <div>
           {
@@ -76,8 +157,8 @@ const SettingsDialog = ({open,close}) => {
                 value={selectedOption}
                 onChange={handleOptionChange}
               >
-                <FormControlLabel value="Google" control={<Radio disabled={loginSrc === 'Google'} />} label={
-                  loginSrc === 'Google' ? 
+                <FormControlLabel value="Google" control={<Radio disabled={(loginSrc === 'Google' || google_data_folder.length > 0)} />} label={
+                  (loginSrc === 'Google' || google_data_folder.length > 0) ? 
                   "Google (Already Logged In)" :
                   "Google"
                 } />
@@ -88,8 +169,8 @@ const SettingsDialog = ({open,close}) => {
                 {selectedOption == 'Exchange' && renderFields}
                 <FormControlLabel value="Yahoo" control={<Radio />} label="Yahoo" />
                 {selectedOption == 'Yahoo' && renderFields}
-                <FormControlLabel value="Outlook" control={<Radio disabled={loginSrc === 'Outlook'} />} label={
-                  loginSrc === 'Outlook' ? 
+                <FormControlLabel value="Outlook" control={<Radio disabled={loginSrc === 'Outlook' || outlook_data_folder.length > 0} />} label={
+                  (loginSrc === 'Outlook' || outlook_data_folder.length > 0) ? 
                   "Outlook (Already Logged In)" :
                   "Outlook"
                 } />

@@ -7,7 +7,8 @@ const initialState = {
     folder_name:'Inbox',
     conntent:'',
     src:'',
-    folders_google:[]
+    folders_google:[],
+    hit_src:''
 
 }
 
@@ -75,6 +76,14 @@ const folderReducer = (state=initialState, action) => {
                 src:action.payload
             };
         }
+        case 'LOGIN_HIT_SRC': {
+            localStorage.setItem('soruce', action.payload);
+
+            return {
+                ...state,
+                hit_src:action.payload
+            };
+        }
         case 'RESET_STATE': {
             return initialState;
         }
@@ -85,7 +94,9 @@ const folderReducer = (state=initialState, action) => {
                folderData:[],
                folder_name:'',
                content:'',
-               folders_google:[]
+               folders_google:[],
+               hit_src:''
+
 
 
             }; 
