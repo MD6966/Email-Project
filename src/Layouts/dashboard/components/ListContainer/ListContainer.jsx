@@ -34,7 +34,7 @@ const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   const type = useSelector((state)=>state.folder.src)
   const data_google = useSelector((state)=>state.folder.folders_google)
-  console.log(data_google, "GOOGLE FOLDERS")
+  // console.log(data_google, "GOOGLE FOLDERS")
   const [selectedItem, setSelectedItem] = useState(null)
   const [open, setOpen] = React.useState(false);
   const [openG, setOpenG] = React.useState(false);
@@ -221,7 +221,7 @@ const ListContainer = () => {
         </Button>
         {composeOpen && 
         
-        <ComposePopup open={composeOpen} onClose={handleComposeClose} />
+        <ComposePopup open={composeOpen} onClose={handleComposeClose} type={type}/>
         }
       </Box>
       <Box sx={{ mt: 2 }}>

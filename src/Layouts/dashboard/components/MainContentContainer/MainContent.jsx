@@ -68,7 +68,7 @@ const MainContent = () => {
   const [loading, setloading]= useState(false)
   const content = useSelector((state)=>state.folder.content)
   const isLoading = useSelector((state)=>state.folder.isLoading)
-
+  // console.log(content, "THIS IS CONTETN")
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
 

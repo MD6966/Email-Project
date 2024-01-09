@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { authenticate, getAllFolders } from '../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useLocation } from 'react-router';
@@ -9,7 +9,8 @@ const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState(false)
   const currentUrl = new URL(window.location.href);
-  const codeParam = currentUrl.searchParams.get('code');
+  const loginSrc = useSelector((state)=>state.folder.src)
+  console.log(loginSrc, 'LOGIN SRC')
   const dispatch = useDispatch()
    
 
@@ -61,7 +62,11 @@ const SettingsDialog = ({open,close}) => {
                 value={selectedOption}
                 onChange={handleOptionChange}
               >
-                <FormControlLabel value="Google" control={<Radio />} label="Google" />
+                <FormControlLabel value="Google" control={<Radio disabled={loginSrc === 'Google'} />} label={
+                  loginSrc === 'Google' ? 
+                  "Google (Already Logged In)" :
+                  "Google"
+                } />
                 {selectedOption == 'Google' && renderFields}
                 <FormControlLabel value="Icloud" control={<Radio />} label="Icloud" />
                 {selectedOption == 'Icloud' && renderFields}
@@ -69,7 +74,11 @@ const SettingsDialog = ({open,close}) => {
                 {selectedOption == 'Exchange' && renderFields}
                 <FormControlLabel value="Yahoo" control={<Radio />} label="Yahoo" />
                 {selectedOption == 'Yahoo' && renderFields}
-                <FormControlLabel value="Outlook" control={<Radio />} label="Outlook" />
+                <FormControlLabel value="Outlook" control={<Radio disabled={loginSrc === 'Outlook'} />} label={
+                  loginSrc === 'Outlook' ? 
+                  "Outlook (Already Logged In)" :
+                  "Outlook"
+                } />
                 {selectedOption == 'Outlook' && renderFields}
                 <FormControlLabel value="Imap-pop" control={<Radio />} label="Imap-pop" />
                 {selectedOption == 'Imap-pop' && renderFields}

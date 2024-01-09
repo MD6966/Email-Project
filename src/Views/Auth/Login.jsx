@@ -38,10 +38,10 @@ const handleClickShowPassword = () => {
       dispatch(login(formValues)).then((result) => {
         console.log(result)
         setLoading(false)
-        if(result.data.payload.user.outlook_access_token) {
-            // navigate('/dashboard', {state:true})
-            navigate('/settings-page', {state:false})
-        }
+        navigate('/settings-page')
+        // if(result.data.payload.user.outlook_access_token) {
+        //     navigate('/dashboard', {state:true})
+        // }
         // else {
         // }
         // console.log(result.data.payload.user.outlook_access_token, "LOGIN RESULT")

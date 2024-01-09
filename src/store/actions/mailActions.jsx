@@ -34,6 +34,19 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  export const sendMailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-sendMail', body);
+      dispatch({
+        type: 'SEND_EMAIL_GOOGLE',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
 
   export const deleteMail = (body) => async (dispatch) => {
     try {

@@ -12,7 +12,7 @@ import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import AddToDriveIcon from '@mui/icons-material/AddToDrive';
 import { useDispatch } from 'react-redux';
-import { scheduleEmail, sendMail } from '../../../../../store/actions/mailActions';
+import { scheduleEmail, sendMail, sendMailGoogle } from '../../../../../store/actions/mailActions';
 import { useSnackbar } from 'notistack';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
@@ -26,7 +26,8 @@ const initialValues = {
   description:'',
   attachment:''
 }
-const ComposePopup = ({onClose }) => {
+const ComposePopup = ({onClose, type }) => {
+    // console.log(type, 'THIS ISSSSSS')
     const [formValues, setFormValues] = useState(initialValues)
     const [attachment, setAttachment] = useState(null);
     const [loading, setLoading] = useState(false)
@@ -159,16 +160,30 @@ const ComposePopup = ({onClose }) => {
           if (attachment) {
             formData.append('attachment', attachment);
           }
-          dispatch(sendMail(formData)).then((result) => {
-            enqueueSnackbar(result.data.message, {
-              variant:'success'
-            })
-            onClose()
-            setLoading(false)
-            setFormValues(initialValues)
-          }).catch((err) => {
-              console.log(err)
-          });
+          if(type === 'Outlook') {
+            dispatch(sendMail(formData)).then((result) => {
+              enqueueSnackbar(result.data.message, {
+                variant:'success'
+              })
+              onClose()
+              setLoading(false)
+              setFormValues(initialValues)
+            }).catch((err) => {
+                console.log(err)
+            });
+          }
+          else if (type === 'Google') {
+            dispatch(sendMailGoogle(formData)).then((result) => {
+              enqueueSnackbar(result.data.message, {
+                variant:'success'
+              })
+              onClose()
+              setLoading(false)
+              setFormValues(initialValues)
+            }).catch((err) => {
+                console.log(err)
+            });
+          }
       }
       const handleSendSchedule = () => {
         setLoader(true)
@@ -377,7 +392,7 @@ const ComposePopup = ({onClose }) => {
         <ListItem
         key={index}
         button
-        selected={index === selectedItem} // Add selected prop
+        selected={index === selectedItem} 
         sx={{
           "&:hover": {
             backgroundColor: "#e2e2e2",
@@ -385,7 +400,7 @@ const ComposePopup = ({onClose }) => {
           backgroundColor: index === selectedItem ? "#e2e2e2" : "inherit", 
           color: index === selectedItem ? "#000" : "#000", 
         }}
-        onClick={() => setSelectedItem(index)} // Handle item click
+        onClick={() => setSelectedItem(index)}
         >
           <ListItemText
             primary={item.title}
