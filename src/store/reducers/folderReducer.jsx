@@ -8,7 +8,8 @@ const initialState = {
     conntent:'',
     src:'',
     folders_google:[],
-    hit_src:''
+    hit_src:'',
+    current_state:''
 
 }
 
@@ -84,6 +85,13 @@ const folderReducer = (state=initialState, action) => {
                 hit_src:action.payload
             };
         }
+        case 'SWITCH_CURRENT_STATE': {
+            return {
+                ...state,
+                current_state:action.payload,
+                src:action.payload
+            };
+        }
         case 'RESET_STATE': {
             return initialState;
         }
@@ -95,7 +103,8 @@ const folderReducer = (state=initialState, action) => {
                folder_name:'',
                content:'',
                folders_google:[],
-               hit_src:''
+               hit_src:'',
+               current_state:''
 
 
 

@@ -36,6 +36,8 @@ const ListContainer = () => {
   const data_google = useSelector((state)=>state.folder.folders_google)
   const hit_src = useSelector((state)=>state.folder.hit_src)
   const sourceValue = localStorage.getItem('soruce');
+  const current_state = useSelector((state)=>state.folder.current_state)
+  // console.log(current_state)
   // console.log(sourceValue)
   // console.log(hit_src, "HIT SRC")
   // console.log(data_google, "GOOGLE FOLDERS")
@@ -86,16 +88,16 @@ const ListContainer = () => {
     setOpenG(!openG);
   };
   useEffect(() => {
-    if(type === 'Outlook') {
+    if(type === 'Outlook' && current_state === 'Outlook') {
       if (data.folders.length > 0) {
         setSelectedItem(data.folders[4]); 
       }
-    } else if (type === 'Google') {
+    } else if (type === 'Google' && current_state === 'Google') {
       if(data_google.length > 0) {
         setSelectedItem(data_google[0]?.labels[2] || '')
       }
     }
-  }, [data.folders, data_google]);
+  }, [data.folders, data_google, current_state]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openM = Boolean(anchorEl);
   const handleClickM = (event) => {
@@ -120,7 +122,7 @@ const ListContainer = () => {
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
   useLayoutEffect(()=> {
-    if(type==='Outlook') {
+    if(type==='Outlook' && current_state ==='Outlook') {
       dispatch(getListData(selectedItem?.folder_id)).then((result) => {
         setListData(result.data.payload)
       }).catch((err) => {
@@ -128,7 +130,7 @@ const ListContainer = () => {
       });
       dispatch(resetLoading())
     }
-    else if (type === 'Google') {
+    else if (type === 'Google' && current_state === 'Google') {
       dispatch(getListDataGoogle(selectedItem?.id)).then((result) => {
         // console.log(result.data.payload[0], 'RESULT GOOGLE')
         setListData(result.data.payload[0])
@@ -231,7 +233,7 @@ const ListContainer = () => {
       <Box sx={{ mt: 2 }}>
         <List>
         {
-  type === 'Outlook' && data.folders.length > 0 ? (
+  type === 'Outlook' && data.folders.length > 0 && current_state == 'Outlook' ? (
     data.folders.map((val, ind) => (
       <ListItem
         key={ind}
@@ -277,7 +279,7 @@ const ListContainer = () => {
         />
       </ListItem>
     ))
-  ) : type === 'Google' && data_google != 'undefined' && data_google?.length > 0 ? (
+  ) : type === 'Google' && data_google != 'undefined' && data_google?.length > 0 && current_state == 'Google' ? (
     data_google[0].labels.map((val, ind) => (
       <ListItem
         key={ind}

@@ -6,17 +6,27 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import SettingsDialog from './components/SettingsDialog';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-import { logout } from '../../../../store/actions/folderActions';
+import { current_State, logout } from '../../../../store/actions/folderActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router';
 import SettingsPage from './components/SettingsPage';
 import { Add, ArrowDropDown } from '@mui/icons-material';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+
 const TopBar = () => {
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
   const user = useSelector((state)=>state.email.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const data = useSelector((state)=>state)
+  // console.log(data)
   const openM = Boolean(anchorEl);
+  const outlook_data = useSelector((state)=>state.folder.folders)
+  const google_data = useSelector((state)=>state.folder.folderDataG)
+  const current_state = useSelector((state)=>state.folder.current_state)
+  // console.log(google_data)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -24,6 +34,34 @@ const TopBar = () => {
     setAnchorEl(null);
     setOpen(true)
   };
+  const sweetAlertFunc = () => {
+    let timerInterval;
+    MySwal.fire({
+      title: "Switching Account Please Wait",
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+        const timer = Swal.getPopup().querySelector("b");
+        timerInterval = setInterval(() => {
+          timer.textContent = `${Swal.getTimerLeft()}`;
+        }, 100);
+      },
+      willClose: () => {
+        clearInterval(timerInterval);
+      }
+    }).then((result) => {
+      if (result.dismiss === Swal.DismissReason.timer) {
+        MySwal.fire({
+          position: "center",
+          icon: "success",
+          title: "Done",
+          showConfirmButton: false,
+          timer: 2000
+        });
+      }
+    });
+  }
   const handleSignout = () => {
     confirmAlert({
       title: "Log Out?",
@@ -41,10 +79,21 @@ const TopBar = () => {
       ],
     });
   }
-  const accounts = [
-    {name:'Syed Mudasser', email:'smudasser36@gmail.com'},
-    {name:'Mudasser Jaafri', email:'mudasser.dev44@gmail.com'}
-  ]
+  console.log(outlook_data)
+  const accounts = [];
+
+  if (google_data?.length > 0) {
+    accounts.push({ name: 'Google', data: google_data, type: 'Google' });
+  }
+
+  if (outlook_data.length > 0) {
+    accounts.push({ name: 'Outlook', data: outlook_data, type: 'Outlook' });
+  }
+  const handleMenuItemClick = (type) => {
+    dispatch(current_State(type))
+    setAnchorEl(null)
+    sweetAlertFunc()
+  }
   return (
     <div>
         <AppBar sx={{background:'#F0EDED', position:'static'}} elevation={0}>
@@ -96,7 +145,7 @@ const TopBar = () => {
                   id="basic-menu"
                   anchorEl={anchorEl}
                   open={openM}
-                  onClose={handleClose}
+                  onClose={()=>setAnchorEl(null)}
                   MenuListProps={{
                     'aria-labelledby': 'basic-button',
                   }}
@@ -113,12 +162,13 @@ const TopBar = () => {
                   </Typography>
                   {
                     accounts.map((val, ind)=> {
+                      const disabledS = current_state === val.type
                       return(
-                         <MenuItem>
+                         <MenuItem onClick={()=>handleMenuItemClick(val.type)} disabled={disabledS}>
                         <Box sx={{display:'flex', alignItems:'center'}}>
                         <Avatar src="/user2.png" /> 
                         <Box>
-                        <Typography sx={{ml:1, fontWeight:'bold'}}>Outlook</Typography>
+                        <Typography sx={{ml:1, fontWeight:'bold'}}>{val.name} <span style={{display:disabledS ? 'inline' : 'none', marginLeft:'2px'}}>(Currently Using)</span></Typography>
                         <Typography sx={{ml:1, fontWeight:'bold'}}>{user?.email || ''}</Typography>
                         </Box>
                         </Box>

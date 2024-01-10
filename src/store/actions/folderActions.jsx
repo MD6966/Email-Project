@@ -89,6 +89,14 @@ export const getAllFolders = () => async (dispatch) => {
     
     
   };
+  export const current_State = (c_state) => (dispatch) => {
+    dispatch({
+      type: 'SWITCH_CURRENT_STATE',
+      payload:c_state,
+    });
+    
+    
+  };
   export const logout = () => (dispatch) => {
     dispatch({
       type: 'LOG_OUT',
