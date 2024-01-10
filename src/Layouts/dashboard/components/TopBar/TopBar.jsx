@@ -24,9 +24,9 @@ const TopBar = () => {
   // console.log(data)
   const openM = Boolean(anchorEl);
   const outlook_data = useSelector((state)=>state.folder.folders)
-  const google_data = useSelector((state)=>state.folder.folderDataG)
+  const google_data = useSelector((state)=>state.folder.folders_google)
   const current_state = useSelector((state)=>state.folder.current_state)
-  // console.log(google_data)
+  console.log(google_data)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };

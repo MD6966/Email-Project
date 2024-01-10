@@ -297,9 +297,14 @@ const MainContent = () => {
                 width="30"
                 visible={loading} 
                 /> :
-              <Button variant="outlined" type='submit' sx={{ mt: 2 }}>
-                Submit
+                <Box sx={{mb:2, ml:1}}>
+              <Button variant="outlined" sx={{ mr: 2, mt:2 }} onClick={()=>setEditorVisible(false)}>
+                cancel
               </Button>
+              <Button variant="outlined" type='submit' sx={{ mt: 2 }}>
+              Submit
+            </Button>
+                </Box>
               }
               </form>
             </Card>

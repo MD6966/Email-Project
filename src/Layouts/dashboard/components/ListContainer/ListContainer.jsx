@@ -48,6 +48,8 @@ const ListContainer = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [dTitle, setDtitle] = useState('')
   const [listData, setListData] = useState([])
+  const [group, setGroup] = useState(false)
+  const [groupData, setGroupData] = useState([])
   const [name, setName] = useState('')
   const [groups, setGroups] = useState([])
   const dispatch = useDispatch()
@@ -76,6 +78,8 @@ const ListContainer = () => {
   };
   const handleItemClick = (item) => {
     setSelectedItem(item);
+    setGroup(false)
+    setGroupData([])
     if(type==='Outlook') {
       dispatch(folderName(item.folder_name))
     }
@@ -89,15 +93,24 @@ const ListContainer = () => {
   };
   useEffect(() => {
     if(type === 'Outlook' && current_state === 'Outlook') {
+      if(group) {
+        setSelectedItem(null)
+      }
+      else 
       if (data.folders.length > 0) {
         setSelectedItem(data.folders[4]); 
       }
+      
     } else if (type === 'Google' && current_state === 'Google') {
+      if(group) {
+        setSelectedItem(null)
+      }
+      else
       if(data_google.length > 0) {
         setSelectedItem(data_google[0]?.labels[2] || '')
       }
     }
-  }, [data.folders, data_google, current_state]);
+  }, [data.folders, data_google, current_state, group]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openM = Boolean(anchorEl);
   const handleClickM = (event) => {
@@ -117,8 +130,10 @@ const ListContainer = () => {
     setName('')
   }
   const topRef = useRef(null);
-  const hnadleGroupBtn = (val) => {
+  const hnadleGroupBtn = (val, data) => {
     dispatch(setList(val))
+    setGroupData(data)
+    setGroup(true)
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
   useLayoutEffect(()=> {
@@ -331,6 +346,9 @@ const ListContainer = () => {
 }
 
         </List>
+        {
+          type === 'Outlook' && (
+        <>
         <Box sx={{mt:2}}>
           <List>
           <ListItemButton onClick={handleClick}
@@ -406,7 +424,7 @@ const ListContainer = () => {
                 return(
                   <>
                   <ListItemButton sx={{ pl: 4, height:'35px' }}
-                  onClick={()=>hnadleGroupBtn('Group')}
+                  onClick={()=>hnadleGroupBtn('Group', val)}
                   >
                   <ListItemIcon>
                     <LabelIcon />
@@ -433,6 +451,9 @@ const ListContainer = () => {
       </Collapse>
           </List>
         </Box>
+        </>
+          )
+        }
         {/* <Box sx={{ mt: 2 }}>
           <div>{selectedItem.content}</div>
         </Box> */}
@@ -462,6 +483,8 @@ const ListContainer = () => {
       <ListDataContainer 
       data={listData}
       type={type}
+      group={group}
+      groupData={groupData}
       />
 
     </>

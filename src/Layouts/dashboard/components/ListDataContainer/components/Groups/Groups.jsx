@@ -40,10 +40,15 @@ const Groups = () => {
     }
   return (
     <Box>
+      <Box sx={{display:'flex', alignItems:'center', justifyContent:'space-between', mb:2}}>
+           <Typography variant='h6' fontWeight="bold">
+            Groups
+           </Typography>
           <Box sx={{display:'flex', justifyContent:'flex-end'}}>
           <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
           <FilterListIcon style={{ fontSize: '24px' }} />
         </Box>
+      </Box>
         <Box sx={{display:'flex'}}>
             <Avatar>
                 S

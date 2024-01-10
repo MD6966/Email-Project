@@ -16,8 +16,8 @@ import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead } from '../../../../store/actions/mailActions';
-const ListDataContainer = ({data, type}) => {
-  // console.log(data, "DATA FROM CONTAINER")
+const ListDataContainer = ({data, type, group, groupData}) => {
+  console.log(groupData, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
   const l_data = 
@@ -153,7 +153,9 @@ const ListDataContainer = ({data, type}) => {
       
     } */}
     <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+      {
+        !group ?
+        <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
           {folder_name ?
           folder_name:
@@ -164,7 +166,8 @@ const ListDataContainer = ({data, type}) => {
           <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
           <FilterListIcon style={{ fontSize: '24px' }} />
         </Box>
-      </Box>
+      </Box> : null
+      }
       <Box sx={{ mt: 2 }}>
         {/* <Typography style={{ fontSize: '14px' }}>
           Today
@@ -184,8 +187,10 @@ const ListDataContainer = ({data, type}) => {
                 </Box>
             : 
             list_data && 
-            list_data.length < 1 ?
+            list_data.length < 1 && !group ?
             <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
+              group ? 
+              <Groups /> :
           data.map((val, index) => {
             // console.log(val, 'INSIDE')
             return(
