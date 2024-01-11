@@ -2,8 +2,6 @@ import { Box, Skeleton, Typography } from '@mui/material';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ArchiveIcon from '@mui/icons-material/Archive';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import Divider from '@mui/material/Divider';
@@ -17,14 +15,14 @@ import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead } from '../../../../store/actions/mailActions';
 const ListDataContainer = ({data, type, group, groupData}) => {
-  console.log(groupData, "DATA FROM CONTAINER")
+  // console.log(data, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
   const l_data = 
   type === 'Outlook' ?
   useSelector((state)=>state.folder.folderData):
   useSelector((state)=>state.folder.folderDataG)
-  
+  // console.log(l_data, "YYYYYY")
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const folder_name = useSelector((state)=>state.folder.folder_name)
   const [selectedContent, setSelectedContent] = useState('')
@@ -46,10 +44,11 @@ const ListDataContainer = ({data, type, group, groupData}) => {
     if (list_data && !selectedContent) {
       setSelectedContent(list_data[0]);
     }
-  }, [list_data, selectedContent]);
+  }, [list_data, selectedContent, data]);
+  // console.log(selectedContent, "++++____+++++")
   useEffect(()=> {
     dispatch(content(selectedContent))
-  }, [selectedContent])
+  }, [selectedContent, list_data ])
   useLayoutEffect(()=> {
     setSelectedItem(0)
   }, [list_data])

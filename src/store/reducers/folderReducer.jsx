@@ -89,7 +89,9 @@ const folderReducer = (state=initialState, action) => {
             return {
                 ...state,
                 current_state:action.payload,
-                src:action.payload
+                src:action.payload,
+                conntent:'',
+
             };
         }
         case 'RESET_STATE': {

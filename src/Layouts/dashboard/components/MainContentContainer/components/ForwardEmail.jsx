@@ -1,11 +1,12 @@
 import { Button, Dialog, DialogActions, DialogContent, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { forwardMail } from '../../../../../store/actions/mailActions'
+import { forwardMail, forwardMailGoogle } from '../../../../../store/actions/mailActions'
 import { useSnackbar } from 'notistack'
 import { RotatingLines } from 'react-loader-spinner'
 
-const ForwardEmail = ({open, close, id}) => {
+const ForwardEmail = ({open, close, id, type}) => {
+    // console.log(type)
     const [email, setEmail] = useState(false)
     const [loading, setLoading] = useState(false)
     const dispatch = useDispatch()
@@ -16,7 +17,11 @@ const ForwardEmail = ({open, close, id}) => {
         const formData = new FormData()
         formData.append('message_id', id)
         formData.append('email', email)
-        dispatch(forwardMail(formData)).then((result) => {
+        dispatch(
+            type === 'Outlook' ?
+            forwardMail(formData) :
+            forwardMailGoogle(formData)
+        ).then((result) => {
             setLoading(false)
             enqueueSnackbar(result.data.message, {
                 variant:'success'

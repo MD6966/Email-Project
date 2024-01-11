@@ -27,7 +27,7 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail, replyMail } from '../../../../store/actions/mailActions';
+import { deleteMail, replyMail, replyMailGoogle } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
@@ -68,7 +68,8 @@ const MainContent = () => {
   const [loading, setloading]= useState(false)
   const content = useSelector((state)=>state.folder.content)
   const isLoading = useSelector((state)=>state.folder.isLoading)
-  // console.log(content, "THIS IS CONTETN")
+  const type = useSelector((state)=>state.folder.src)
+  // console.log(type, "++++TYPE")
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
 
@@ -135,7 +136,12 @@ const MainContent = () => {
       formData.append('ccEmail', formValues.ccEmail)
     }
     formData.append('description', text)
-    dispatch(replyMail(formData)).then((result) => {
+    
+    dispatch(
+      type === 'Outlook' ?
+      replyMail(formData) :
+      replyMailGoogle(formData)
+    ).then((result) => {
       setloading(false)
       enqueueSnackbar(result.data.message, {
         variant:'success'
@@ -391,6 +397,7 @@ const MainContent = () => {
        open={forwardOpen}
        close={()=>setForwardOpen(false)}
        id={content?.mail_id || ''}
+       type={type}
        />
     </StyledRoot>
   );
