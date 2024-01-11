@@ -190,7 +190,7 @@ const ListDataContainer = ({data, type, group, groupData}) => {
             list_data.length < 1 && !group ?
             <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
               group ? 
-              <Groups /> :
+              <Groups groupData={groupData} /> :
           data.map((val, index) => {
             // console.log(val, 'INSIDE')
             return(

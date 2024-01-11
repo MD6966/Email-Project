@@ -23,7 +23,8 @@ const listData = [
     {icon: <LogoutIcon />, title:'Leave Group'},
 
   ]
-const Groups = () => {
+const Groups = ({groupData}) => {
+  // console.log(groupData)
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const [dialog, setDialog] = useState(false)
@@ -56,9 +57,9 @@ const Groups = () => {
             <Box sx={{ml:1, display:'flex'}}>
                 <Box>
             <Typography fontWeight="bold" sx={{mt:0.5, fontSize:'18px'}}>
-                Saeedan 
+                {groupData.name} 
             </Typography>
-            <Typography sx={{fontSize:'12px', mt:-0.5, color:'#777'}}>3 members</Typography>
+            <Typography sx={{fontSize:'12px', mt:-0.5, color:'#777'}}>{groupData?.outlook_contacts?.length + 1} members</Typography>
                 </Box>
                 <StarOutlineOutlined sx={{mt:0.5, ml:2}}/>
             </Box>

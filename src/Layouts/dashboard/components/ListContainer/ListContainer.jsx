@@ -49,7 +49,11 @@ const ListContainer = () => {
   const [dTitle, setDtitle] = useState('')
   const [listData, setListData] = useState([])
   const [group, setGroup] = useState(false)
+  const [label, setLabel] = useState(false)
   const [groupData, setGroupData] = useState([])
+  const [lableData, setLabelData] = useState([])
+  const [selectedGroup, setSelectedGroup] = useState([])
+  const [selectedLabel, setSelectedLabel] = useState([])
   const [name, setName] = useState('')
   const [groups, setGroups] = useState([])
   const dispatch = useDispatch()
@@ -80,6 +84,7 @@ const ListContainer = () => {
     setSelectedItem(item);
     setGroup(false)
     setGroupData([])
+    setSelectedGroup([])
     if(type==='Outlook') {
       dispatch(folderName(item.folder_name))
     }
@@ -132,9 +137,14 @@ const ListContainer = () => {
   const topRef = useRef(null);
   const hnadleGroupBtn = (val, data) => {
     dispatch(setList(val))
+    setSelectedGroup(data)
     setGroupData(data)
     setGroup(true)
     topRef.current.scrollIntoView({ behavior: 'smooth' });
+  }
+  const handleLableBtn = () => {
+    setLabel(true)
+    setSelectedGroup([])
   }
   useLayoutEffect(()=> {
     if(type==='Outlook' && current_state ==='Outlook') {
@@ -373,7 +383,9 @@ const ListContainer = () => {
           Add Label
         </Button>
         <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4, height:'35px' }}>
+          <ListItemButton sx={{ pl: 4, height:'35px' }}
+          onClick={()=>handleLableBtn()}
+          >
             <ListItemIcon>
               <LabelIcon />
             </ListItemIcon>
@@ -423,8 +435,16 @@ const ListContainer = () => {
                 // console.log(val)
                 return(
                   <>
-                  <ListItemButton sx={{ pl: 4, height:'35px' }}
+                  <ListItemButton
                   onClick={()=>hnadleGroupBtn('Group', val)}
+                  sx={{
+                    backgroundColor: selectedGroup?.name === val?.name ? '#B5DCFF' : 'transparent' || '',
+                    pl: 4, height:'35px' ,
+                    '&:hover': {
+                      backgroundColor: selectedGroup?.name === val?.name ? '#B5DCFF' : 'rgba(0, 0, 0, 0.04)' || '',
+                    },
+                  }}
+                
                   >
                   <ListItemIcon>
                     <LabelIcon />
