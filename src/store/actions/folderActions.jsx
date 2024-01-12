@@ -66,7 +66,7 @@ export const getAllFolders = () => async (dispatch) => {
   };
 
   export const content = (cont) => (dispatch) => {
-    // console.log(cont, "THIS IS CONTENT")
+    console.log(cont, "THIS IS CONTENT")
     dispatch({
       type: 'CONTENT_SETTER',
       payload:cont,

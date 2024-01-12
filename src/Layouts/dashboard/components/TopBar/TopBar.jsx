@@ -10,7 +10,7 @@ import { current_State, logout } from '../../../../store/actions/folderActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router';
 import SettingsPage from './components/SettingsPage';
-import { Add, ArrowDropDown } from '@mui/icons-material';
+import { Add, ArrowDropDown, Folder } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
 import { Link } from 'react-router-dom';
@@ -112,10 +112,21 @@ const TopBar = () => {
               style={inputStyles}
               placeholder='Search here'
               />
-              <Button variant='outlined' sx={{ml:2}} size="small"
-              onClick={handlebtn}
+              <Button 
+              component={Link}
+              to="/assistant"
+              variant='outlined' size="small" sx={{ml:1}}>
+                AI Assistant 
+              </Button>
+              <Button 
+              component={Link}
+              to="/files"
+              variant='outlined' sx={{ml:1}}
+              startIcon={
+                <Folder />
+              }
               >
-                Ai Assistant 
+                Files
               </Button>
               </Box>
               <Box sx={{display:'flex', alignItems:'center', color:'#4A4848',}}>

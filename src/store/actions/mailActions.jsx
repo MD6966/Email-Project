@@ -74,11 +74,37 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  export const forwardMailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-forwardMail', body);
+      dispatch({
+        type: 'FORWARD_EMAIL_GOOGLE',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
   export const replyMail = (body) => async (dispatch) => {
     try {
       const res = await api.post('api/outlook-reply-email', body);
       dispatch({
         type: 'REPLY_EMAIL',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const replyMailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-replyMail', body);
+      dispatch({
+        type: 'REPLY_EMAIL_GOOGLE',
         payload: res.data.payload,
       });
   
