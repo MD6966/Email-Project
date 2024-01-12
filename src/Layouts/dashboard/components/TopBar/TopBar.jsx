@@ -8,11 +8,12 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { current_State, logout } from '../../../../store/actions/folderActions';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import SettingsPage from './components/SettingsPage';
 import { Add, ArrowDropDown } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
+import { Link } from 'react-router-dom';
 const MySwal = withReactContent(Swal)
 
 const TopBar = () => {
@@ -21,12 +22,13 @@ const TopBar = () => {
   const user = useSelector((state)=>state.email.user)
   const [anchorEl, setAnchorEl] = React.useState(null);
   const data = useSelector((state)=>state)
+  const navigate = useNavigate()
   // console.log(data)
   const openM = Boolean(anchorEl);
   const outlook_data = useSelector((state)=>state.folder.folders)
   const google_data = useSelector((state)=>state.folder.folders_google)
   const current_state = useSelector((state)=>state.folder.current_state)
-  console.log(google_data)
+  // console.log(google_data)
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -94,11 +96,14 @@ const TopBar = () => {
     setAnchorEl(null)
     sweetAlertFunc()
   }
+  const handlebtn = () => {
+    navigate('/ai-assistant')
+  }
   return (
     <div>
         <AppBar sx={{background:'#F0EDED', position:'static'}} elevation={0}>
-            <Toolbar sx={{display:'flex', justifyContent:'space-between'}}>
-              <Box sx={{display:'flex'}}>
+            <Toolbar sx={{display:'flex', justifyContent:'space-between', }}>
+              <Box sx={{display:'flex', alignItems:'center'}}>
               <Avatar sx={{mr:2}}>
                 E
               </Avatar>
@@ -107,6 +112,11 @@ const TopBar = () => {
               style={inputStyles}
               placeholder='Search here'
               />
+              <Button variant='outlined' sx={{ml:2}} size="small"
+              onClick={handlebtn}
+              >
+                Ai Assistant 
+              </Button>
               </Box>
               <Box sx={{display:'flex', alignItems:'center', color:'#4A4848',}}>
                 <HelpIcon style={iconStyles} />

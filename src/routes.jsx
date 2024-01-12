@@ -15,6 +15,7 @@ import ProtectedRoutes from './Components/ProtectedRoutes/ProtectedRoutes'
 import Login from './Views/Auth/Login';
 import { useSelector } from 'react-redux';
 import SettingsPage from './Layouts/dashboard/components/TopBar/components/SettingsPage';
+import AI_Assistant from './Views/AI-Assistant/AI_Assistant';
 export default function Router() {
     const [progress, setProgress] = useState(0);
     const isAuthenticatedUser = useSelector((state)=>state.email.isAuthenticatedUser)
@@ -77,6 +78,10 @@ export default function Router() {
                 {
                     path:'/register',
                     element:<Register setprogress={setProgress}/>
+                },
+                {
+                    path:'/ai-assistant',
+                    element:<AI_Assistant setprogress={setProgress}/>
                 }
             ])}
         </>
