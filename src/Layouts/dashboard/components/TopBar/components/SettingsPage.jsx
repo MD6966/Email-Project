@@ -2,7 +2,7 @@ import { Box, FormControlLabel, Radio, RadioGroup, Typography, Button, Card, Car
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { current_State, loginHITSRC, loginSRC } from '../../../../../store/actions/folderActions';
+import { current_State, loginHITSRC, loginSRC, outlookSubsctiption } from '../../../../../store/actions/folderActions';
 
 const SettingsPage = () => {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -12,7 +12,7 @@ const SettingsPage = () => {
   const codeParam = currentUrl.searchParams.get('code');
   const user = useSelector((state)=>state.email.user)
   const dispatch = useDispatch()
-//   console.log(user, 'This is User')
+  // console.log(user, 'This is User')
   const handleOptionChange = (event) => {
     setSelectedOption(event.target.value);
   };
@@ -25,6 +25,9 @@ const SettingsPage = () => {
             window.location.href = import.meta.env.VITE_REDIRECT_URL;
         }
         else {
+          if(user.outlook_subscription_id == null) {
+            dispatch(outlookSubsctiption())
+          }
             navigate('/dashboard')
         }
     }

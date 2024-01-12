@@ -36,7 +36,7 @@ const handleClickShowPassword = () => {
       e.preventDefault()
       setLoading(true)
       dispatch(login(formValues)).then((result) => {
-        console.log(result)
+        // console.log(result)
         setLoading(false)
         navigate('/settings-page')
         // if(result.data.payload.user.outlook_access_token) {

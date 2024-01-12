@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
-import { authenticate, getAllFolders, getAllFoldersGoogle, loginHITSRC, loginSRC } from '../../../../../store/actions/folderActions';
+import { authenticate, getAllFolders, getAllFoldersGoogle, loginHITSRC, loginSRC, outlookSubsctiption } from '../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useLocation } from 'react-router';
 import { addAcount } from '../../../../../store/actions/accountActions';
@@ -104,9 +104,11 @@ const SettingsDialog = ({open,close}) => {
         window.location.href = import.meta.env.VITE_RIDERECT_URL;
     }
     else {
+      console.log(user)
       close()
       setSelectedOption(null)
       dispatch(getAllFolders())
+      // dispatch(outlookSubsctiption())
       dispatch(getListData(outlook_data?.folder_id || ''))
       sweetAlertFunc()
 

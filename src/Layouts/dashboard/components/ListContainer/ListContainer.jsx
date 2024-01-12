@@ -24,7 +24,7 @@ import ComposePopup from './components/ComposePopup';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, getListDataGoogle, setList } from '../../../../store/actions/listActions';
-import { authenticate, authenticateGoogle, folderName, getAllFolders, getAllFoldersGoogle, resetLoading } from '../../../../store/actions/folderActions';
+import { authenticate, authenticateGoogle, folderName, getAllFolders, getAllFoldersGoogle, outlookSubsctiption, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 import DialogLoader from './components/DialogLoader';
@@ -181,7 +181,7 @@ const ListContainer = () => {
         dispatch(authenticate(formData)).then((result) => {
           console.log('AUTH RESULT', result)
           dispatch(getAllFolders()).then((result) => {
-  
+            dispatch(outlookSubsctiption())
             console.log(result, "RESULT AFTER AUTH")
             navigate('/dashboard', { replace: true });
         }).catch((err) => {

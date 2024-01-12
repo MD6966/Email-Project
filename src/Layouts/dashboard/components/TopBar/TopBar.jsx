@@ -81,7 +81,7 @@ const TopBar = () => {
       ],
     });
   }
-  console.log(outlook_data)
+  // console.log(outlook_data)
   const accounts = [];
 
   if (google_data?.length > 0) {
@@ -121,7 +121,9 @@ const TopBar = () => {
               <Button 
               component={Link}
               to="/files"
-              variant='outlined' sx={{ml:1}}
+              variant='outlined' 
+              size="small"
+              sx={{ml:1}}
               startIcon={
                 <Folder />
               }

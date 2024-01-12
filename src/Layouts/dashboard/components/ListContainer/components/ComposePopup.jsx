@@ -16,7 +16,7 @@ import { scheduleEmail, sendMail, sendMailGoogle } from '../../../../../store/ac
 import { useSnackbar } from 'notistack';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
-import { ReportGmailerrorred } from '@mui/icons-material';
+import { Close, ReportGmailerrorred } from '@mui/icons-material';
 import { RotatingLines } from 'react-loader-spinner';
 const options = [ 'Schedule Send'];
 const MySwal = withReactContent(Swal)
@@ -24,7 +24,10 @@ const initialValues = {
   email:'',
   subject:'',
   description:'',
-  attachment:''
+  attachment:'',
+  ccEmail:'',
+  bccEmail:''
+
 }
 const ComposePopup = ({onClose, type }) => {
     // console.log(type, 'THIS ISSSSSS')
@@ -38,6 +41,8 @@ const ComposePopup = ({onClose, type }) => {
     const [emails, setEmails] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const anchorRef = React.useRef(null);
+    const [showCcText, setShowCc] = useState(true);
+    const [showBccText, setShowBcc] = useState(true);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
     const [dialog, setDialog] = React.useState(false)
     const dispatch = useDispatch()
@@ -155,8 +160,14 @@ const ComposePopup = ({onClose, type }) => {
           formData.append('email', formValues.email)
           formData.append('subject', formValues.subject)
           formData.append('description', formValues.description)
-          formData.append('ccEmail', 'bh31874@gmail.com')
-          formData.append('bccEmail', 'mudasser.dev44@gmail.com')
+          if(formValues.bccEmail)
+          {
+            formData.append('bccEmail', formValues.bccEmail)
+          }
+          if(formValues.ccEmail)
+          {
+            formData.append('ccEmail', formValues.ccEmail)
+          }
           if (attachment) {
             formData.append('attachment', attachment);
           }
@@ -169,6 +180,7 @@ const ComposePopup = ({onClose, type }) => {
               setLoading(false)
               setFormValues(initialValues)
             }).catch((err) => {
+              setLoading(false)
                 console.log(err)
             });
           }
@@ -181,6 +193,7 @@ const ComposePopup = ({onClose, type }) => {
               setLoading(false)
               setFormValues(initialValues)
             }).catch((err) => {
+              setLoading(false)
                 console.log(err)
             });
           }
@@ -206,10 +219,22 @@ const ComposePopup = ({onClose, type }) => {
         // console.log(selectedDateTime, 'THIS IS SELECTED')
 
       }
+      const handleCcClick = () => {
+        setShowCc(false);
+      };
+      const handleCloseCC = () => {
+        setShowCc(true);
+      }
+      const handleCloseBCC = () => {
+        setShowBcc(true)
+      }
+      const handleBccClick = () => {
+        setShowBcc(false);
+      };
   return (
     <Box className="compose-popup"
     sx={{
-        height:'500px',
+        minHeight:'500px',
         width:'550px',
         borderRadius:'20px',
         p:0.5,
@@ -230,7 +255,7 @@ const ComposePopup = ({onClose, type }) => {
         <Box sx={{width:'100%'}}>
       <form onSubmit={handleSubmit}>
         <Box sx={{ height: '95%', overflowY: 'auto' }}>
-          <TextField 
+          {/* <TextField 
           label="To"
           variant='standard'
           fullWidth
@@ -239,7 +264,71 @@ const ComposePopup = ({onClose, type }) => {
           onChange={handleChange}
           required
           type='email'
-          />
+          /> */}
+          <TextField label="To" variant='standard' fullWidth
+              name='email'
+              value={formValues.email}
+              onChange={handleChange}
+              required
+              sx={{mb:2}} 
+               InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    {showCcText &&
+                    <Typography sx={{cursor:'pointer', '&:hover':{textDecoration:'underline'}}}
+                    onClick={handleCcClick}
+                    >
+                      Cc/ 
+                    </Typography>
+                    }
+                    {
+                      showBccText &&
+                    <Typography sx={{cursor:'pointer', '&:hover':{textDecoration:'underline'}}}
+                    onClick={handleBccClick}
+                    
+                    >
+                      Bcc 
+                    </Typography>
+                    }
+                  </InputAdornment>
+                ),
+              }}
+              />
+              {
+                !showCcText &&
+              <TextField label="Cc Email" fullWidth variant='standard' sx={{mb:2}}
+              name='ccEmail'
+              value={formValues.ccEmail}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleCloseCC}>
+                      <Close />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }} 
+              />
+              }
+              {
+                !showBccText &&
+                <TextField label="Bcc Email" fullWidth variant='standard' sx={{mb:2}}
+                name='bccEmail'
+                value={formValues.bccEmail}
+                onChange={handleChange}
+
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleCloseBCC}>
+                        <Close />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                />
+              }
         {/* <TextField
           id="to-field"
           variant="standard"

@@ -66,7 +66,7 @@ export const getAllFolders = () => async (dispatch) => {
   };
 
   export const content = (cont) => (dispatch) => {
-    console.log(cont, "THIS IS CONTENT")
+    // console.log(cont, "THIS IS CONTENT")
     dispatch({
       type: 'CONTENT_SETTER',
       payload:cont,
@@ -118,6 +118,19 @@ export const getAllFolders = () => async (dispatch) => {
   
     try {
       const res = await api.post('api/google-authentication', code);
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const outlookSubsctiption = () => async (dispatch) => {
+    try {
+      const res = await api.get('api/outlook-subscription');
+      dispatch({
+        type: 'OULOOK_SUB',
+        payload: res.data.payload,
+      });
+  
       return res ;
     } catch (err) {
       throw err;
