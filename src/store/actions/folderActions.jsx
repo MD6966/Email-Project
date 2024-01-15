@@ -163,3 +163,16 @@ export const getAllFolders = () => async (dispatch) => {
       throw err;
     }
   };
+  export const removeContactsFromGroup = (data) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-remove-contacts', data);
+      dispatch({
+        type: 'REMOVE_GROUP_CONTACTS',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

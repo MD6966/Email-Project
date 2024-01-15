@@ -27,13 +27,18 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail, replyMail, replyMailGoogle } from '../../../../store/actions/mailActions';
+import { deleteMail, flagEmail, markAsRead, replyMail, replyMailGoogle, unFlagEmail } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
 import { Close } from '@mui/icons-material';
+import FlagIcon from '@mui/icons-material/Flag';
 import SkeletonComponent from './components/SkeletonComponent';
-
+import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
 }));
@@ -43,8 +48,9 @@ const menuData = [
   { icon: <DeleteIcon />, title: 'Spam' },
   { icon: <StarBorderIcon />, title: 'Favorite' },
   { icon: <ReplyIcon sx={{ transform: 'scaleX(-1)' }} />, title: 'Forward' },
-  { icon: <LocalPrintshopIcon />, title: 'Print' },
-  { icon: <AccessTimeIcon />, title: 'Later' },
+  { icon: <FlagIcon />, title: 'Flag' },
+  { icon: <RemoveCircleOutlineIcon />, title: 'Unflag' },
+  {icon: <MarkEmailUnreadIcon />, title:'Mark as unread'},
   { icon: <GTranslateIcon />, title: 'Translate' },
   { icon: <ContentCopyIcon />, title: 'Copy' },
   { icon: <CallIcon />, title: 'Call' },
@@ -66,6 +72,7 @@ const MainContent = () => {
   const [showCcText, setShowCc] = useState(true);
   const [showBccText, setShowBcc] = useState(true);
   const [loading, setloading]= useState(false)
+  const [loadingM, setLoadingM] = useState(false)
   const content = useSelector((state)=>state.folder.content)
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const type = useSelector((state)=>state.folder.src)
@@ -156,6 +163,53 @@ const MainContent = () => {
       console.log(err)
     });
 
+  }
+  const sweetalertFunc = (title) => {
+    MySwal.fire({
+      position: "top-center",
+      icon: "success",
+      title: title,
+      showConfirmButton: false,
+      timer: 1500
+    });
+  }
+  const handleMenuItemClick = (data) => {
+    setAnchorEl(null)
+    const formData = new FormData()
+    formData.append('message_id', content.mail_id)
+    formData.append('mail_id',content.id )
+    if (data.title === "Mark as unread")
+    {
+      setLoadingM(true)
+      dispatch(markAsRead(formData)).then((result) => {
+        setLoadingM(false)
+        sweetalertFunc("Email marked as unread")
+      }).catch((err) => {
+        setLoadingM(false)
+        console.log(err)
+      });
+    }
+    else if (data.title === 'Flag') {
+      setLoadingM(true)
+      dispatch(flagEmail(formData)).then((result) => {
+        setLoadingM(false)
+        sweetalertFunc("Email flagged Successfully")
+      }).catch((err) => {
+        setLoadingM(false)
+        console.log(err)
+      });
+    }
+    else if (data.title === 'Unflag') {
+      setLoadingM(true)
+      dispatch(unFlagEmail(formData)).then((result) => {
+        setLoadingM(false)
+        sweetalertFunc("Eamil Unflagged Successfully")
+      }).catch((err) => {
+        setLoadingM(false)
+        console.log(err)
+        
+      });
+    }
   }
   return (
     <StyledRoot>
@@ -364,7 +418,9 @@ const MainContent = () => {
                     return(
                         <>
                         <Grid item xs={3} md={3} lg={3}>
-                    <Box sx={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}}>
+                    <Box sx={{display:'flex', flexDirection:'column', alignItems:'center', cursor:'pointer'}} onClick={
+                      ()=>handleMenuItemClick(val)
+                    }>
                         {val.icon}
                         <Typography>{val.title}</Typography>
                     </Box>
@@ -394,6 +450,24 @@ const MainContent = () => {
           </Box>
         </DialogContent>
        </Dialog>
+       {
+        loadingM &&
+       <Dialog open={true} PaperProps={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }}>
+          
+          <DialogContent sx={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center'}}>
+          <RotatingLines
+                strokeColor="#fff"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="50"
+                visible={true} 
+                />
+                <Typography variant='h5' sx={{color:'#fff'}}>
+                  Please Wait
+                </Typography>
+          </DialogContent>
+       </Dialog>
+              }
        <ForwardEmail 
        open={forwardOpen}
        close={()=>setForwardOpen(false)}

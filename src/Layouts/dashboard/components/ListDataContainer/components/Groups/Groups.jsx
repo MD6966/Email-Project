@@ -11,6 +11,7 @@ import MenuItem from '@mui/material/MenuItem';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { icon } from '../../styles';
 import AddMember from './components/AddMember';
+import GroupMembers from './components/GroupMembers';
 const listData = [
     { title: 'React Js Developer', desc: 'Required React Js developer at Saeedan Technology.com', time: '2:48 pm' },
     { title: 'Frontend Engineer', desc: 'Exciting opportunity for a Frontend Engineer at ABC Corporation', time: '10:15 am' },
@@ -28,6 +29,7 @@ const Groups = ({groupData, memberSuccess}) => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const [dialog, setDialog] = useState(false)
+    const [memberDialog, setMemberDialg] = useState(false)
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
@@ -37,7 +39,10 @@ const Groups = ({groupData, memberSuccess}) => {
     const handleDialogOpen = () => {
       setDialog(true)
       setAnchorEl(null);
-
+    }
+    const handleMemberDialogOpen = () => {
+      setMemberDialg(true)
+      setAnchorEl(null);
     }
   return (
     <Box>
@@ -155,7 +160,10 @@ const Groups = ({groupData, memberSuccess}) => {
                 return(
                     <MenuItem onClick={
                       data.title === 'Add Member' ?
-                      handleDialogOpen : handleClose
+                      handleDialogOpen : 
+                      data.title === 'Members' ?
+                      handleMemberDialogOpen :
+                      handleClose
                     } sx={{height:'30px'}}>
                          <ListItemIcon>{data.icon}</ListItemIcon>
                         {data.title}</MenuItem>
@@ -163,6 +171,7 @@ const Groups = ({groupData, memberSuccess}) => {
             })
         }
       </Menu>
+      <GroupMembers title={groupData.name} open={memberDialog} close={()=>setMemberDialg(false)} data={groupData} addM={()=>setDialog(true)} />
       <AddMember open={dialog} close={()=>setDialog(false)} data={groupData} memberSuccess={memberSuccess}/>
     </Box>
   )

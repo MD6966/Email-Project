@@ -140,11 +140,26 @@ api.interceptors.request.use(
       throw err;
     }
   };
-  export const markAsUnread = (body) => async (dispatch) => {
+
+  export const flagEmail = (body) => async (dispatch) => {
     try {
-      const res = await api.post('api/outlook-read-email', body);
+      const res = await api.post('api/outlook-flagged-email', body);
       dispatch({
-        type: 'READ_EMAIL',
+        type: 'FLAG_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  export const unFlagEmail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-unflagged-email', body);
+      dispatch({
+        type: 'UNFLAG_EMAIL',
         // payload: res.data.payload,
       });
   
