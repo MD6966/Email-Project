@@ -64,6 +64,7 @@ const ListContainer = () => {
   const groupsData = () => {
     dispatch(getAllGroups()).then((result) => {
       setGroups(result.data.payload)
+      // console.log(result.data.payload)
     }).catch((err) => {
       console.log(err)
     });
@@ -505,6 +506,7 @@ const ListContainer = () => {
       type={type}
       group={group}
       groupData={groupData}
+      memberSuccess={groupsData}
       />
 
     </>

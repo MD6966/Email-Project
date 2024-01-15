@@ -23,8 +23,8 @@ const listData = [
     {icon: <LogoutIcon />, title:'Leave Group'},
 
   ]
-const Groups = ({groupData}) => {
-  // console.log(groupData)
+const Groups = ({groupData, memberSuccess}) => {
+  console.log(groupData, "This is Group Data")
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const [dialog, setDialog] = useState(false)
@@ -163,7 +163,7 @@ const Groups = ({groupData}) => {
             })
         }
       </Menu>
-      <AddMember open={dialog} close={()=>setDialog(false)}/>
+      <AddMember open={dialog} close={()=>setDialog(false)} data={groupData} memberSuccess={memberSuccess}/>
     </Box>
   )
 }

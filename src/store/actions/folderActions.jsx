@@ -136,3 +136,30 @@ export const getAllFolders = () => async (dispatch) => {
       throw err;
     }
   };
+  export const getGroupContacts = () => async (dispatch) => {
+    try {
+      const res = await api.get('api/outlook-contacts');
+      dispatch({
+        type: 'GROUP_CONTACTS',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  export const addContactsGroup = (data) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-add-contacts', data);
+      dispatch({
+        type: 'ADD_GROUP_CONTACTS',
+        payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
