@@ -12,6 +12,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { icon } from '../../styles';
 import AddMember from './components/AddMember';
 import GroupMembers from './components/GroupMembers';
+import SendEmail from './components/SendEmail';
 const listData = [
     { title: 'React Js Developer', desc: 'Required React Js developer at Saeedan Technology.com', time: '2:48 pm' },
     { title: 'Frontend Engineer', desc: 'Exciting opportunity for a Frontend Engineer at ABC Corporation', time: '10:15 am' },
@@ -30,6 +31,8 @@ const Groups = ({groupData, memberSuccess}) => {
     const open = Boolean(anchorEl);
     const [dialog, setDialog] = useState(false)
     const [memberDialog, setMemberDialg] = useState(false)
+    const [composeOpen, setComposeOpen] = useState(false);
+
     const handleClick = (event) => {
       setAnchorEl(event.currentTarget);
     };
@@ -44,6 +47,13 @@ const Groups = ({groupData, memberSuccess}) => {
       setMemberDialg(true)
       setAnchorEl(null);
     }
+    const handleComposeClick = () => {
+      setComposeOpen(true);
+    };
+  
+    const handleComposeClose = () => {
+      setComposeOpen(false);
+    };
   return (
     <Box>
       <Box sx={{display:'flex', alignItems:'center', justifyContent:'space-between', mb:2}}>
@@ -76,9 +86,15 @@ const Groups = ({groupData, memberSuccess}) => {
             sx={{
                 fontSize:'11px',
                 ml:-2,
-                mr:2
+                mr:2,
+                cursor:'pointer',
+                '&:hover': {
+                  background:'#e2e2e2'
+                }
             }}
-            >Sent Emails</Typography>
+          onClick={handleComposeClick}
+
+            >Send Email</Typography>
             </Box>
             <IosShareIcon style={icon}/>
             <CalendarMonthIcon style={icon}/>
@@ -93,6 +109,10 @@ const Groups = ({groupData, memberSuccess}) => {
             Inbox
         </Typography>
         <Divider sx={{my:2}} />
+        {composeOpen && 
+        
+        <SendEmail open={composeOpen} onClose={handleComposeClose} data={groupData}/>
+        }
         <Box sx={{ mt: 2 }}>
         
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>

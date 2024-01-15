@@ -18,7 +18,7 @@ import {
   Box,
 } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { addContactsGroup, getGroupContacts } from '../../../../../../../store/actions/folderActions';
+import { addContactsGroup, getGroupContacts, removeContactsFromGroup } from '../../../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 const GroupMembers = (props) => {
@@ -60,7 +60,7 @@ const GroupMembers = (props) => {
       const formData = new FormData()
       formData.append('contact_ids', JSON.stringify(selectedMemberIds))
       formData.append('group_id', props.data.id)
-      dispatch(addContactsGroup(formData)).then((result) => {
+      dispatch(removeContactsFromGroup(formData)).then((result) => {
         enqueueSnackbar(result.data.message, {
           variant:'success'
         })
