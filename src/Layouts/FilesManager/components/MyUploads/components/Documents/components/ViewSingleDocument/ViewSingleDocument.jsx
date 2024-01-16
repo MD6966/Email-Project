@@ -13,15 +13,13 @@ import 'react-confirm-alert/src/react-confirm-alert.css';
 import { useDispatch } from 'react-redux';
 import { HashLoader } from 'react-spinners';
 import { useSnackbar } from 'notistack';
-import EditPictureDetails from '../EditPictureDetails/EditPictureDetails';
-import { Link } from 'react-router-dom';
-import { delPicture } from '../../../../../../../../store/actions/uploadActions';
-
+import EditDocumentDetails from '../EditDocumentDetails';
+import { delDocument } from '../../../../../../../../store/actions/uploadActions';
 const StyledRoot = styled(Box)(({theme})=> ({
     minHeight:'80vh',
     padding:theme.spacing(5)
 }))
-const ViewSinglePicture = () => {
+const ViewSingleDocument = () => {
     const [open, setOpen] = React.useState(false)
     const {state} = useLocation()
     // console.log(state)
@@ -31,14 +29,14 @@ const ViewSinglePicture = () => {
     const {enqueueSnackbar} = useSnackbar()
     const handleDelete = () => {
         confirmAlert({
-            title: "Delete Picture",
-            message: "Are you sure to delete this picture ?",
+            title: "Delete Document",
+            message: "Are you sure to delete this document ?",
             buttons: [
               {
                 label: "Yes",
                 onClick: () => {
                     setLoading(true)
-                  dispatch(delPicture(state.id)).then((result) => {
+                  dispatch(delDocument(state.id)).then((result) => {
                     enqueueSnackbar(result.data.message, {
                         variant:'success'
                     })
@@ -56,15 +54,16 @@ const ViewSinglePicture = () => {
           });
     }
   return (
-    <>
+    <div>
+     <>
         <StyledRoot>
         <Card
         elevation={4}
         sx={{border: '1px solid #bababa'}}
         >
       <CardMedia
-        sx={{ height: 440, cursor:'pointer'}}
-        image={state.path}
+        sx={{ height: 440 }}
+        image="/file-upload.png"
         title={state.name}
         />
       <CardContent>
@@ -76,14 +75,12 @@ const ViewSinglePicture = () => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size='small' variant='outlined'
+      <Button size="small" variant='outlined' 
         endIcon={<Visibility />}
         href={state.path}
-        target="_blank"
+        target='_blank'
         sx={{mr:1}}
-        >
-          View Image
-        </Button>
+        >View Doc</Button>
         <Button size="small" variant='outlined' 
         endIcon={<Edit />}
         onClick={() => setOpen(true)}
@@ -122,9 +119,10 @@ const ViewSinglePicture = () => {
             </DialogContent>
         </Dialog>
         }
-        <EditPictureDetails open={open} close={()=>setOpen(false)} state={state} />
+        <EditDocumentDetails open={open} close={()=>setOpen(false)} state={state} />
     </>
+    </div>
   )
 }
 
-export default ViewSinglePicture
+export default ViewSingleDocument

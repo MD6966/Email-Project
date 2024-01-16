@@ -18,6 +18,7 @@ import SettingsPage from './Layouts/dashboard/components/TopBar/components/Setti
 import AI_Assistant from './Views/AI-Assistant/AI_Assistant';
 import FilesManager from './Layouts/FilesManager/FilesManager';
 import ViewSinglePictue from './Layouts/FilesManager/components/MyUploads/components/Pictures/components/ViewSinglePictue';
+import ViewSingleDocument from './Layouts/FilesManager/components/MyUploads/components/Documents/components/ViewSingleDocument';
 export default function Router() {
     const [progress, setProgress] = useState(0);
     const isAuthenticatedUser = useSelector((state)=>state.email.isAuthenticatedUser)
@@ -92,6 +93,10 @@ export default function Router() {
                 {
                     path:'/view-picture',
                     element:<ViewSinglePictue setprogress={setProgress}/>
+                },
+                {
+                    path:'/view-document',
+                    element:< ViewSingleDocument setprogress={setProgress}/>
                 }
             ])}
         </>
