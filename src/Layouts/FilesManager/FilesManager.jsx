@@ -97,7 +97,7 @@ export default function FilesManager() {
         <Box >
           {selectedItem && (
             <>
-            {selectedItem.id == 1 && <UploadFile /> }
+            {selectedItem.id == 1 && <UploadFile selected={()=>setSelectedItem(listData[1])}/> }
             {selectedItem.id == 2 && <MyUploads />}
             </>
           )}
