@@ -85,7 +85,6 @@ const AddMember = (props) => {
     });
 
   }
-  // console.log(selectedMembers.length)
   return (
     <div>
       <Dialog open={props.open} onClose={props.close} fullWidth>
