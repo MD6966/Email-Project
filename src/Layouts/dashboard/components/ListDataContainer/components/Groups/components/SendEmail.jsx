@@ -11,17 +11,18 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import InsertLinkIcon from '@mui/icons-material/InsertLink';
 import EmojiEmotionsIcon from '@mui/icons-material/EmojiEmotions';
 import AddToDriveIcon from '@mui/icons-material/AddToDrive';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 // import { scheduleEmail, sendMail, sendMailGoogle } from '../../../../../store/actions/mailActions';
 import { useSnackbar } from 'notistack';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
 import { Close, ReportGmailerrorred } from '@mui/icons-material';
 import { RotatingLines } from 'react-loader-spinner';
+import { sendGroupMail } from '../../../../../../../store/actions/outlookGroupActions';
+import { Success } from '../../../../../../../Components/alerts/Success';
 const options = [ 'Schedule Send'];
 const MySwal = withReactContent(Swal)
 const initialValues = {
-  email:'',
   subject:'',
   description:'',
   attachment:'',
@@ -29,8 +30,8 @@ const initialValues = {
   bccEmail:''
 
 }
-const SendEmail = ({onClose, type, data }) => {
-    // console.log(type, 'THIS ISSSSSS')
+const SendEmail = ({onClose, data }) => {
+    // console.log(data, 'THIS ISSSSSS')
     const [formValues, setFormValues] = useState(initialValues)
     const [attachment, setAttachment] = useState(null);
     const [loading, setLoading] = useState(false)
@@ -49,6 +50,7 @@ const SendEmail = ({onClose, type, data }) => {
     const {enqueueSnackbar} = useSnackbar()
     const [selectedItem, setSelectedItem] = React.useState(null);
     const [selectedDateTime , setSelectedDateTime] = useState(null)
+    const type = useSelector((state)=>state.folder.src)
     const generateDateOptions = () => {
       const options = [];
       const currentDate = new Date();
@@ -135,9 +137,11 @@ const SendEmail = ({onClose, type, data }) => {
       const handleSubmit = (e) => {
           e.preventDefault()
           setLoading(true)
-          const formData = new FormData()
-          formData.append('email', formValues.email)
+        const selectedMemberIds = data.outlook_contacts.map((selectedMember) => selectedMember.id);
+        const formData = new FormData()
+        formData.append('email', JSON.stringify(selectedMemberIds))
           formData.append('subject', formValues.subject)
+          formData.append('send_by', type==='Otlook' ? 'outlook' : 'gmail')
           formData.append('description', formValues.description)
           if(formValues.bccEmail)
           {
@@ -151,26 +155,11 @@ const SendEmail = ({onClose, type, data }) => {
             formData.append('attachment', attachment);
           }
           if(type === 'Outlook') {
-            dispatch(sendMail(formData)).then((result) => {
-              enqueueSnackbar(result.data.message, {
-                variant:'success'
-              })
+            dispatch(sendGroupMail(formData)).then((result) => {
               onClose()
               setLoading(false)
               setFormValues(initialValues)
-            }).catch((err) => {
-              setLoading(false)
-                console.log(err)
-            });
-          }
-          else if (type === 'Google') {
-            dispatch(sendMailGoogle(formData)).then((result) => {
-              enqueueSnackbar(result.data.message, {
-                variant:'success'
-              })
-              onClose()
-              setLoading(false)
-              setFormValues(initialValues)
+              Success("Email Sent Successfully!")
             }).catch((err) => {
               setLoading(false)
                 console.log(err)

@@ -49,7 +49,8 @@ const SettingsDialog = ({open,close}) => {
     });
   }
   useEffect(()=> {
-    setGoogle_data(google_data_folder[0]?.labels[2] || '')
+    // console.log(google_data_folder[0][2], "+++++")
+    setGoogle_data(google_data_folder[0][2] || '')
     setOutlook_data(outlook_data_folder? outlook_data_folder[0] : '')
   },[google_data_folder, outlook_data_folder])
 

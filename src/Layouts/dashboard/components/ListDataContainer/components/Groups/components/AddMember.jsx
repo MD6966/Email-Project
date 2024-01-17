@@ -19,8 +19,10 @@ import { useDispatch } from 'react-redux';
 import { addContactsGroup, getGroupContacts } from '../../../../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
+import { Success } from '../../../../../../../Components/alerts/Success';
 
 const AddMember = (props) => {
+  // console.log(props.data.outlook_contacts)
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [groupMembers , setGroupMember] = useState([])
   const [loading, setLoading] = useState(false)
@@ -72,9 +74,7 @@ const AddMember = (props) => {
     formData.append('contact_ids', JSON.stringify(selectedMemberIds))
     formData.append('group_id', props.data.id)
     dispatch(addContactsGroup(formData)).then((result) => {
-      enqueueSnackbar(result.data.message, {
-        variant:'success'
-      })
+     Success('Members addedd to the group')
       props.close()
       setSelectedMembers([])
       setLoading(false)
@@ -85,6 +85,9 @@ const AddMember = (props) => {
     });
 
   }
+  const isMemberInOutlookContacts = (member) => {
+    return props.data.outlook_contacts.some((outlookMember) => outlookMember.id === member.id);
+  };
   return (
     <div>
       <Dialog open={props.open} onClose={props.close} fullWidth>
@@ -110,18 +113,20 @@ const AddMember = (props) => {
             {groupMembers.map((member) => {
               const labelId = `checkbox-list-label-${member.id}`;
               const isSelected = selectedMembers.some((selectedMember) => selectedMember.id === member.id);
+              const isDisabled = isMemberInOutlookContacts(member);
               return (
                 <ListItem
                   key={member.id}
                   dense
                   button
                   onClick={handleToggle(member)}
+                  disabled={isDisabled}
                   className={isSelected ? 'selected-list-item' : ''}
                 >
                   <ListItemAvatar>
                     <Avatar sx={{background:'#050444'}}>S</Avatar>
                   </ListItemAvatar>
-                  <ListItemText id={labelId} primary={member.name} secondary={member.email} />
+                  <ListItemText id={labelId} primary={!isDisabled ?  member.name  : member.name+ ' ' + '(Already member)'} secondary={member.email} />
                   <Checkbox
                    iconStyle={{fill: '#000'}}
                     edge="end"

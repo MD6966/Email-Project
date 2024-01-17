@@ -5,7 +5,7 @@ import { createFolder, createGroup } from '../../../../../store/actions/outlookG
 import { useSnackbar } from 'notistack'
 import { RotatingLines } from 'react-loader-spinner'
 import {Success} from '../../../../../Components/alerts/Success'
-import { getAllFolders } from '../../../../../store/actions/folderActions'
+import { getAllFolders, getAllFoldersGoogle } from '../../../../../store/actions/folderActions'
 const G_L_Dialog = ({open,close,name, group, type}) => {
     const initialValues = {
         name:'',
@@ -32,7 +32,10 @@ const G_L_Dialog = ({open,close,name, group, type}) => {
           dispatch(createFolder(formData)).then((result) => {
             console.log(result)
             setLoading(false)
+            type === 'Outlook' ?
             dispatch(getAllFolders())
+            :
+            dispatch(getAllFoldersGoogle())
             close()
             SetFormValues(initialValues)
             Success('Folder Created Successfully')

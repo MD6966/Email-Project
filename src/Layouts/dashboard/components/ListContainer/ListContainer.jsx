@@ -113,7 +113,7 @@ const ListContainer = () => {
       }
       else
       if(data_google.length > 0) {
-        setSelectedItem(data_google[0]?.labels[2] || '')
+        setSelectedItem(data_google[0][2] || '')
       }
     }
   }, [data.folders, data_google, current_state, group]);
@@ -159,7 +159,7 @@ const ListContainer = () => {
       dispatch(resetLoading())
     }
     else if (type === 'Google' && current_state === 'Google') {
-      dispatch(getListDataGoogle(selectedItem?.id)).then((result) => {
+      dispatch(getListDataGoogle(selectedItem?.folder_id)).then((result) => {
         // console.log(result.data.payload[0], 'RESULT GOOGLE')
         setListData(result.data.payload[0])
       }).catch((err) => {
@@ -308,7 +308,7 @@ const ListContainer = () => {
       </ListItem>
     ))
   ) : type === 'Google' && data_google != 'undefined' && data_google?.length > 0 && current_state == 'Google' ? (
-    data_google[0].labels.map((val, ind) => (
+    data_google[0].map((val, ind) => (
       <ListItem
         key={ind}
         disablePadding
@@ -323,6 +323,7 @@ const ListContainer = () => {
           },
         }}
       >
+        {/* {console.log(selectedItem)} */}
         <ListItemIcon>
           {val.name === 'CHAT' ? (
             <Chat />

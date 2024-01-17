@@ -16,7 +16,7 @@ import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
-  // console.log(groupData, "DATA FROM CONTAINER")
+  // console.log(data, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
   const l_data = 
@@ -70,7 +70,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
     });
   }
   
-  // console.log(list_data)
+  // console.log(list_data[0])
   return (
     <Box sx={listDataContainer}>
       {/* {list_type === 'Inbox' ?
@@ -186,8 +186,8 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
                 <Typography  sx={{ml:1, fontWeight:'bold'}}>Please wait</Typography>
                 </Box>
             : 
-            list_data && 
-            list_data.length < 1 && !group ?
+            list_data[0] && 
+            list_data[0].length < 1 && !group ?
             <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
               group ? 
               <Groups groupData={groupData} memberSuccess={memberSuccess} /> :
