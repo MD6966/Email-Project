@@ -1,11 +1,12 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Grid, TextField } from '@mui/material'
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
-import { createGroup } from '../../../../../store/actions/outlookGroupActions'
+import { createFolder, createGroup } from '../../../../../store/actions/outlookGroupActions'
 import { useSnackbar } from 'notistack'
 import { RotatingLines } from 'react-loader-spinner'
-
-const G_L_Dialog = ({open,close,name, group}) => {
+import {Success} from '../../../../../Components/alerts/Success'
+import { getAllFolders } from '../../../../../store/actions/folderActions'
+const G_L_Dialog = ({open,close,name, group, type}) => {
     const initialValues = {
         name:'',
         description:''
@@ -24,15 +25,34 @@ const G_L_Dialog = ({open,close,name, group}) => {
     const handleSubmit = (e) => {
         e.preventDefault()
         setLoading(true)
-        dispatch(createGroup(formValues)).then((result) => {
+        if (name === 'Label') {
+          const formData = new FormData()
+          formData.append('name', formValues.name)
+          formData.append('save_as', type === 'Outlook' ? 'outlook' : 'google' )
+          dispatch(createFolder(formData)).then((result) => {
+            console.log(result)
             setLoading(false)
-            alert(result.data.message)
-            group()
+            dispatch(getAllFolders())
             close()
             SetFormValues(initialValues)
-        }).catch((err) => {
+            Success('Folder Created Successfully')
+            
+          }).catch((err) => {
+            setLoading(false)
             console.log(err)
-        });
+          });
+        }
+        else {
+          dispatch(createGroup(formValues)).then((result) => {
+              setLoading(false)
+              alert(result.data.message)
+              group()
+              close()
+              SetFormValues(initialValues)
+          }).catch((err) => {
+              console.log(err)
+          });
+        }
     }
   return (
     <div>

@@ -21,6 +21,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Menu from '@mui/material/Menu';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import GTranslateIcon from '@mui/icons-material/GTranslate';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import CallIcon from '@mui/icons-material/Call';
@@ -38,6 +39,7 @@ import MarkEmailUnreadIcon from '@mui/icons-material/MarkEmailUnread';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
+import MoveMailDialog from './components/MoveMailDialog';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -51,7 +53,7 @@ const menuData = [
   { icon: <FlagIcon />, title: 'Flag' },
   { icon: <RemoveCircleOutlineIcon />, title: 'Unflag' },
   {icon: <MarkEmailUnreadIcon />, title:'Mark as unread'},
-  { icon: <GTranslateIcon />, title: 'Translate' },
+  { icon: <DriveFileMoveIcon />, title: 'Move' },
   { icon: <ContentCopyIcon />, title: 'Copy' },
   { icon: <CallIcon />, title: 'Call' },
   { icon: <VideoCallIcon />, title: 'Video' },
@@ -76,6 +78,7 @@ const MainContent = () => {
   const content = useSelector((state)=>state.folder.content)
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const type = useSelector((state)=>state.folder.src)
+  const [moveDialog, setMoveDialg] = useState(false)
   // console.log(type, "++++TYPE")
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
@@ -210,7 +213,11 @@ const MainContent = () => {
         
       });
     }
+    else if (data.title === 'Move') {
+      setMoveDialg(true)
+    }
   }
+  // console.log(content, '++++')
   return (
     <StyledRoot>
       {
@@ -474,6 +481,14 @@ const MainContent = () => {
        id={content?.mail_id || ''}
        type={type}
        />
+       <MoveMailDialog 
+       open={moveDialog}
+       close={()=>setMoveDialg(false)}
+       id={content?.id || ''}
+       type={type}
+       
+       />
+
     </StyledRoot>
   );
 };

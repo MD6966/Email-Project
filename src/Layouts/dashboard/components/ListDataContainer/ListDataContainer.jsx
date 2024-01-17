@@ -14,7 +14,8 @@ import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead } from '../../../../store/actions/mailActions';
-const ListDataContainer = ({data, type, group, groupData, memberSuccess}) => {
+import Labels from './components/Labels/Labels';
+const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
   // console.log(groupData, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
@@ -190,6 +191,8 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess}) => {
             <Typography sx={{textAlign:'center', mt:3}}>No Messages Found</Typography> :
               group ? 
               <Groups groupData={groupData} memberSuccess={memberSuccess} /> :
+              label ? 
+              <Labels /> :
           data.map((val, index) => {
             // console.log(val, 'INSIDE')
             return(

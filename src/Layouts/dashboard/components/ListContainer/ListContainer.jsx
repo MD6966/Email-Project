@@ -1,7 +1,7 @@
 import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
-import { Add, Chat, Edit, History, MarkChatUnread, Star, } from '@mui/icons-material'
+import { Add, Chat, Edit, History, Label, MarkChatUnread, Star, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import DraftsIcon from '@mui/icons-material/Drafts';
@@ -129,6 +129,7 @@ const ListContainer = () => {
     setDtitle(title)
     setName(name)
     setDialogOpen(true)
+    
   }
   const handleCloseDialog =()=> {
     setDialogOpen(false)
@@ -143,7 +144,8 @@ const ListContainer = () => {
     setGroup(true)
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
-  const handleLableBtn = () => {
+  const handleLableBtn = (val) => {
+    dispatch(setList(val))
     setLabel(true)
     setSelectedGroup([])
   }
@@ -294,7 +296,7 @@ const ListContainer = () => {
             <MarkChatReadIcon />
           ) : val.folder_name === 'Snoozed' ? (
             <SnoozeIcon />
-          ) : null}
+          ) : <Label />}
         </ListItemIcon>
         <ListItemText
           primary={
@@ -357,10 +359,18 @@ const ListContainer = () => {
 }
 
         </List>
+        <Button size='small' variant='outlined' sx={{my:1}} fullWidth
+        onClick={()=>handleDialogOpen('Label', 'label' )}
+        startIcon={
+          <Add />
+        }
+        >
+          Add Folder
+        </Button>
         {
           type === 'Outlook' && (
         <>
-        <Box sx={{mt:2}}>
+        {/* <Box sx={{mt:2}}>
           <List>
           <ListItemButton onClick={handleClick}
           sx={{
@@ -375,17 +385,9 @@ const ListContainer = () => {
         {open ? <ExpandLess /> : <ExpandMore />}
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <Button size='small' variant='outlined' sx={{my:1}} fullWidth
-        onClick={()=>handleDialogOpen('Label', 'label' )}
-        startIcon={
-          <Add />
-        }
-        >
-          Add Label
-        </Button>
         <List component="div" disablePadding>
           <ListItemButton sx={{ pl: 4, height:'35px' }}
-          onClick={()=>handleLableBtn()}
+          onClick={()=>handleLableBtn('Label')}
           >
             <ListItemIcon>
               <LabelIcon />
@@ -406,7 +408,7 @@ const ListContainer = () => {
         </List>
       </Collapse>
           </List>
-        </Box>
+        </Box> */}
         <Box>
           <List>
           <ListItemButton onClick={handleClickG}
@@ -485,6 +487,7 @@ const ListContainer = () => {
     close={handleCloseDialog}
     name={dTitle}
     group={groupsData}
+    type={type}
     />
     <Menu
         id="basic-menu"

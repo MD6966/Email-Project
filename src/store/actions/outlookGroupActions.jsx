@@ -47,3 +47,31 @@ api.interceptors.request.use(
       throw err;
     }
   };
+
+  export const createFolder = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/create-folder', body);
+    //   dispatch({
+    //     type: 'CREATE_GROUP',
+    //     payload: res.data.payload,
+    //   });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  export const sendGroupMail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/send-group-mail', body);
+    //   dispatch({
+    //     type: 'CREATE_GROUP',
+    //     payload: res.data.payload,
+    //   });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
