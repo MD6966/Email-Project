@@ -1,7 +1,7 @@
-import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, Menu, MenuItem, TextField, Typography } from '@mui/material'
+import { Box, Button, Collapse, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, TextField, Typography } from '@mui/material'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { buttonStyles, labelList, listContainer } from './styles'
-import { Add, Chat, Edit, History, Label, MarkChatUnread, Star, } from '@mui/icons-material'
+import { Add, Chat, Edit, History, Label, MarkChatUnread, MoreVert, Star, } from '@mui/icons-material'
 import AllInboxIcon from '@mui/icons-material/AllInbox';
 import DeleteSweepIcon from '@mui/icons-material/DeleteSweep';
 import DraftsIcon from '@mui/icons-material/Drafts';
@@ -24,12 +24,15 @@ import ComposePopup from './components/ComposePopup';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, getListDataGoogle, setList } from '../../../../store/actions/listActions';
-import { authenticate, authenticateGoogle, folderName, getAllFolders, getAllFoldersGoogle, outlookSubsctiption, resetLoading } from '../../../../store/actions/folderActions';
+import { authenticate, authenticateGoogle, deleteFolder, folderName, getAllFolders, getAllFoldersGoogle, outlookSubsctiption, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 import DialogLoader from './components/DialogLoader';
 import ListDataContainer from '../ListDataContainer/ListDataContainer';
 import { useNavigate } from 'react-router';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import { Success } from '../../../../Components/alerts/Success';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   const type = useSelector((state)=>state.folder.src)
@@ -56,6 +59,40 @@ const ListContainer = () => {
   const [selectedLabel, setSelectedLabel] = useState([])
   const [name, setName] = useState('')
   const [groups, setGroups] = useState([])
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [folderVal, setFolderVal] = useState('')
+  const open2 = Boolean(anchorEl2);
+  const handleClick2 = (event, val) => {
+    setFolderVal(val)
+    setAnchorEl2(event.currentTarget);
+  };
+  const handleClose2 = () => {
+    setAnchorEl2(null);
+    confirmAlert({
+      title: "Delete?",
+      message: "Are you sure to want to delete folder ?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            const formData = new FormData()
+            formData.append('delete_as', type==='Outlook' ? 'outlook' : 'google')
+            formData.append('folder_id',folderVal.id)
+            dispatch(deleteFolder(formData)).then((result) => {
+              dispatch(getAllFoldersGoogle())
+              Success('Folder Deleted!')
+            }).catch((err) => {
+              console.log(err)
+            });
+            // dispatch(logout());
+          },
+        },
+        {
+          label: "No",
+        },
+      ],
+    });
+  };
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const currentUrl = new URL(window.location.href);
@@ -309,6 +346,7 @@ const ListContainer = () => {
     ))
   ) : type === 'Google' && data_google != 'undefined' && data_google?.length > 0 && current_state == 'Google' ? (
     data_google[0].map((val, ind) => (
+      <>
       <ListItem
         key={ind}
         disablePadding
@@ -323,7 +361,7 @@ const ListContainer = () => {
           },
         }}
       >
-        {/* {console.log(selectedItem)} */}
+        {/* {console.log(val , '++++++')} */}
         <ListItemIcon>
           {val.name === 'CHAT' ? (
             <Chat />
@@ -347,12 +385,20 @@ const ListContainer = () => {
         </ListItemIcon>
         <ListItemText
           primary={
+            <Box sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
             <Typography sx={{ fontSize: '12px', fontWeight: 'bold' }}>
               {val.name}
             </Typography>
+              {val.status === '0' &&
+              <IconButton onClick={(e)=>handleClick2(e,val)}>
+                <MoreVert />
+              </IconButton>
+              }
+            </Box>
           }
         />
       </ListItem>
+      </>
     ))
   ) : (
     'No Data'
@@ -504,7 +550,18 @@ const ListContainer = () => {
         <MenuItem onClick={handleClose}>Logout</MenuItem>
       </Menu>
       <DialogLoader />
-      
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl2}
+        open={open2}
+        onClose={handleClose2}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleClose2}>Delete</MenuItem>
+        
+      </Menu>
       <ListDataContainer 
       data={listData}
       type={type}

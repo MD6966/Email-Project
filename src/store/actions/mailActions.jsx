@@ -140,12 +140,37 @@ api.interceptors.request.use(
       throw err;
     }
   };
-
+  export const markAsReadGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-read-email', body);
+      dispatch({
+        type: 'READ_EMAIL_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
   export const flagEmail = (body) => async (dispatch) => {
     try {
       const res = await api.post('api/outlook-flagged-email', body);
       dispatch({
         type: 'FLAG_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const flagEmailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-flagged-email', body);
+      dispatch({
+        type: 'FLAG_EMAIL_GOOGLE',
         // payload: res.data.payload,
       });
   
@@ -160,6 +185,19 @@ api.interceptors.request.use(
       const res = await api.post('api/outlook-unflagged-email', body);
       dispatch({
         type: 'UNFLAG_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const unFlagEmailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-unflagged-email', body);
+      dispatch({
+        type: 'UNFLAG_EMAIL_GOOGLE',
         // payload: res.data.payload,
       });
   

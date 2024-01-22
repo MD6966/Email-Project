@@ -6,7 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useDispatch } from 'react-redux';
-import { getAllFolders } from '../../../../../store/actions/folderActions';
+import { getAllFolders, getAllFoldersGoogle } from '../../../../../store/actions/folderActions';
 import { movemail } from '../../../../../store/actions/mailActions';
 import { Success } from '../../../../../Components/alerts/Success';
 const MoveMailDialog = ({open, close, id, type}) => {
@@ -19,11 +19,20 @@ const MoveMailDialog = ({open, close, id, type}) => {
       setAge(event.target.value);
     };
     useEffect(()=> {
-    dispatch(getAllFolders()).then((result) => {
-        setFolders(result.data.payload)
-    }).catch((err) => {
-        console.log(err)
-    });
+        if (type === 'Outlook') {
+            dispatch(getAllFolders()).then((result) => {
+                setFolders(result.data.payload)
+            }).catch((err) => {
+                console.log(err)
+            });
+        }
+        else {
+            dispatch(getAllFoldersGoogle()).then((result) => {
+                setFolders(result.data.payload[0])
+            }).catch((err) => {
+                
+            });
+        }
     }, [])
     const handleMoveMail = () => {
         setLoading(true)
@@ -51,22 +60,30 @@ const MoveMailDialog = ({open, close, id, type}) => {
         <Divider />
         <DialogContent>
         <FormControl fullWidth>
-        <InputLabel id="demo-simple-select-label">Age</InputLabel>
+        <InputLabel id="demo-simple-select-label">Select Folder</InputLabel>
         <Select
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={age}
-          label="Age"
+          label="Select Folder"
           onChange={handleChange}
         >
             {
-                folders.map((val, ind)=> {
-                    return(
-                        <MenuItem value={val.folder_id}>{val.folder_name}</MenuItem>
-
+                folders.map((val, ind) => {
+                    // console.log(val);
+                    return (
+                    type === 'Outlook' ? (
+                        <MenuItem key={val.folder_id} value={val.folder_id}>
+                        {val.folder_name}
+                        </MenuItem>
+                    ) : (
+                        <MenuItem key={val.folder_id} value={val.folder_id}>
+                        {val.name}
+                        </MenuItem>
                     )
+                    );
                 })
-            }
+                }
         </Select>
       </FormControl>
         </DialogContent>

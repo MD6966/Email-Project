@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
-import { markAsRead } from '../../../../store/actions/mailActions';
+import { markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
   // console.log(data, "DATA FROM CONTAINER")
@@ -60,14 +60,21 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   const handleContent = (content, index) => {
     setSelectedItem(index)
     setSelectedContent(content)
-    const formData = new FormData()
-    formData.append('message_id', content.mail_id)
-    formData.append('mail_id',content.id )
-    dispatch(markAsRead(formData)).then((result) => {
-      console.log(result)
-    }).catch((err) => {
-      console.log(err)
-    });
+    if(type === 'Outlook') {
+      const formData = new FormData()
+      formData.append('message_id', content.mail_id)
+      formData.append('mail_id',content.id )
+      dispatch(markAsRead(formData)).then((result) => {
+        console.log(result)
+      }).catch((err) => {
+        console.log(err)
+      });
+    }
+    else {
+      const formDataG = new FormData()
+      formDataG.append('id', content.id)
+      dispatch(markAsReadGoogle(formDataG))
+    }
   }
   
   // console.log(list_data[0])

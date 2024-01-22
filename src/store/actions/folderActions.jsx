@@ -176,3 +176,16 @@ export const getAllFolders = () => async (dispatch) => {
       throw err;
     }
   };
+  export const deleteFolder = (data) => async (dispatch) => {
+    try {
+      const res = await api.post('api/delete-folder-mail', data);
+      // dispatch({
+      //   type: 'REMOVE_GROUP_CONTACTS',
+      //   payload: res.data.payload,
+      // });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

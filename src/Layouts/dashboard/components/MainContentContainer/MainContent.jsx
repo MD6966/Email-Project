@@ -28,7 +28,7 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail, flagEmail, markAsRead, replyMail, replyMailGoogle, unFlagEmail } from '../../../../store/actions/mailActions';
+import { deleteMail, flagEmail, flagEmailGoogle, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
@@ -40,9 +40,11 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
 import MoveMailDialog from './components/MoveMailDialog';
+import { Success } from '../../../../Components/alerts/Success';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
+  width:'60%'
 }));
 
 const menuData = [
@@ -184,34 +186,75 @@ const MainContent = () => {
     if (data.title === "Mark as unread")
     {
       setLoadingM(true)
-      dispatch(markAsRead(formData)).then((result) => {
-        setLoadingM(false)
-        sweetalertFunc("Email marked as unread")
-      }).catch((err) => {
-        setLoadingM(false)
-        console.log(err)
-      });
+      if(type === 'Google') {
+        const formDataG = new FormData()
+        formDataG.append('id',content.id)
+        dispatch(markAsReadGoogle(formDataG)).then((result) => {
+          setLoadingM(false)
+          sweetalertFunc("Email marked as unread Successfully")
+
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
+      else  {
+        dispatch(markAsRead(formData)).then((result) => {
+          setLoadingM(false)
+          sweetalertFunc("Email marked as unread")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
     }
     else if (data.title === 'Flag') {
       setLoadingM(true)
-      dispatch(flagEmail(formData)).then((result) => {
-        setLoadingM(false)
-        sweetalertFunc("Email flagged Successfully")
-      }).catch((err) => {
-        setLoadingM(false)
-        console.log(err)
-      });
+      if(type === 'Google') {
+        const formDataG = new FormData()
+        formDataG.append('id',content.id)
+        dispatch(flagEmailGoogle(formDataG)).then((result) => {
+          setLoadingM(false)
+          sweetalertFunc("Email flagged Successfully")
+
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
+      else {
+        dispatch(flagEmail(formData)).then((result) => {
+          setLoadingM(false)
+          Success("Email Flagged Successfully!")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
     }
     else if (data.title === 'Unflag') {
       setLoadingM(true)
-      dispatch(unFlagEmail(formData)).then((result) => {
-        setLoadingM(false)
-        sweetalertFunc("Eamil Unflagged Successfully")
-      }).catch((err) => {
-        setLoadingM(false)
-        console.log(err)
-        
-      });
+      if(type === 'Google') {
+        const formDataG = new FormData()
+        formDataG.append('id',content.id)
+        dispatch(unFlagEmailGoogle(formDataG)).then((result) => {
+          setLoadingM(false)
+          sweetalertFunc("Eamil Unflagged Successfully")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
+      else {
+        dispatch(unFlagEmail(formData)).then((result) => {
+          setLoadingM(false)
+          sweetalertFunc("Eamil Unflagged Successfully")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+          
+        });
+      }
     }
     else if (data.title === 'Move') {
       setMoveDialg(true)

@@ -20,6 +20,7 @@ const SettingsDialog = ({open,close}) => {
   const loginSrc = useSelector((state)=>state.folder.src)
   const user = useSelector((state)=>state.email.user)
   const dispatch = useDispatch()
+  console.log(loginSrc, "LOGIN")
   const sweetAlertFunc = () => {
     let timerInterval;
     MySwal.fire({
@@ -49,9 +50,13 @@ const SettingsDialog = ({open,close}) => {
     });
   }
   useEffect(()=> {
-    // console.log(google_data_folder[0][2], "+++++")
-    setGoogle_data(google_data_folder[0][2] || '')
-    setOutlook_data(outlook_data_folder? outlook_data_folder[0] : '')
+    console.log(google_data_folder, "+++++")
+    if (loginSrc === 'Outlook'){
+      setOutlook_data(outlook_data_folder? outlook_data_folder[0] : '')
+    }
+    else if (loginSrc === 'Google') {
+      setGoogle_data(google_data_folder[0][2] || '')
+    }
   },[google_data_folder, outlook_data_folder])
 
   const handleOptionChange = (event) => {
