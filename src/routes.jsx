@@ -20,9 +20,11 @@ import FilesManager from './Layouts/FilesManager/FilesManager';
 import ViewSinglePictue from './Layouts/FilesManager/components/MyUploads/components/Pictures/components/ViewSinglePictue';
 import ViewSingleDocument from './Layouts/FilesManager/components/MyUploads/components/Documents/components/ViewSingleDocument';
 import ViewSingleSoftware from './Layouts/FilesManager/components/MyUploads/components/Softwares/components/ViewSingleSoftware';
+import TaskMangement from './Layouts/TaskManagement/TaskMangement';
+import { AddTask } from '@mui/icons-material';
 export default function Router() {
     const [progress, setProgress] = useState(0);
-    const isAuthenticatedUser = useSelector((state)=>state.email.isAuthenticatedUser)
+    const isAuthenticatedUser = useSelector((state) => state.email.isAuthenticatedUser)
     return (
         <>
             <LoadingBar
@@ -66,43 +68,55 @@ export default function Router() {
                 {
                     element: <ProtectedRoutes isLogged={isAuthenticatedUser} />,
                     children: [
-                        {   path:'/dashboard', element: <Dashboard setprogress={setProgress}/>},
+                        { path: '/dashboard', element: <Dashboard setprogress={setProgress} /> },
 
                     ]
-        
+
                 },
                 {
-                    path:'/settings-page',
-                    element:<SettingsPage/>
+                    path: '/settings-page',
+                    element: <SettingsPage />
                 },
                 {
-                    path:'/login',
-                    element:<Login setprogress={setProgress}/>
+                    path: '/login',
+                    element: <Login setprogress={setProgress} />
                 },
                 {
-                    path:'/register',
-                    element:<Register setprogress={setProgress}/>
+                    path: '/register',
+                    element: <Register setprogress={setProgress} />
                 },
                 {
-                    path:'/assistant',
-                    element:<AI_Assistant setprogress={setProgress}/>
+                    path: '/assistant',
+                    element: <AI_Assistant setprogress={setProgress} />
                 },
                 {
-                    path:'/files',
-                    element:<FilesManager setprogress={setProgress}/>
+                    path: '/files',
+                    element: <FilesManager setprogress={setProgress} />
                 },
                 {
-                    path:'/view-picture',
-                    element:<ViewSinglePictue setprogress={setProgress}/>
+                    path: '/view-picture',
+                    element: <ViewSinglePictue setprogress={setProgress} />
                 },
                 {
-                    path:'/view-document',
-                    element:< ViewSingleDocument setprogress={setProgress}/>
+                    path: '/view-document',
+                    element: < ViewSingleDocument setprogress={setProgress} />
                 },
                 {
-                    path:'/view-software',
-                    element:< ViewSingleSoftware setprogress={setProgress}/>
-                }
+                    path: '/view-software',
+                    element: < ViewSingleSoftware setprogress={setProgress} />
+                },
+                // {
+                //     path: '/taskManagement',
+                //     element: < TaskMangement setprogress={setProgress} />
+                // },
+                {
+                    path: 'taskManagement',
+                    element: <TaskMangement />,
+                    children: [
+                        { path: 'addtask', element: <AddTask /> },
+                        // { path: 'register', element: <SignUp /> }
+                    ]
+                },
             ])}
         </>
     );

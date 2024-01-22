@@ -10,66 +10,79 @@ import { Archive, Delete } from '@mui/icons-material';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
+import TaskIcon from '@mui/icons-material/Task';
+import { useNavigate } from 'react-router';
 const icons = [
-    {id:1, icon:<EmailIcon style={iconStyles}/>},
-    {id:2, icon:<CalendarMonthIcon style={iconStyles}/>},
-    {id:4, icon:<PermContactCalendarIcon style={iconStyles}/>},
-    {id:5, icon:<UpcomingIcon style={iconStyles}/>},
-    {id:6, icon:<FilterListIcon style={iconStyles}/>},
+    { id: 1, icon: <EmailIcon style={iconStyles} /> },
+    { id: 2, icon: <CalendarMonthIcon style={iconStyles} /> },
+    { id: 4, icon: <PermContactCalendarIcon style={iconStyles} /> },
+    { id: 5, icon: <UpcomingIcon style={iconStyles} /> },
+    { id: 6, icon: <FilterListIcon style={iconStyles} /> },
+    // { id: 7, icon: <TaskIcon style={iconStyles} /> },
 
 ]
 
 const data = [
-    {icon:<Delete sx={{color:'#BEBDBD', cursor:'pointer'}}/>, title:'Delete'},
-    {icon:< Archive sx={{color:'#BEBDBD', cursor:'pointer'}}/>, title:'Archive'},
-    {icon:<CleaningServicesIcon sx={{color:'#BEBDBD', cursor:'pointer'}}/>, title:'Sweep'},
-    {icon:<DriveFileMoveIcon sx={{color:'#BEBDBD', cursor:'pointer'}}/>, title:'Move to'},
-    {icon:<CheckBoxIcon sx={{color:'#02013B', cursor:'pointer'}}/>, title:'Mark All Read'}
+    { icon: <Delete sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Delete' },
+    { icon: < Archive sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Archive' },
+    { icon: <CleaningServicesIcon sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Sweep' },
+    { icon: <DriveFileMoveIcon sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Move to' },
+    { icon: <CheckBoxIcon sx={{ color: '#02013B', cursor: 'pointer' }} />, title: 'Mark All Read' }
 
 ]
 
 const SideBar = () => {
-  return (
-    <>
-    <Drawer variant='permanent' sx={{zIndex:'-5', }}
-      PaperProps={{
-        sx: drawerStyles ,
-      }}
-    >
-        <Box sx={{mt:11}}>
-             {
-                 icons.map((icon)=> {
-                     return(
-                    <Stack sx={{display:'flex', alignItems:'center',}}>
-                        {icon.icon}
-                    </Stack>
-                )
-            })
-        }
-        </Box>
-    </Drawer>
-    <Box>
-        <Box style={bottomBar}>
-            <Button size='small' variant='contained' sx={{background:'#02013B'}}>
-                All Mails
-            </Button>
-            {
-                data.map((val, ind)=> {
-                    return(
-                <Box sx={{display:'flex', alignItems:'center', ml:1}}>
-                {val.icon}
-            <Typography sx={{ml:1, mt:0.25, color:ind == 4 ? '#02013B' :'#BEBDBD', cursor:'pointer'}}>
-                    {val.title}
-            </Typography>
+
+    const navigate = useNavigate()
+    const handleTask = () => {
+        navigate('/taskManagement')
+        // alert('Hello ')
+    }
+    return (
+        <>
+            <Drawer variant='permanent' sx={{ zIndex: -5 }}
+                PaperProps={{
+                    sx: drawerStyles,
+                }}
+            >
+                <Box sx={{ mt: 11 }}>
+                    {
+                        icons.map((icon) => {
+                            return (
+                                <Stack sx={{ display: 'flex', alignItems: 'center', }} key={icon.id}>
+                                    {icon.icon}
+                                </Stack>
+                            )
+                        })
+                    }
+
                 </Box>
-                    )
-                })
-            }
-        </Box>
-    </Box>
-    
-    </>
-  )
+            </Drawer >
+            <Box>
+                <Box style={bottomBar}>
+                    <Button size='small' variant='contained' sx={{ background: '#02013B' }}>
+                        All Mails
+                    </Button>
+                    {
+                        data.map((val, ind) => {
+                            return (
+                                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+                                    {val.icon}
+                                    <Typography sx={{ ml: 1, mt: 0.25, color: ind == 4 ? '#02013B' : '#BEBDBD', cursor: 'pointer' }}>
+                                        {val.title}
+                                    </Typography>
+                                </Box>
+                            )
+                        })
+                    }
+                    <Button onClick={handleTask} size='small' variant='contained' sx={{ background: '#02013B' }}>
+                        task
+                    </Button>
+                </Box>
+            </Box>
+
+        </>
+    )
 }
 
 export default SideBar
