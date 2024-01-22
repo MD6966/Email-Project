@@ -2,6 +2,7 @@ import { SnackbarProvider } from 'notistack'
 import './App.css'
 import Landing from './Components/Landing'
 import Router from './routes'
+import ErrorBoundary from './Components/ErrorBoundary'
 function App() {
 
 
@@ -14,7 +15,9 @@ function App() {
        horizontal: 'right'
      }}
     >
+      <ErrorBoundary>
       <Router />
+      </ErrorBoundary>
     </SnackbarProvider>
     </>
   )

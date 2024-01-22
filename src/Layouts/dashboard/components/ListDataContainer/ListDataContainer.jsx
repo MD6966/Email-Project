@@ -23,7 +23,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   type === 'Outlook' ?
   useSelector((state)=>state.folder.folderData):
   useSelector((state)=>state.folder.folderDataG)
-  // console.log(l_data, "YYYYYY")
+  console.log(list_data, "YYYYYY")
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const folder_name = useSelector((state)=>state.folder.folder_name)
   const [selectedContent, setSelectedContent] = useState('')
@@ -77,7 +77,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
     }
   }
   
-  // console.log(list_data[0])
+  // console.log(list_data)
   return (
     <Box sx={listDataContainer}>
       {/* {list_type === 'Inbox' ?
@@ -200,7 +200,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
               <Groups groupData={groupData} memberSuccess={memberSuccess} /> :
               label ? 
               <Labels /> :
-          data.map((val, index) => {
+          data?.map((val, index) => {
             // console.log(val, 'INSIDE')
             return(
               <React.Fragment key={index}>

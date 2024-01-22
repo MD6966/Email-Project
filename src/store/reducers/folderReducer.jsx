@@ -27,7 +27,7 @@ const folderReducer = (state=initialState, action) => {
             };
         };
         case 'FOLDER_SUCCESS_GOOGLE': {
-            console.log("ACTION", action.payload[0])
+            // console.log("ACTION", action.payload[0])
             return {
                 ...state,
                 folders_google:action.payload,
@@ -102,6 +102,7 @@ const folderReducer = (state=initialState, action) => {
             return {
                folders:[],
                folderData:[],
+               folderDataG:[],
                folder_name:'',
                content:'',
                folders_google:[],
