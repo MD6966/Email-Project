@@ -15,6 +15,8 @@ import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
   // console.log(data, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
@@ -76,8 +78,17 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
       dispatch(markAsReadGoogle(formDataG))
     }
   }
-  
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 10; 
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+  const handleChangePage = (event, value) => {
+    setPage(value);
+  };
+ 
   // console.log(list_data)
+  const startIndex = (page - 1) * itemsPerPage;
+const endIndex = startIndex + itemsPerPage;
+const currentPageData = data.slice(startIndex, endIndex);
   return (
     <Box sx={listDataContainer}>
       {/* {list_type === 'Inbox' ?
@@ -179,6 +190,17 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
         {/* <Typography style={{ fontSize: '14px' }}>
           Today
         </Typography> */}
+        <Typography> Showing <b>{data.length < 10*page ? data.length : page*10 -9 + '-' +10*page}</b> of <b>{data.length}</b></Typography>
+        <Stack spacing={2} sx={{ mt: 2 }}>
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handleChangePage}
+          variant="outlined"
+          shape="rounded"
+          siblingCount={0}
+        />
+      </Stack>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
           {
             (isLoading) ? 
@@ -200,7 +222,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
               <Groups groupData={groupData} memberSuccess={memberSuccess} /> :
               label ? 
               <Labels /> :
-          data?.map((val, index) => {
+              currentPageData?.map((val, index) => {
             // console.log(val, 'INSIDE')
             return(
               <React.Fragment key={index}>
