@@ -1,4 +1,4 @@
-import { Box, Skeleton, Typography } from '@mui/material';
+import { Box, Dialog, DialogContent, DialogTitle, Skeleton, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -13,22 +13,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
-import { markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
+import { deleteMail, markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
+import { Archive, Delete,  } from '@mui/icons-material';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
+import SnoozeIcon from '@mui/icons-material/Snooze';
+import { Success } from '../../../../Components/alerts/Success';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
-  // console.log(data, "DATA FROM CONTAINER")
+  console.log(group, "DATA FROM CONTAINER")
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
   const l_data = 
   type === 'Outlook' ?
   useSelector((state)=>state.folder.folderData):
   useSelector((state)=>state.folder.folderDataG)
-  console.log(list_data, "YYYYYY")
+  // console.log(list_data, "YYYYYY")
   const isLoading = useSelector((state)=>state.folder.isLoading)
+  console.log(isLoading)
   const folder_name = useSelector((state)=>state.folder.folder_name)
   const [selectedContent, setSelectedContent] = useState('')
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [open, setOpen] = useState(false)
+  const cont_data = useSelector((state)=>state.folder.content)
   const dispatch = useDispatch()
   const isSelected = (index) => {
     return selectedItem === index;
@@ -62,6 +70,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   const handleContent = (content, index) => {
     setSelectedItem(index)
     setSelectedContent(content)
+    console.log(content, '++++++')
     if(type === 'Outlook') {
       const formData = new FormData()
       formData.append('message_id', content.mail_id)
@@ -89,87 +98,29 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   const startIndex = (page - 1) * itemsPerPage;
 const endIndex = startIndex + itemsPerPage;
 const currentPageData = data.slice(startIndex, endIndex);
+const handleMouseEnter = (index) => {
+  setHoveredIndex(index);
+};
+
+const handleMouseLeave = () => {
+  setHoveredIndex(null);
+};
+const handleDelete = () => {
+  setOpen(true)
+  const formData = new FormData()
+    formData.append('message_id', cont_data?.mail_id || '')
+    formData.append("mail_id", cont_data?.id || '')
+    dispatch(deleteMail(formData)).then((result) => {
+      setOpen(false)
+      Success("Deleted Successfully!")
+    }).catch((err) => {
+      setOpen(false)
+      console.log(err)
+    });
+}
   return (
     <Box sx={listDataContainer}>
-      {/* {list_type === 'Inbox' ?
-      <>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Typography style={{ fontSize: '16px', fontWeight: 'bold' }}>
-          Inbox
-        </Typography>
-        <Box>
-          <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
-          <FilterListIcon style={{ fontSize: '24px' }} />
-        </Box>
-      </Box>
-      <Box sx={{ mt: 2 }}>
-        <Typography style={{ fontSize: '14px' }}>
-          Today
-        </Typography>
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-          {listData.map((val, index) => (
-            <React.Fragment key={index}>
-              <ListItem
-                alignItems="flex-start"
-                sx={{
-                  cursor: 'pointer',
-                  '&:hover': {
-                    background: isSelected(index) ? '#e2e2e2' : 'inherit',
-                  },
-                  background: isSelected(index) ? '#e2e2e2' : 'inherit',
-                }}
-                onMouseDown={() => handleMouseDown(index)}
-                onMouseUp={handleMouseUp}
-              >
-                <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                </ListItemAvatar>
-                <Box>
-                  <ListItemText
-                    primary={
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Typography>
-                          {val.title}
-                        </Typography>
-                        {isSelected(index) ? (
-                          <>
-                            <DeleteIcon style={{ fontSize: '20px', marginRight: '-45px' }} />
-                            <ArchiveIcon style={{ fontSize: '20px' }} />
-                          </>
-                        ) : (
-                          <Typography sx={{ fontSize: '12px' }}>
-                            {val.time}
-                          </Typography>
-                        )}
-                      </Box>
-                    }
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: 'inline' }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {val.desc}
-                        </Typography>
-                      </React.Fragment>
-                    }
-                  />
-                </Box>
-              </ListItem>
-              <Divider variant="inset" component="li" />
-            </React.Fragment>
-          ))}
-        </List>
-      </Box> 
-      </> 
-      :
-      list_type === 'Group' ?
-      <Groups /> :
-      null
-      
-    } */}
+
     <>
       {
         !group ?
@@ -199,6 +150,7 @@ const currentPageData = data.slice(startIndex, endIndex);
           variant="outlined"
           shape="rounded"
           siblingCount={0}
+          color='primary'
         />
       </Stack>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -228,18 +180,20 @@ const currentPageData = data.slice(startIndex, endIndex);
               <React.Fragment key={index}>
               <ListItem
                 alignItems="flex-start"
+                onMouseEnter={() => handleMouseEnter(index)}
+                onMouseLeave={handleMouseLeave}
                 sx={{
                   cursor: 'pointer',
                   '&:hover': {
-                    background: isSelected(index) ? '#e2e2e2' : 'inherit',
+                    background: (isSelected(index) || hoveredIndex === index) ? '#C8DEF4' : 'inherit',
                   },
-                  background: isSelected(index) ? '#e2e2e2' : 'inherit',
+                  background:( isSelected(index)||hoveredIndex === index) ? '#C8DEF4' : 'inherit',
                 }}
                 onClick={()=>handleContent(val, index)}
               >
                 {/* {console.log(val.description, "This is")} */}
                 <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Avatar alt={val.sender_name ? val.sender_name : 'R'} src="/static/images/avatar/1.jpg" sx={{background:'#040263'}}/>
                 </ListItemAvatar>
                 <Box>
                 <ListItemText
@@ -263,13 +217,25 @@ const currentPageData = data.slice(startIndex, endIndex);
                 }
   secondary={
     <React.Fragment>
-      <Typography
-  sx={{ display: 'inline' }}
-  component="span"
-  variant="body2"
-  color="text.primary"
-/>
-    </React.Fragment>
+    {hoveredIndex === index && (
+        <Box sx={{display:'flex', justifyContent:'flex-start'}}>
+          <Tooltip title="Delete">
+          <Delete sx={{mr:1, fontSize:'20px'}}
+          onClick={handleDelete}
+          />
+          </Tooltip>
+          <Tooltip title="Archive">
+          <Archive sx={{mr:1, fontSize:'20px'}}/> 
+          </Tooltip>
+          <Tooltip title="Snooze">
+          <SnoozeIcon sx={{mr:1, fontSize:'20px'}}/> 
+          </Tooltip>
+          <Tooltip title="Mark as read">
+          <DoneAllIcon sx={{mr:1, fontSize:'20px'}}/> 
+          </Tooltip>
+        </Box>
+    )}
+  </React.Fragment>
   }
 />
                 </Box>
@@ -281,6 +247,24 @@ const currentPageData = data.slice(startIndex, endIndex);
         </List>
       </Box> 
       </> 
+      <Dialog open={open}>
+        <DialogTitle>Deleting please wait...</DialogTitle>
+        <DialogContent>
+          <Box  sx={{
+            display:'flex',
+            justifyContent:'center',
+            alignItems:'center'
+          }}>
+             <RotatingLines
+                strokeColor="#040263"
+                strokeWidth="5"
+                animationDuration="0.75"
+                width="30"
+                visible={true} 
+                />
+          </Box>
+        </DialogContent>
+       </Dialog>
     </Box>
   );
 };
