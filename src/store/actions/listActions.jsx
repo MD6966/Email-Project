@@ -59,3 +59,8 @@ export const setList = (list_type) => (dispatch) => {
       throw err;
     }
   };
+  export const loadingFalse = () => (dispatch) => {
+    dispatch({
+      type: 'RESET_GROUP_LOADING',
+    });
+  }

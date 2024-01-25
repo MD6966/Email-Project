@@ -53,6 +53,13 @@ const folderReducer = (state=initialState, action) => {
 
             };
         };
+        case 'RESET_GROUP_LOADING': {
+            return {
+                ...state,
+                isLoading: false,
+
+            };
+        };
         case 'RESET_LOADING': {
             return {
                 ...state,

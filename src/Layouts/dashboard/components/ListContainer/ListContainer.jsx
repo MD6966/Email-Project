@@ -23,7 +23,7 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import ComposePopup from './components/ComposePopup';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import { useDispatch, useSelector } from 'react-redux';
-import { getListData, getListDataGoogle, setList } from '../../../../store/actions/listActions';
+import { getListData, getListDataGoogle, loadingFalse, setList } from '../../../../store/actions/listActions';
 import { authenticate, authenticateGoogle, deleteFolder, folderName, getAllFolders, getAllFoldersGoogle, outlookSubsctiption, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
@@ -138,6 +138,7 @@ const ListContainer = () => {
     if(type === 'Outlook' && current_state === 'Outlook') {
       if(group) {
         setSelectedItem(null)
+        dispatch(loadingFalse())
       }
       else 
       if (data.folders.length > 0) {
@@ -176,6 +177,7 @@ const ListContainer = () => {
   const topRef = useRef(null);
   const hnadleGroupBtn = (val, data) => {
     dispatch(setList(val))
+    dispatch(loadingFalse())
     setSelectedGroup(data)
     setGroupData(data)
     setGroup(true)

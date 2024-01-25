@@ -26,7 +26,7 @@ const listData = [
 
   ]
 const Groups = ({groupData, memberSuccess}) => {
-  // console.log(groupData, "This is Group Data")
+  console.log(groupData, "This is Group Data")
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const [dialog, setDialog] = useState(false)
