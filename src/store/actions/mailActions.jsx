@@ -179,6 +179,32 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  export const getGoogleThreads = (id) => async (dispatch) => {
+    try {
+      const res = await api.get(`api/google-thread/${id}`);
+      dispatch({
+        type: 'GOOGLE_THREADS',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const getOutlookThreads = (id) => async (dispatch) => {
+    try {
+      const res = await api.get(`api/outlook-coversation/${id}`);
+      dispatch({
+        type: 'OUTLOOK_THREADS',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
 
   export const unFlagEmail = (body) => async (dispatch) => {
     try {

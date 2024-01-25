@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Avatar,
   Box,
@@ -28,7 +28,7 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail, flagEmail, flagEmailGoogle, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
+import { deleteMail, flagEmail, flagEmailGoogle, getGoogleThreads, getOutlookThreads, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
@@ -41,6 +41,12 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
 import MoveMailDialog from './components/MoveMailDialog';
 import { Success } from '../../../../Components/alerts/Success';
+import Timeline from '@mui/lab/Timeline';
+import TimelineItem from '@mui/lab/TimelineItem';
+import TimelineSeparator from '@mui/lab/TimelineSeparator';
+import TimelineConnector from '@mui/lab/TimelineConnector';
+import TimelineContent from '@mui/lab/TimelineContent';
+import TimelineDot from '@mui/lab/TimelineDot';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -81,10 +87,10 @@ const MainContent = () => {
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const type = useSelector((state)=>state.folder.src)
   const [moveDialog, setMoveDialg] = useState(false)
+  const [threads, setThreads] = useState([])
   // console.log(type, "++++TYPE")
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
-
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -260,13 +266,35 @@ const MainContent = () => {
       setMoveDialg(true)
     }
   }
-  // console.log(content, '++++')
+  const getMailThreads = () => {
+    if(type === 'Google') {
+      dispatch(getGoogleThreads(content?.mail_id)).then((result) => {
+        setThreads(result.data.payload[0])
+      }).catch((err) => {
+        console.log(err)
+      });
+    }
+    else if ( type === 'Outlook'){
+      dispatch(getOutlookThreads(content?.conversationId)).then((result) => {
+        setThreads(result.data.payload)
+      }).catch((err) => {
+        console.log(err)
+      });
+    }
+  }
+  useEffect(()=> {
+    getMailThreads()
+  }, [content])
+  // console.log(type, '++++')
   return (
     <StyledRoot>
       {
         (!content || isLoading) ?
         <SkeletonComponent />
        :
+       threads.map((val)=> {
+        return(
+          <Box sx={{mb:2}}>
       <Box
         sx={{
           width: '50vw',
@@ -287,9 +315,8 @@ const MainContent = () => {
         >
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-              <Avatar sx={{ background: '#040263', height: '35px', width: '35px', p: 2, fontSize: '16px' }}>
-                MD
-              </Avatar>
+              <Avatar alt={content?.sender_name || ''} sx={{ background: '#040263', height: '35px', width: '35px', p: 2, fontSize: '16px' }} src="/img"/>
+                
               <Box sx={{ ml: 1 }}>
                 <Typography sx={{ fontSize: '13px', mb: -0.5 }}>{content?.sender_name || ''} to you</Typography>
                 <Typography sx={{ fontWeight: 'bold' }}>{content?.subject || ''}</Typography>
@@ -316,10 +343,50 @@ const MainContent = () => {
             p: 5,
           }}
         >
+
           <div
           style={{minHeight:'80%', marginBottom:5}}
         dangerouslySetInnerHTML={{ __html: content?.description || '' }}
       />
+      {/* <Box sx={{ml:'-100%'}}>
+       <Timeline>
+        {
+          threads.map((val)=> {
+            console.log(val)
+            const dateObject = new Date(val.date)
+            const formattedDate = dateObject.toLocaleDateString('en-US', {
+              weekday: 'short',
+              day: '2-digit',
+              month: 'short',
+              year: 'numeric'
+            });
+            return(
+      <TimelineItem>
+        <TimelineSeparator>
+          <TimelineDot />
+          <TimelineConnector />
+        </TimelineSeparator>
+        <TimelineContent>
+          <div style={{display:'flex', alignItems:'center', justifyContent:'space-between'}}>
+          <strong>
+          {val.from}
+          </strong> 
+          <p>
+          {formattedDate}
+          </p>
+          </div>
+          <br />
+<div
+          style={{minHeight:'80%', marginBottom:5}}
+        dangerouslySetInnerHTML={{ __html: content?.description || '' }}
+      />
+        </TimelineContent>
+      </TimelineItem>
+            )
+          })
+        }
+    </Timeline>
+      </Box> */}
           {/* <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography fontWeight="bold">Hey Syed!</Typography>
             <Typography color="#777">4:42 pm</Typography>
@@ -442,6 +509,9 @@ const MainContent = () => {
           )}
         </Box>
       </Box>
+          </Box>
+        )
+       })
       }
       <Menu
         id="basic-menu"

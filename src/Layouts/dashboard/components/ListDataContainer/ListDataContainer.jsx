@@ -25,7 +25,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   type === 'Outlook' ?
   useSelector((state)=>state.folder.folderData):
   useSelector((state)=>state.folder.folderDataG)
-  console.log(list_data, "YYYYYY")
+  // console.log(list_data, "YYYYYY")
   const isLoading = useSelector((state)=>state.folder.isLoading)
   const folder_name = useSelector((state)=>state.folder.folder_name)
   const [selectedContent, setSelectedContent] = useState('')
@@ -62,6 +62,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   const handleContent = (content, index) => {
     setSelectedItem(index)
     setSelectedContent(content)
+    console.log(content, '++++++')
     if(type === 'Outlook') {
       const formData = new FormData()
       formData.append('message_id', content.mail_id)
@@ -199,6 +200,7 @@ const currentPageData = data.slice(startIndex, endIndex);
           variant="outlined"
           shape="rounded"
           siblingCount={0}
+          color='primary'
         />
       </Stack>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
@@ -231,15 +233,15 @@ const currentPageData = data.slice(startIndex, endIndex);
                 sx={{
                   cursor: 'pointer',
                   '&:hover': {
-                    background: isSelected(index) ? '#e2e2e2' : 'inherit',
+                    background: isSelected(index) ? '#C8DEF4' : 'inherit',
                   },
-                  background: isSelected(index) ? '#e2e2e2' : 'inherit',
+                  background: isSelected(index) ? '#C8DEF4' : 'inherit',
                 }}
                 onClick={()=>handleContent(val, index)}
               >
                 {/* {console.log(val.description, "This is")} */}
                 <ListItemAvatar>
-                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                  <Avatar alt={val.sender_name ? val.sender_name : 'R'} src="/static/images/avatar/1.jpg" sx={{background:'#040263'}}/>
                 </ListItemAvatar>
                 <Box>
                 <ListItemText
