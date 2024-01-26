@@ -26,6 +26,7 @@ import FavouriteTask from './Layouts/TaskManagement/Component/FavouriteTask';
 import PlannedTask from './Layouts/TaskManagement/Component/PlannedTask';
 import AssignTask from './Layouts/TaskManagement/Component/AssignTask';
 import CompleteTask from './Layouts/TaskManagement/Component/CompleteTask';
+import EmbedGoogleMeet from './Views/EmbedGoogleMeet/EmbedGoogleMeet';
 export default function Router() {
     const [progress, setProgress] = useState(0);
     const isAuthenticatedUser = useSelector((state) => state.email.isAuthenticatedUser)
@@ -106,14 +107,6 @@ export default function Router() {
                     element: < ViewSingleDocument setprogress={setProgress} />
                 },
                 {
-                    path: '/view-software',
-                    element: < ViewSingleSoftware setprogress={setProgress} />
-                },
-                // {
-                //     path: '/taskManagement',
-                //     element: < TaskMangement setprogress={setProgress} />
-                // },
-                {
                     element: <ProtectedRoutes isLogged={isAuthenticatedUser} />,
                     children: [
                         {
@@ -132,7 +125,14 @@ export default function Router() {
                     ]
 
                 },
-
+                {
+                    path:'/view-software',
+                    element:< ViewSingleSoftware setprogress={setProgress}/>
+                }, 
+                {
+                    path:'/google-meeting',
+                    element: <EmbedGoogleMeet />
+                },
             ])}
         </>
     );
