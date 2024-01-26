@@ -1,7 +1,8 @@
-import { AppBar, Avatar, Box, CssBaseline, Divider, Drawer, IconButton, InputBase, List, ListItem, ListItemText, Stack, Toolbar, Typography } from '@mui/material'
-import React from 'react'
+import { AppBar, Avatar, Box, CssBaseline, Divider, Drawer, IconButton, InputBase, List, ListItem, ListItemText, Stack, Toolbar, Typography, useTheme } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import SideBar from '../dashboard/components/SideBar/SideBar'
 import { drawerStyles, iconStyles, iconStylesDashboard } from '../dashboard/components/SideBar/styles'
+import { makeStyles } from '@mui/styles'
 import EmailIcon from '@mui/icons-material/Email';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
@@ -19,7 +20,14 @@ import StarBorderIcon from '@mui/icons-material/StarBorder';
 import AppShortcutIcon from '@mui/icons-material/AppShortcut';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GradingIcon from '@mui/icons-material/Grading';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import AddIcon from '@mui/icons-material/Add';
+import { Link, Outlet, useLocation } from 'react-router-dom';
+import clsx from 'clsx'
+import AddTask from './Component/AddTask'
+import FavouriteTask from './Component/FavouriteTask'
+import PlannedTask from './Component/PlannedTask'
+import AssignTask from './Component/AssignTask'
+import CompleteTask from './Component/CompleteTask'
 const drawerWidth = 400;
 const icons = [
     { id: 1, icon: <EmailIcon style={iconStylesDashboard} /> },
@@ -37,14 +45,25 @@ const icon = [
 
 ]
 const Sidebar = [
-    { id: 1, icon: <TaskIcon />, text: 'Create Task', icon2: <AddCircleOutlineIcon /> },
-    { id: 2, icon: <StarBorderIcon />, text: 'Favorite' },
-    { id: 2, icon: <AppShortcutIcon />, text: 'Planned' },
-    { id: 2, icon: <AccountCircleIcon />, text: 'Assign to me' },
-    { id: 2, icon: <GradingIcon />, text: 'Completed Tasks' },
+    { id: 1, icon: <TaskIcon />, text: 'Create Task', icon2: <AddIcon />, to: 'addtask' },
+    { id: 2, icon: <StarBorderIcon />, text: 'Favorite', to: 'favourite' },
+    // { id: 2, icon: <AppShortcutIcon />, text: 'Planned', to: 'planned' },
+    { id: 2, icon: <AccountCircleIcon />, text: 'Assign to me', to: 'assign' },
+    { id: 2, icon: <GradingIcon />, text: 'Completed Tasks', to: 'complete' },
 
 
 ]
+const useStyles = makeStyles((theme) => ({
+    selected: {
+        background: "#fff",
+        borderRadius: 10,
+    },
+    icon: {
+        marginLeft: "auto",
+    },
+    drawer: {},
+    btn: {},
+}));
 const SearchField = () => {
     return (
         <Box
@@ -92,7 +111,24 @@ const TaskSearch = () => {
         </Box>
     );
 };
+
 const TaskMangement = () => {
+
+    const theme = useTheme()
+    const classes = useStyles()
+    const [selectedItem, setSelectedItem] = useState(null);
+    const location = useLocation();
+    console.log(location, "++++++")
+    useEffect(() => {
+        const matchingItem = Sidebar.find((item) => item.to === location.pathname);
+        if (matchingItem) {
+            setSelectedItem(matchingItem);
+        }
+    }, [location.pathname]);
+
+    const handleListItemClick = (item) => {
+        setSelectedItem(item);
+    };
     return (
         <>
 
@@ -130,38 +166,55 @@ const TaskMangement = () => {
 
                     </Toolbar>
                 </AppBar>
-                <Drawer
-                    variant="permanent"
-                    sx={{
-                        width: drawerWidth,
-                        flexShrink: 0,
-                        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-                    }}
-                >
-                    <Toolbar />
-                    <Box sx={{ overflow: 'auto' }}>
-                        <List sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                            <TaskSearch />
-                            {Sidebar.map((val, index) => (
-                                <ListItem key={index} disablePadding>
-                                    <ListItemButton sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                                        <Box sx={{ display: 'flex' }}>
-                                            <ListItemIcon>
-                                                {val.icon}
-                                            </ListItemIcon>
-                                            <ListItemText>
-                                                {val.text}
-                                            </ListItemText>
-                                        </Box>
-                                        <Box>
-                                            {val.icon2}
-                                        </Box>
-                                    </ListItemButton>
-                                </ListItem>
-                            ))}
-                        </List>
-                        <Divider />
-                        {/* <List>
+                <Box sx={{ display: 'flex' }}>
+                    <Box flex={1}><Drawer
+                        variant="permanent"
+                        sx={{
+                            width: drawerWidth,
+                            flexShrink: 0,
+                            [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                        }}
+                    >
+                        <Toolbar />
+
+                        <Box flex={1} sx={{ overflow: 'auto' }}>
+                            <List sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <TaskSearch />
+                                {Sidebar.map((val) => (
+                                    <ListItem key={val} disablePadding component={Link}
+                                        to={val.to}
+                                        // className={clsx(classes.root, {
+                                        //     [classes.selected]: selectedItem === val.id,
+                                        // })}
+                                        sx={{ mb: 2, textDecoration: 'none', color: 'black' }}>
+                                        {/* <Link to={`/taskManagement/${val.path}`}> */}
+                                        <ListItemButton
+                                            selected={selectedItem === val.id}
+                                            onClick={(event) =>
+                                                handleListItemClick(event, val.id)
+                                            }
+                                            sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <ListItemIcon>
+                                                    <Box sx={{ backgroundColor: '#BDB5B5', height: '40px', width: '40px', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '50%' }}>
+                                                        {val.icon}
+                                                    </Box>
+                                                </ListItemIcon>
+                                                <ListItemText>
+                                                    {val.text}
+                                                </ListItemText>
+                                            </Box>
+                                            <Box>
+                                                {val.icon2}
+                                            </Box>
+                                        </ListItemButton>
+                                        {/* </Link> */}
+                                    </ListItem>
+                                ))}
+
+                            </List>
+                            {/* <Divider /> */}
+                            {/* <List>
                             {Sidebar.map((val, index) => (
                                 <ListItem key={index} disablePadding>
                                     <ListItemButton>
@@ -175,39 +228,45 @@ const TaskMangement = () => {
                                 </ListItem>
                             ))}
                         </List> */}
+                        </Box>
+
+
+
+                    </Drawer></Box>
+                    <Box flex={2} mt={12} p={'20px'}>
+                        {selectedItem && (
+                            <div>
+                                {
+                                    location.pathname === '/taskManagement/addtask'
+                                    && <AddTask />
+                                }
+                                {
+                                    location.pathname === '/taskManagement/favourite'
+                                    && <FavouriteTask />
+                                }
+                                {
+                                    location.pathname === '/taskManagement/planned'
+                                    && <PlannedTask />
+                                }
+                                {
+                                    location.pathname === '/taskManagement/assign'
+                                    && <AssignTask />
+                                }
+                                {
+                                    location.pathname === '/taskManagement/complete'
+                                    && <CompleteTask />
+                                }
+                                {/* <Outlet /> */}
+                                {/* <h2>Selected Item: {selectedItem.text}</h2> */}
+
+                                {/* <p>{selectedItem.icon}</p> */}
+                            </div>
+                        )}
                     </Box>
-                </Drawer>
-                <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-                    <Toolbar />
-                    <Typography paragraph>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-                        enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-                        imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-                        Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-                        Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-                        adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-                        nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-                        leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-                        feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-                        consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-                        sapien faucibus et molestie ac.
-                    </Typography>
-                    <Typography paragraph>
-                        Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-                        eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-                        neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-                        tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-                        sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-                        tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-                        gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-                        et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-                        tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-                        eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-                        posuere sollicitudin aliquam ultrices sagittis orci a.
-                    </Typography>
                 </Box>
-            </Box>
+
+
+            </Box >
         </>
     )
 }

@@ -22,6 +22,10 @@ import ViewSingleDocument from './Layouts/FilesManager/components/MyUploads/comp
 import ViewSingleSoftware from './Layouts/FilesManager/components/MyUploads/components/Softwares/components/ViewSingleSoftware';
 import TaskMangement from './Layouts/TaskManagement/TaskMangement';
 import { AddTask } from '@mui/icons-material';
+import FavouriteTask from './Layouts/TaskManagement/Component/FavouriteTask';
+import PlannedTask from './Layouts/TaskManagement/Component/PlannedTask';
+import AssignTask from './Layouts/TaskManagement/Component/AssignTask';
+import CompleteTask from './Layouts/TaskManagement/Component/CompleteTask';
 export default function Router() {
     const [progress, setProgress] = useState(0);
     const isAuthenticatedUser = useSelector((state) => state.email.isAuthenticatedUser)
@@ -110,13 +114,25 @@ export default function Router() {
                 //     element: < TaskMangement setprogress={setProgress} />
                 // },
                 {
-                    path: 'taskManagement',
-                    element: <TaskMangement />,
+                    element: <ProtectedRoutes isLogged={isAuthenticatedUser} />,
                     children: [
-                        { path: 'addtask', element: <AddTask /> },
-                        // { path: 'register', element: <SignUp /> }
+                        {
+                            path: 'taskManagement',
+                            element: <TaskMangement />,
+                            children: [
+                                { path: 'addtask', element: <AddTask /> },
+                                { path: 'favourite', element: <FavouriteTask /> },
+                                { path: 'planned', element: <PlannedTask /> },
+                                { path: 'assign', element: <AssignTask /> },
+                                { path: 'complete', element: <CompleteTask /> },
+                                // { path: 'register', element: <SignUp /> }
+                            ]
+                        },
+
                     ]
+
                 },
+
             ])}
         </>
     );
