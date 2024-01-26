@@ -1,7 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { createMeeting } from "../../store/actions/folderActions";
 
 const Meeting = () => {
     const [payload, setPayload] = useState()
+    const dispatch =  useDispatch()
+    useLayoutEffect(()=> {
+        dispatch(createMeeting()).then((result) => {
+           setPayload(result.data[0])
+        }).catch((err) => {
+            console.log(err)
+        });
+    },[])
   useEffect(() => {
     const loadZoom = async () => {
       const { ZoomMtg } = await import("@zoomus/websdk");
@@ -46,7 +56,7 @@ const Meeting = () => {
 
     loadZoom();
   }, []);
-
+  console.log(payload)
   return <h1>From Meeting</h1>;
 };
 

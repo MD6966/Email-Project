@@ -189,3 +189,17 @@ export const getAllFolders = () => async (dispatch) => {
       throw err;
     }
   };
+
+  export const createMeeting = () => async (dispatch) => {
+    try {
+      const res = await api.get('api/create-meeting');
+      // dispatch({
+      //   type: 'REMOVE_GROUP_CONTACTS',
+      //   payload: res.data.payload,
+      // });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
