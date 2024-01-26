@@ -21,6 +21,7 @@ import ViewSinglePictue from './Layouts/FilesManager/components/MyUploads/compon
 import ViewSingleDocument from './Layouts/FilesManager/components/MyUploads/components/Documents/components/ViewSingleDocument';
 import ViewSingleSoftware from './Layouts/FilesManager/components/MyUploads/components/Softwares/components/ViewSingleSoftware';
 import EmbedGoogleMeet from './Views/EmbedGoogleMeet/EmbedGoogleMeet';
+import Meeting from './Views/EmbedGoogleMeet/meeting';
 export default function Router() {
     const [progress, setProgress] = useState(0);
     const isAuthenticatedUser = useSelector((state)=>state.email.isAuthenticatedUser)
@@ -105,8 +106,8 @@ export default function Router() {
                     element:< ViewSingleSoftware setprogress={setProgress}/>
                 }, 
                 {
-                    path:'/google-meeting',
-                    element: <EmbedGoogleMeet />
+                    path:'/meeting',
+                    element: <Meeting />
                 },
             ])}
         </>
