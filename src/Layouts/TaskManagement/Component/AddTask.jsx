@@ -337,7 +337,14 @@ const AddTask = () => {
                 </Box>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-                {favoriteTasks[val.id] ? (
+              <StarIcon
+                    sx={{
+                      color: val.favorite === 1 ? 'yellow' : 'black',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => handleStarClick(val.id)}
+                  />
+                {/* {favoriteTasks[val.id] ? (
                   <StarIcon
                     sx={{
                       color: 'yellow',
@@ -353,7 +360,7 @@ const AddTask = () => {
                     }}
                     onClick={() => handleStarClick(val.id)}
                   />
-                )}
+                )} */}
                 <DeleteOutlineIcon sx={btnStyle} onClick={() => handleDelete(val)} />
                 <button
                   disabled={loading}

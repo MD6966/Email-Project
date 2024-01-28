@@ -7,7 +7,7 @@ const Meeting = () => {
     const dispatch =  useDispatch()
     useLayoutEffect(()=> {
         dispatch(createMeeting()).then((result) => {
-           setPayload(result.data[0])
+            console.log(result.data[0])
         }).catch((err) => {
             console.log(err)
         });
@@ -56,7 +56,7 @@ const Meeting = () => {
 
     loadZoom();
   }, []);
-  console.log(payload)
+
   return <h1>From Meeting</h1>;
 };
 
