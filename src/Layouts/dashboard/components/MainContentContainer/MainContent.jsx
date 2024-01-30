@@ -47,6 +47,7 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator';
 import TimelineConnector from '@mui/lab/TimelineConnector';
 import TimelineContent from '@mui/lab/TimelineContent';
 import TimelineDot from '@mui/lab/TimelineDot';
+import NoContent from './components/NoContent';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -139,13 +140,13 @@ const MainContent = () => {
   const handleBccClick = () => {
     setShowBcc(false);
   };
-  //
+  // console.log(content, "This is Content")
   const handleSubmit = (e) => {
     e.preventDefault()
     setloading(true)
     const formData = new FormData()
     formData.append('message_id',content.mail_id)
-    formData.append('reply_email', formValues.reply_email)
+    formData.append('reply_email', content.sender_email_address)
     if(formValues.bccEmail)
     {
       formData.append('bccEmail', formValues.bccEmail)
@@ -285,13 +286,15 @@ const MainContent = () => {
   useEffect(()=> {
     getMailThreads()
   }, [content])
-  // console.log(type, '++++')
+  // console.log(content, '++++FROM MAIN')
   return (
     <StyledRoot>
       {
-        (!content || isLoading) ?
+        ( isLoading) ?
         <SkeletonComponent />
        :
+       (!content) ?
+       <NoContent /> : 
        threads.map((val)=> {
         return(
           <Box sx={{mb:2}}>
@@ -401,7 +404,7 @@ const MainContent = () => {
           {editorVisible && (
             <Card sx={{mt:4}}>
               <form onSubmit={handleSubmit}>
-              <TextField label="To" variant='standard' fullWidth
+              {/* <TextField label="To" variant='standard' fullWidth
               name='reply_email'
               value={formValues.reply_email}
               onChange={handleChangeFields}
@@ -464,7 +467,7 @@ const MainContent = () => {
                   ),
                 }}
                 />
-              }
+              } */}
               <Editor value={text} onTextChange={(e) => setText(e.htmlValue)} style={{ height: '120px', }}/>
               {
                 loading ? 

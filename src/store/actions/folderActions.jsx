@@ -73,6 +73,13 @@ export const getAllFolders = () => async (dispatch) => {
     });
     
   };
+  export const Resetcontent = () => (dispatch) => {
+    // console.log(cont, "THIS IS CONTENT")
+    dispatch({
+      type: 'CONTENT_RESET',
+    });
+    
+  };
   export const loginSRC = (src) => (dispatch) => {
     dispatch({
       type: 'LOGIN_SRC',

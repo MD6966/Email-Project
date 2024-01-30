@@ -66,6 +66,12 @@ const folderReducer = (state=initialState, action) => {
                 isLoading: true,
             };
         };
+        case 'CONTENT_RESET': {
+            return {
+                ...state,
+                content: '',
+            };
+        };
         case 'FOLDER_NAME': {
             return {
                 ...state,

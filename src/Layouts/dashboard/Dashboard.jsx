@@ -14,13 +14,13 @@ const Dashboard = ({ setprogress }) => {
   const dispatch = useDispatch()
   useEffect(() => {
     setprogress(20);
-    if(type === 'Google') {
-      dispatch(getAllFoldersGoogle()).then((result) => {
-        console.log(result.data.payload[0])
-      }).catch((err) => {
-        console.log(err)
-      });
-    }
+    // if(type === 'Google') {
+    //   dispatch(getAllFoldersGoogle()).then((result) => {
+    //     console.log(result.data.payload[0])
+    //   }).catch((err) => {
+    //     console.log(err)
+    //   });
+    // }
     setTimeout(() => {
       setprogress(100);
       setLoading(false);
@@ -29,7 +29,7 @@ const Dashboard = ({ setprogress }) => {
 
   return (
     <div style={{ overflow: 'hidden' }}>
-      {loading ? ( // Render loader if still loading
+      {loading ? (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
           <CircularProgress />
         </div>

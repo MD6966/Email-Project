@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { Box, Dialog, DialogContent, Typography, Radio, RadioGroup, FormControlLabel, TextField, Button } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { authenticate, getAllFolders, getAllFoldersGoogle, loginHITSRC, loginSRC, outlookSubsctiption } from '../../../../../store/actions/folderActions';
@@ -11,6 +11,7 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 const SettingsDialog = ({open,close}) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [loadingData, setloadingData] = useState(true)
   const [google_data, setGoogle_data] = useState(null)
   const [outlook_data, setOutlook_data] = useState(null)
   const google_data_folder = useSelector((state)=>state.folder.folders_google)
@@ -48,10 +49,17 @@ const SettingsDialog = ({open,close}) => {
       }
     });
   }
+  useEffect(() => {
+    if (google_data_folder.length > 0) {
+      setloadingData(false);
+    }
+  }, [google_data_folder]);
   useEffect(()=> {
-    // console.log(google_data_folder[0][2], "+++++")
+    
     if(loginSrc === 'Google') {
-      setGoogle_data(google_data_folder[0][2] || '')
+      if(!loadingData){
+        setGoogle_data(google_data_folder[0][2] || '')
+      }
     }
     setOutlook_data(outlook_data_folder? outlook_data_folder[0] : '')
   },[google_data_folder, outlook_data_folder])

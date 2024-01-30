@@ -1,4 +1,4 @@
-import { Box, Dialog, DialogContent, DialogTitle, Skeleton, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, Dialog, DialogContent, DialogTitle, Skeleton, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -27,18 +27,15 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
 			cluster: 'ap2'
 		})
 		const channel1 = pusher.subscribe('New-Mail-channel');
-		// You can bind more channels here like this
-		// const channel2 = pusher.subscribe('channel_name2')
 		channel1.bind('newMail',function(data) {
 		    console.log(data)
-		    // Code that runs when channel1 listens to a new message
 		})
 		
 		return (() => {
 			pusher.unsubscribe('New-Mail-channel')
-			// pusher.unsubscribe('channel_name2')
+
+
 		})
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
@@ -48,6 +45,8 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   useSelector((state)=>state.folder.folderDataG)
   // console.log(list_data, "YYYYYY")
   const isLoading = useSelector((state)=>state.folder.isLoading)
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const folder_name = useSelector((state)=>state.folder.folder_name)
   const [selectedContent, setSelectedContent] = useState('')
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -74,7 +73,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   }, [list_data, selectedContent, data]);
   // console.log(selectedContent, "++++____+++++")
   useEffect(()=> {
-    dispatch(content(selectedContent))
+    // dispatch(content(selectedContent))
   }, [selectedContent, list_data ])
   useLayoutEffect(()=> {
     setSelectedItem(0)
@@ -83,10 +82,11 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
     const options = { hour: 'numeric', minute: '2-digit', hour12: true };
     return new Date(dateTimeString).toLocaleTimeString([], options);
   };
-  const handleContent = (content, index) => {
+  const handleContent = (cont, index) => {
     setSelectedItem(index)
-    setSelectedContent(content)
-    console.log(content, '++++++')
+    setSelectedContent(cont)
+    // console.log(content, '++++++')
+    dispatch(content(cont))
     if(type === 'Outlook') {
       const formData = new FormData()
       formData.append('message_id', content.mail_id)
@@ -134,6 +134,22 @@ const handleDelete = () => {
       console.log(err)
     });
 }
+const toggleItemSelection = (id) => {
+  if (selectedItems.includes(id)) {
+    setSelectedItems(selectedItems.filter((item) => item !== id));
+  } else {
+    setSelectedItems([...selectedItems, id]);
+  }
+};
+const toggleSelectAll = () => {
+  if (selectAll) {
+    setSelectedItems([]);
+  } else {
+    const allIds = data.map((item) => item.id);
+    setSelectedItems(allIds);
+  }
+  setSelectAll(!selectAll);
+};
   return (
     <Box sx={listDataContainer}>
 
@@ -149,7 +165,7 @@ const handleDelete = () => {
         </Typography>
         <Box>
           <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
-          <FilterListIcon style={{ fontSize: '24px' }} />
+          <FilterListIcon style={{ fontSize: '24px' }} onClick={toggleSelectAll} />
         </Box>
       </Box> : null
       }
@@ -200,14 +216,18 @@ const handleDelete = () => {
                 onMouseLeave={handleMouseLeave}
                 sx={{
                   cursor: 'pointer',
+                  width:'150%',
                   '&:hover': {
-                    background: (isSelected(index) || hoveredIndex === index) ? '#C8DEF4' : 'inherit',
+                    background: (isSelected(index) || hoveredIndex === index) ? '#C8DEF4' : '',
                   },
-                  background:( isSelected(index)||hoveredIndex === index) ? '#C8DEF4' : 'inherit',
+                  background:( isSelected(index)||hoveredIndex === index || val.isRead === '1' || val.isRead ==="READ") ? '#C8DEF4' : 'inherit',
                 }}
                 onClick={()=>handleContent(val, index)}
               >
-                {/* {console.log(val.description, "This is")} */}
+                <Checkbox
+                  checked={selectedItems.includes(val.id)}
+                  onChange={() => toggleItemSelection(val.id)}
+                />
                 <ListItemAvatar>
                   <Avatar alt={val.sender_name ? val.sender_name : 'R'} src="/static/images/avatar/1.jpg" sx={{background:'#040263'}}/>
                 </ListItemAvatar>

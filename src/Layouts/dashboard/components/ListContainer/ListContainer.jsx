@@ -24,7 +24,7 @@ import ComposePopup from './components/ComposePopup';
 import FolderSpecialIcon from '@mui/icons-material/FolderSpecial';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListData, getListDataGoogle, loadingFalse, setList } from '../../../../store/actions/listActions';
-import { authenticate, authenticateGoogle, deleteFolder, folderName, getAllFolders, getAllFoldersGoogle, outlookSubsctiption, resetLoading } from '../../../../store/actions/folderActions';
+import { Resetcontent, authenticate, authenticateGoogle, deleteFolder, folderName, getAllFolders, getAllFoldersGoogle, outlookSubsctiption, resetLoading } from '../../../../store/actions/folderActions';
 import G_L_Dialog from './components/G_L_Dialog';
 import { getAllGroups } from '../../../../store/actions/outlookGroupActions';
 import DialogLoader from './components/DialogLoader';
@@ -123,6 +123,7 @@ const ListContainer = () => {
     setGroup(false)
     setGroupData([])
     setSelectedGroup([])
+    dispatch(Resetcontent())
     if(type==='Outlook') {
       dispatch(folderName(item.folder_name))
     }
