@@ -1,17 +1,19 @@
 import { Box, Button, Drawer, Stack, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import { SideBarStyles, bottomBar, drawerStyles, iconStyles } from './styles'
 import EmailIcon from '@mui/icons-material/Email';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import UpcomingIcon from '@mui/icons-material/Upcoming';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { Archive, Delete } from '@mui/icons-material';
+import { Archive, Delete, VideoCall } from '@mui/icons-material';
 import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
 import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import TaskIcon from '@mui/icons-material/Task';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { createMeeting } from '../../../../store/actions/folderActions';
 const icons = [
     { id: 1, icon: <EmailIcon style={iconStyles} /> },
     { id: 2, icon: <CalendarMonthIcon style={iconStyles} /> },
@@ -34,9 +36,23 @@ const data = [
 const SideBar = () => {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false)
     const handleTask = () => {
         navigate('/taskManagement')
         // alert('Hello ')
+    }
+    const handleZoomMeeting = () => {
+        setLoading(true)
+        dispatch(createMeeting()).then((result) => {
+            setLoading(false)
+            // console.log(result.data[0])
+            window.open(result.data[0]?.start_url, '_blank');
+            // window.location.href = result.data[0]?.start_url
+        }).catch((err) => {
+            setLoading(false)
+            console.log(err)
+        });
     }
     return (
         <>
@@ -77,6 +93,18 @@ const SideBar = () => {
                     }
                     <Button onClick={handleTask} size='small' variant='contained' sx={{ background: '#02013B' }}>
                         task
+                    </Button>
+                    <Button 
+                    onClick={!loading ? handleZoomMeeting : ''}
+                    variant='contained' 
+                    startIcon={<VideoCall />}
+                    sx={{ background: '#02013B' }}>
+                        {
+                            loading ? 
+                            'Generating Link...' :
+                            'Zoom Meeting'
+
+                        }
                     </Button>
                 </Box>
             </Box>

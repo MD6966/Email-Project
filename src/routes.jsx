@@ -53,23 +53,23 @@ export default function Router() {
                 },
                 {
                     path: '/software-dev',
-                    element: <SoftwareDevelopment />,
+                    element: <SoftwareDevelopment />, //Done
                 },
                 {
                     path: '/group-n-chat',
-                    element: <GroupAndChat />,
+                    element: <GroupAndChat />, //Done
                 },
                 {
                     path: '/marketing',
-                    element: <Marketing />,
+                    element: <Marketing />, //Done
                 },
                 {
                     path: '/agencies',
-                    element: <CreativeAgencies />,
+                    element: <CreativeAgencies />, // Done
                 },
                 {
                     path: '/it-n-support',
-                    element: <ItAndSupport />,
+                    element: <ItAndSupport />, //Done
                 },
                 {
                     element: <ProtectedRoutes isLogged={isAuthenticatedUser} />,

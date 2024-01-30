@@ -1,4 +1,4 @@
-import { useTheme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Box, Divider, Typography } from '@mui/material';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
@@ -8,13 +8,34 @@ import FacebookIcon from '@mui/icons-material/Facebook';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
+import { useNavigate } from 'react-router';
 
 const Footer = () => {
     const theme = useTheme();
     const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
     const isMedium = useMediaQuery(theme.breakpoints.down('md'))
     const isSmall = useMediaQuery(theme.breakpoints.down('sm'))
+    const navigate = useNavigate()
+    const StyledTypo = styled(Typography)(({theme})=>({
+        cursor:'pointer'
+    }))
+    const scrollToTop = () => {
+        window.scrollTo({
+          top: 0,
+          behavior: 'smooth'
+        });
+      };
+    const handleNavigate = (ind) => {
+        scrollToTop()
+        navigate(
+            ind === 0 ? '/software-dev' :
+            ind === 1 ? '/group-n-chat':
+            ind === 2 ? '/marketing' :
+            ind === 3 ? '/it-n-support':
+            '/agencies'
 
+        )
+    }
     return (
         <Box sx={{ backgroundColor: '#02013B', color: 'white' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-around', gap: '20px', padding: '30px', }}>
@@ -64,14 +85,16 @@ const Footer = () => {
 
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'start' }}>
-                            <Typography sx={{ fontSize: '18px', fontWeight: 700 }}>NEXT-GEN SERVICES</Typography>
-                            <Typography>Digital Transformation</Typography>
-                            <Typography>Product Strategy</Typography>
-                            <Typography>Discovery Workshop Services</Typography>
-                            <Typography>POC Development</Typography>
-                            <Typography>Business Process</Typography>
-
-
+                            <StyledTypo sx={{ fontSize: '18px', fontWeight: 700 }}>SERVICES</StyledTypo>
+                            {
+                            ['Software Development', 'Group and chat', 'Marketing', 'IT & Support', 'Agencies'].map((val, ind)=> {
+                                return(
+                                    <StyledTypo
+                            onClick={()=>handleNavigate(ind)}
+                            >{val}</StyledTypo>
+                                )
+                            })
+                            }
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'start' }}>
                             <Typography sx={{ fontSize: '18px', fontWeight: 700 }}>NEXT-GEN SERVICES</Typography>

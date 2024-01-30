@@ -18,11 +18,28 @@ import Labels from './components/Labels/Labels';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { Archive, Delete,  } from '@mui/icons-material';
-import DoneAllIcon from '@mui/icons-material/DoneAll';
-import SnoozeIcon from '@mui/icons-material/Snooze';
+import Pusher from 'pusher-js';
 import { Success } from '../../../../Components/alerts/Success';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
-  console.log(group, "DATA FROM CONTAINER")
+  // console.log(group, "DATA FROM CONTAINER")
+  useEffect(() => {
+		const pusher = new Pusher('82628df56f67349095e7', {
+			cluster: 'ap2'
+		})
+		const channel1 = pusher.subscribe('New-Mail-channel');
+		// You can bind more channels here like this
+		// const channel2 = pusher.subscribe('channel_name2')
+		channel1.bind('newMail',function(data) {
+		    console.log(data)
+		    // Code that runs when channel1 listens to a new message
+		})
+		
+		return (() => {
+			pusher.unsubscribe('New-Mail-channel')
+			// pusher.unsubscribe('channel_name2')
+		})
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
   const [selectedItem, setSelectedItem] = useState(0);
   const [list_data , setList_data] = useState("")
   const l_data = 
@@ -31,7 +48,6 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   useSelector((state)=>state.folder.folderDataG)
   // console.log(list_data, "YYYYYY")
   const isLoading = useSelector((state)=>state.folder.isLoading)
-  console.log(isLoading)
   const folder_name = useSelector((state)=>state.folder.folder_name)
   const [selectedContent, setSelectedContent] = useState('')
   const [hoveredIndex, setHoveredIndex] = useState(null);
@@ -227,12 +243,12 @@ const handleDelete = () => {
           <Tooltip title="Archive">
           <Archive sx={{mr:1, fontSize:'20px'}}/> 
           </Tooltip>
-          <Tooltip title="Snooze">
+          {/* <Tooltip title="Snooze">
           <SnoozeIcon sx={{mr:1, fontSize:'20px'}}/> 
           </Tooltip>
           <Tooltip title="Mark as read">
           <DoneAllIcon sx={{mr:1, fontSize:'20px'}}/> 
-          </Tooltip>
+          </Tooltip> */}
         </Box>
     )}
   </React.Fragment>

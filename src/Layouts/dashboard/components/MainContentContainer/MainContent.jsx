@@ -50,7 +50,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
-  width:'60%'
+  width:'60%',
 }));
 
 const menuData = [
