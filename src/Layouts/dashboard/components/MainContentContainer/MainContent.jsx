@@ -41,12 +41,7 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
 import MoveMailDialog from './components/MoveMailDialog';
 import { Success } from '../../../../Components/alerts/Success';
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
+import { IoStarSharp } from "react-icons/io5";
 import NoContent from './components/NoContent';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
@@ -286,7 +281,7 @@ const MainContent = () => {
   useEffect(()=> {
     getMailThreads()
   }, [content])
-  // console.log(content, '++++FROM MAIN')
+  console.log(content, '++++FROM MAIN')
   return (
     <StyledRoot>
       {
@@ -331,7 +326,7 @@ const MainContent = () => {
               <ReplyIcon sx={{ mr: 2, transform: 'scaleX(-1)', cursor:'pointer' }}
               onClick={()=>setForwardOpen(true)}
               />
-              <StarBorderIcon sx={{ mr: 2 }} />
+              <IoStarSharp sx={{ mr: 2, cursor:'pointer', color:'gold'  }} />
               <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer' }} onClick={handleClick} />
             </Box>
           </Box>
