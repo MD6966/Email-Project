@@ -1,4 +1,4 @@
-import { Box, Checkbox, Dialog, DialogContent, DialogTitle, Skeleton, Tooltip, Typography } from '@mui/material';
+import { Box, Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel, FormGroup, Skeleton, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import FilterListIcon from '@mui/icons-material/FilterList';
@@ -17,7 +17,7 @@ import { deleteMail, markAsRead, markAsReadGoogle } from '../../../../store/acti
 import Labels from './components/Labels/Labels';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
-import { Archive, Delete,  } from '@mui/icons-material';
+import { Archive, CheckBox, Delete,  } from '@mui/icons-material';
 import Pusher from 'pusher-js';
 import { Success } from '../../../../Components/alerts/Success';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
@@ -163,10 +163,10 @@ const toggleSelectAll = () => {
           <Skeleton variant='text' width={50} />  
         }
         </Typography>
-        <Box>
+        {/* <Box>
           <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
-          <FilterListIcon style={{ fontSize: '24px' }} onClick={toggleSelectAll} />
-        </Box>
+          <FilterListIcon style={{ fontSize: '24px' }}  />
+        </Box> */}
       </Box> : null
       }
       <Box sx={{ mt: 2 }}>
@@ -185,6 +185,21 @@ const toggleSelectAll = () => {
           color='primary'
         />
       </Stack>
+        <Divider sx={{mt:1}} />
+        <Box sx={{display:'flex', alignItems:'center'}}>
+          <FormGroup sx={{ml:3}}>
+            <FormControlLabel control={<Checkbox onClick={toggleSelectAll}/>} label="Select All"/>
+          </FormGroup>
+            {
+              selectAll &&
+              <>
+              <CheckBox />
+              <Typography sx={{ml:0.5, cursor:'pointer'}}>
+            Mark as read
+            </Typography>
+              </>
+            }
+        </Box>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
           {
             (isLoading) ? 
@@ -217,10 +232,15 @@ const toggleSelectAll = () => {
                 sx={{
                   cursor: 'pointer',
                   width:'150%',
+                  mb:0.5,
+                  // background:( isSelected(index)||hoveredIndex === index) ? '#C8DEF4' : 'inherit',
+                  background: selectedItems.includes(val.id) ? '#C8DEF4' : (val.isRead === '1' || val.isRead === 'READ') ? '#eaeaea' : null,
+                  // '&:hover': {
+                  //   background: (isSelected(index) || hoveredIndex === index) ? '#C8DEF4' : '',
+                  // },
                   '&:hover': {
-                    background: (isSelected(index) || hoveredIndex === index) ? '#C8DEF4' : '',
+                    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)', // Add shadow on hover
                   },
-                  background:( isSelected(index)||hoveredIndex === index || val.isRead === '1' || val.isRead ==="READ") ? '#C8DEF4' : 'inherit',
                 }}
                 onClick={()=>handleContent(val, index)}
               >

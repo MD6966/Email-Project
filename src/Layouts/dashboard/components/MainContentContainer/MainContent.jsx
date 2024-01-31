@@ -11,6 +11,7 @@ import {
   IconButton,
   InputAdornment,
   TextField,
+  Tooltip,
   Typography,
   styled,
 } from '@mui/material';
@@ -41,7 +42,8 @@ import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content'
 import MoveMailDialog from './components/MoveMailDialog';
 import { Success } from '../../../../Components/alerts/Success';
-import { IoStarSharp } from "react-icons/io5";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import NoContent from './components/NoContent';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
@@ -326,8 +328,22 @@ const MainContent = () => {
               <ReplyIcon sx={{ mr: 2, transform: 'scaleX(-1)', cursor:'pointer' }}
               onClick={()=>setForwardOpen(true)}
               />
-              <IoStarSharp sx={{ mr: 2, cursor:'pointer', color:'gold'  }} />
-              <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer' }} onClick={handleClick} />
+              {
+                console.log(content)
+              }
+              {
+                content.flagStatus === "notFlagged" &&
+              <Tooltip title="Add to favorite">
+              <FavoriteBorderIcon sx={{ mr: 2, cursor:'pointer'}} />
+              </Tooltip>
+              }
+              {
+                content.flagStatus === "flagged" &&
+              <Tooltip title="Remove from favorite">
+              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'gold'}} />
+              </Tooltip>
+              }
+              <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer',  }} onClick={handleClick} />
             </Box>
           </Box>
         </Box>
