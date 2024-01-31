@@ -232,12 +232,27 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  
 
   export const movemail = (body) => async (dispatch) => {
     try {
       const res = await api.post('api/move-mail', body);
       dispatch({
         type: 'MOVE_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  export const archiveEmail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-archive-email', body);
+      dispatch({
+        type: 'ARCHIVE_EMAIL',
         // payload: res.data.payload,
       });
   

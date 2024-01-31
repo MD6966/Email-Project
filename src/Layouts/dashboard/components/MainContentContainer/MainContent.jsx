@@ -45,6 +45,7 @@ import { Success } from '../../../../Components/alerts/Success';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NoContent from './components/NoContent';
+import Loading from '../../../../Components/loaders/loading';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -183,6 +184,7 @@ const MainContent = () => {
     });
   }
   const handleMenuItemClick = (data) => {
+    // console.log(data, '+++++')
     setAnchorEl(null)
     const formData = new FormData()
     formData.append('message_id', content.mail_id)
@@ -243,7 +245,7 @@ const MainContent = () => {
         formDataG.append('id',content.id)
         dispatch(unFlagEmailGoogle(formDataG)).then((result) => {
           setLoadingM(false)
-          sweetalertFunc("Eamil Unflagged Successfully")
+          sweetalertFunc("Eamil added to favorites Successfully")
         }).catch((err) => {
           setLoadingM(false)
           console.log(err)
@@ -252,7 +254,7 @@ const MainContent = () => {
       else {
         dispatch(unFlagEmail(formData)).then((result) => {
           setLoadingM(false)
-          sweetalertFunc("Eamil Unflagged Successfully")
+          sweetalertFunc("Removed from favorites Successfully")
         }).catch((err) => {
           setLoadingM(false)
           console.log(err)
@@ -283,7 +285,6 @@ const MainContent = () => {
   useEffect(()=> {
     getMailThreads()
   }, [content])
-  console.log(content, '++++FROM MAIN')
   return (
     <StyledRoot>
       {
@@ -329,18 +330,21 @@ const MainContent = () => {
               onClick={()=>setForwardOpen(true)}
               />
               {
-                console.log(content)
-              }
-              {
                 content.flagStatus === "notFlagged" &&
               <Tooltip title="Add to favorite">
-              <FavoriteBorderIcon sx={{ mr: 2, cursor:'pointer'}} />
+              <FavoriteBorderIcon 
+              onClick={()=>handleMenuItemClick({title:'Flag'})}
+              sx={{ mr: 2, cursor:'pointer'}} 
+              />
               </Tooltip>
               }
               {
                 content.flagStatus === "flagged" &&
               <Tooltip title="Remove from favorite">
-              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'gold'}} />
+              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'gold'}}
+              onClick={()=>handleMenuItemClick({title:'Unflag'})}
+              
+              />
               </Tooltip>
               }
               <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer',  }} onClick={handleClick} />
@@ -566,7 +570,8 @@ const MainContent = () => {
             }
        </Grid>
       </Menu>
-       <Dialog open={open}>
+      <Loading title="Deleting Please Wait" open={open} />
+       {/* <Dialog open={open}>
         <DialogTitle>Deleting please wait...</DialogTitle>
         <DialogContent>
           <Box sx={{
@@ -583,24 +588,26 @@ const MainContent = () => {
                 />
           </Box>
         </DialogContent>
-       </Dialog>
+       </Dialog> */}
        {
         loadingM &&
-       <Dialog open={true} PaperProps={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }}>
+      <Loading open={true} styleeee={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }} title="Please Wait"/>
+
+      //  <Dialog open={true} PaperProps={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }}>
           
-          <DialogContent sx={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center'}}>
-          <RotatingLines
-                strokeColor="#fff"
-                strokeWidth="5"
-                animationDuration="0.75"
-                width="50"
-                visible={true} 
-                />
-                <Typography variant='h5' sx={{color:'#fff'}}>
-                  Please Wait
-                </Typography>
-          </DialogContent>
-       </Dialog>
+      //     <DialogContent sx={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center'}}>
+      //     <RotatingLines
+      //           strokeColor="#fff"
+      //           strokeWidth="5"
+      //           animationDuration="0.75"
+      //           width="50"
+      //           visible={true} 
+      //           />
+      //           <Typography variant='h5' sx={{color:'#fff'}}>
+      //             Please Wait
+      //           </Typography>
+      //     </DialogContent>
+      //  </Dialog>
               }
        <ForwardEmail 
        open={forwardOpen}

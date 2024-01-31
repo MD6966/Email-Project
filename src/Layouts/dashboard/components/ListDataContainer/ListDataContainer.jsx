@@ -13,13 +13,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
-import { deleteMail, markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
+import { archiveEmail, deleteMail, markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
 import { Archive, CheckBox, Delete,  } from '@mui/icons-material';
 import Pusher from 'pusher-js';
 import { Success } from '../../../../Components/alerts/Success';
+import Loading from '../../../../Components/loaders/loading';
 const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
   // console.log(group, "DATA FROM CONTAINER")
   useEffect(() => {
@@ -51,6 +52,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   const [selectedContent, setSelectedContent] = useState('')
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [open, setOpen] = useState(false)
+  const [a_open, set_a_open] = useState(false)
   const cont_data = useSelector((state)=>state.folder.content)
   const dispatch = useDispatch()
   const isSelected = (index) => {
@@ -121,6 +123,20 @@ const handleMouseEnter = (index) => {
 const handleMouseLeave = () => {
   setHoveredIndex(null);
 };
+const handleArchive = () => {
+  set_a_open(true)
+  const formData = new FormData()
+  formData.append('message_id', cont_data?.mail_id || '')
+  formData.append("mail_id", cont_data?.id || '')
+  dispatch(archiveEmail(formData)).then((result) => {
+    console.log(result)
+    set_a_open(false)
+    Success("Archived Successfully ")
+  }).catch((err) => {
+  set_a_open(false)
+    console.log(err)
+  });
+}
 const handleDelete = () => {
   setOpen(true)
   const formData = new FormData()
@@ -281,7 +297,8 @@ const toggleSelectAll = () => {
           />
           </Tooltip>
           <Tooltip title="Archive">
-          <Archive sx={{mr:1, fontSize:'20px'}}/> 
+          <Archive sx={{mr:1, fontSize:'20px'}}
+          onClick={handleArchive}/> 
           </Tooltip>
           {/* <Tooltip title="Snooze">
           <SnoozeIcon sx={{mr:1, fontSize:'20px'}}/> 
@@ -303,24 +320,17 @@ const toggleSelectAll = () => {
         </List>
       </Box> 
       </> 
-      <Dialog open={open}>
-        <DialogTitle>Deleting please wait...</DialogTitle>
-        <DialogContent>
-          <Box  sx={{
-            display:'flex',
-            justifyContent:'center',
-            alignItems:'center'
-          }}>
-             <RotatingLines
-                strokeColor="#040263"
-                strokeWidth="5"
-                animationDuration="0.75"
-                width="30"
-                visible={true} 
-                />
-          </Box>
-        </DialogContent>
-       </Dialog>
+      <Loading 
+      open={open}
+      title='Deleting please wait...'
+      />
+      {
+        a_open &&
+        <Loading 
+        open={a_open}
+        title='Please Wait'
+        />
+      }
     </Box>
   );
 };

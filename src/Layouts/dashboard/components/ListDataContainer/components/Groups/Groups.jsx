@@ -60,10 +60,7 @@ const Groups = ({groupData, memberSuccess}) => {
            <Typography variant='h6' fontWeight="bold">
             Groups
            </Typography>
-          <Box sx={{display:'flex', justifyContent:'flex-end'}}>
-          <ContentCopyIcon style={{ fontSize: '24px', marginRight: '10px' }} />
-          <FilterListIcon style={{ fontSize: '24px' }} />
-        </Box>
+          
       </Box>
         <Box sx={{display:'flex'}}>
             <Avatar>
@@ -105,14 +102,71 @@ const Groups = ({groupData, memberSuccess}) => {
             />
         </Box>
         <Divider sx={{my:2}} />
-        <Typography fontWeight="bold">
-            Inbox
-        </Typography>
-        <Divider sx={{my:2}} />
         {composeOpen && 
         
         <SendEmail open={composeOpen} onClose={handleComposeClose} data={groupData}/>
         }
+        <Typography fontWeight="bold">
+           Google Inbox
+        </Typography>
+        <Divider sx={{my:2}} />
+        <Box sx={{ mt: 2 }}>
+        
+        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+          {listData.map((val, index) => (
+            <React.Fragment key={index}>
+              <ListItem
+                alignItems="flex-start"
+                sx={{
+                  cursor: 'pointer',
+                  '&:hover': {
+                      background: '#e2e2e2'
+                    },
+                    background:'inherit',
+                }}
+               
+              >
+                <ListItemAvatar>
+                  <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+                </ListItemAvatar>
+                <Box>
+                  <ListItemText
+                    primary={
+                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Typography>
+                          {val.title}
+                        </Typography>
+                        
+                          <Typography sx={{ fontSize: '12px' }}>
+                            {val.time}
+                          </Typography>
+                       
+                      </Box>
+                    }
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          sx={{ display: 'inline' }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          {val.desc}
+                        </Typography>
+                      </React.Fragment>
+                    }
+                  />
+                </Box>
+              </ListItem>
+              <Divider variant="inset" component="li" />
+            </React.Fragment>
+          ))}
+        </List>
+      </Box>
+      <Typography fontWeight="bold">
+           Outlook Inbox
+        </Typography>
+        <Divider sx={{my:2}} />
         <Box sx={{ mt: 2 }}>
         
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>

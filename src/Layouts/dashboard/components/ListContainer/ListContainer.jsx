@@ -179,11 +179,18 @@ const ListContainer = () => {
   const hnadleGroupBtn = (val, data) => {
     dispatch(setList(val))
     dispatch(loadingFalse())
+    dispatch(Resetcontent())
     setSelectedGroup(data)
     setGroupData(data)
     setGroup(true)
     topRef.current.scrollIntoView({ behavior: 'smooth' });
   }
+  const doubleClickHandler = (val, data) => {
+    hnadleGroupBtn(val, data);
+    setTimeout(() => {
+      hnadleGroupBtn(val, data);
+  }, 1500);
+}
   const handleLableBtn = (val) => {
     dispatch(setList(val))
     setLabel(true)
@@ -417,48 +424,6 @@ const ListContainer = () => {
         >
           Add Folder
         </Button>
-        {
-          type === 'Outlook' && (
-        <>
-        {/* <Box sx={{mt:2}}>
-          <List>
-          <ListItemButton onClick={handleClick}
-          sx={{
-            height:'35px',
-            background:open ? '#B5DCFF' : 'none',
-            '&:hover': {
-              backgroundColor: '#B5DCFF',
-            }
-          }}
-          >
-        <ListItemText primary="Label" />
-        {open ? <ExpandLess /> : <ExpandMore />}
-      </ListItemButton>
-      <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
-          <ListItemButton sx={{ pl: 4, height:'35px' }}
-          onClick={()=>handleLableBtn('Label')}
-          >
-            <ListItemIcon>
-              <LabelIcon />
-            </ListItemIcon>
-            <ListItemText primary={
-              <Box sx={{display:'flex', alignItems:'center'}}>
-                <Typography sx={{ml:-3}}>
-                Mudasser
-                </Typography>
-                <Add sx={{fontSize:'15px', ml:3}}
-                onClick={
-                  handleClickM
-                }
-                />
-              </Box>
-            } />
-          </ListItemButton>
-        </List>
-      </Collapse>
-          </List>
-        </Box> */}
         <Box>
           <List>
           <ListItemButton onClick={handleClickG}
@@ -489,7 +454,7 @@ const ListContainer = () => {
                 return(
                   <>
                   <ListItemButton
-                  onClick={()=>hnadleGroupBtn('Group', val)}
+                  onClick={()=>doubleClickHandler('Group', val)}
                   sx={{
                     backgroundColor: selectedGroup?.name === val?.name ? '#B5DCFF' : 'transparent' || '',
                     pl: 4, height:'35px' ,
@@ -508,9 +473,9 @@ const ListContainer = () => {
                         {val.name.length > 8 ? val.name.slice(0, 8) + '...' : val.name}
                       </Typography>
                       <Add sx={{fontSize:'15px', ml:3}}
-                      onClick={
-                        handleClickM
-                      }
+                      // onClick={
+                      //   handleClickM
+                      // }
                       />
                     </Box>
                   } />
@@ -524,9 +489,12 @@ const ListContainer = () => {
       </Collapse>
           </List>
         </Box>
+        <>
         </>
+        {/* {
+          type === 'Outlook' && (
           )
-        }
+        } */}
         {/* <Box sx={{ mt: 2 }}>
           <div>{selectedItem.content}</div>
         </Box> */}
