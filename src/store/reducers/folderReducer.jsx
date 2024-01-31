@@ -3,35 +3,6 @@ const initialState = {
     folders:[],
     folderData:[],
     folderDataG:[],
-    selectedChat:{
-        
-            id: "9b029bd7-0731-4e61-aec2-11bb1c9f44f1",
-            user_id: 3,
-            mail_id: "AQMkADAwATM0MDAAMS0zOWYwLTZkM2QtMDACLTAwCgBGAAADL-iewpj1Rk2hJeWPRCY1JgcA6kg2Hnpr1E6WPb9c-w1iDAAAAgEMAAAA6kg2Hnpr1E6WPb9c-w1iDAAB7gzvPAAAAA==",
-            hasAttachments: "0",
-            subject: "Hello",
-            description: "<html><head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"></head><body><div dir=\"ltr\">hi</div></body></html>",
-            parentFolderId: "AQMkADAwATM0MDAAMS0zOWYwLTZkM2QtMDACLTAwCgAuAAADL-iewpj1Rk2hJeWPRCY1JgEA6kg2Hnpr1E6WPb9c-w1iDAAAAgEMAAAA",
-            conversationId: "AQQkADAwATM0MDAAMS0zOWYwLTZkM2QtMDACLTAwCgAQAD4uwdRB7cZDlwkhSCrTfto=",
-            conversationIndex: "AQHaANkTPi7B1EHtxkOXCSFIKtN+2g==",
-            isRead: "1",
-            isFavorite: null,
-            isDraft: "0",
-            sender_name: "HKT Mobile Accessories",
-            sender_email_address: "hktmobileaccessories@gmail.com",
-            receiver_name: "amirtariq6864@outlook.com",
-            receiver_email_address: "amirtariq6864@outlook.com",
-            flagStatus: "flagged",
-            createdDateTime: "2023-10-17T09:05:28Z",
-            lastModifiedDateTime: "2023-12-22T10:57:25Z",
-            receivedDateTime: "2023-10-17T09:05:29Z",
-            sentDateTime: "2023-10-17T09:05:11Z",
-            snooze_dateTime: null,
-            created_at: "2024-01-04T02:57:48.000000Z",
-            updated_at: "2024-01-30T06:35:47.000000Z"
-        
-        
-    },
     isLoading: true,
     folder_name:'Inbox',
     conntent:'',
@@ -82,20 +53,6 @@ const folderReducer = (state=initialState, action) => {
 
             };
         };
-        case "FOLDER_ID_FOR_CHAT": {
-            // console.log("Folder", action)
-            return {
-              ...state,
-              folderData: action.payload,
-              isLoading: false,
-            };
-          }
-          case "SELECTED_CHAT": {
-            return {
-              ...state,
-              selectedChat: action.payload,
-            };
-          }
         case 'RESET_GROUP_LOADING': {
             return {
                 ...state,

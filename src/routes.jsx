@@ -28,7 +28,6 @@ import CompleteTask from './Layouts/TaskManagement/Component/CompleteTask';
 import EmbedGoogleMeet from './Views/EmbedGoogleMeet/EmbedGoogleMeet';
 import Meeting from './Views/EmbedGoogleMeet/meeting';
 import AddTask from './Layouts/TaskManagement/Component/AddTask';
-import Chats from './Layouts/dashboard/components/Chats';
 export default function Router() {
     const [progress, setProgress] = useState(0);
     const isAuthenticatedUser = useSelector((state) => state.email.isAuthenticatedUser)
@@ -76,10 +75,6 @@ export default function Router() {
                     element: <ProtectedRoutes isLogged={isAuthenticatedUser} />,
                     children: [
                         { path: '/dashboard', element: <Dashboard setprogress={setProgress} /> },
-                        {
-                            path:'/chats',
-                            element: <Chats />
-                        },
 
                     ]
 
