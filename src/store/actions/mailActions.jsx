@@ -48,23 +48,6 @@ api.interceptors.request.use(
     }
   };
 
-  export const sendOutlookChatMail = (body) => async () => {
-    try {
-      const res = await api.post("api/outlook-send-email", body);
-      return res;
-    } catch (err) {
-      throw err;
-    }
-  };
-  
-  export const sendGoogleChatMail = (body) => async () => {
-    try {
-      const res = await api.post("api/google-sendMail", body);
-      return res;
-    } catch (err) {
-      throw err;
-    }
-  };
   export const deleteMail = (body) => async (dispatch) => {
     try {
       const res = await api.post('api/outlook-delete-email', body);

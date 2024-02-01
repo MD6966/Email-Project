@@ -5,12 +5,12 @@ export const pusherInitialization = () => {
     cluster: "ap2",
   });
 
-  var channel = pusher.subscribe("Mail-channel");
+  var channel = pusher.subscribe("New-Mail-channel");
   //   console.log("chanel=====", channel);
-  channel.bind("sendMail", function (data) {
+  channel.bind("newMail", function (data) {
     console.log("data in pusher=========", JSON.stringify(data));
     // alert(JSON.stringify(data));
   });
 
-  //   return channel;
-}
+    return channel;
+};
