@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
-import { archiveEmail, deleteMail, markAsRead, markAsReadGoogle } from '../../../../store/actions/mailActions';
+import { archiveEmail, deleteMail, markAsRead, markAsReadGoogle, selectMail } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -166,7 +166,17 @@ const toggleSelectAll = () => {
   }
   setSelectAll(!selectAll);
 };
-  return (
+// console.log(selectedItems)
+useEffect(()=> {
+  if(selectedItems.length == 0) {
+    dispatch(selectMail(false, selectedItems))
+  }
+  else {
+    dispatch(selectMail(true, selectedItems))
+  }
+},[selectAll])
+return (
+  <>
     <Box sx={listDataContainer}>
 
     <>
@@ -206,7 +216,7 @@ const toggleSelectAll = () => {
           <FormGroup sx={{ml:3}}>
             <FormControlLabel control={<Checkbox onClick={toggleSelectAll}/>} label="Select All"/>
           </FormGroup>
-            {
+            {/* {
               selectAll &&
               <>
               <CheckBox />
@@ -214,7 +224,7 @@ const toggleSelectAll = () => {
             Mark as read
             </Typography>
               </>
-            }
+            } */}
         </Box>
         <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
           {
@@ -250,12 +260,12 @@ const toggleSelectAll = () => {
                   width:'150%',
                   mb:0.5,
                   // background:( isSelected(index)||hoveredIndex === index) ? '#C8DEF4' : 'inherit',
-                  background: selectedItems.includes(val.id) ? '#C8DEF4' : (val.isRead === '1' || val.isRead === 'READ') ? '#eaeaea' : null,
+                  background: selectedItems.includes(val.id) ? '#C8DEF4' : (val.isRead === '1' || val.isRead === 'READ') ? null : '#e2e2e2',
                   // '&:hover': {
                   //   background: (isSelected(index) || hoveredIndex === index) ? '#C8DEF4' : '',
                   // },
                   '&:hover': {
-                    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)', // Add shadow on hover
+                    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
                   },
                 }}
                 onClick={()=>handleContent(val, index)}
@@ -332,6 +342,7 @@ const toggleSelectAll = () => {
         />
       }
     </Box>
+  </>
   );
 };
 

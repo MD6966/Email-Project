@@ -261,3 +261,14 @@ api.interceptors.request.use(
       throw err;
     }
   };
+
+  export const selectMail = (condition, data) => async (dispatch) => {
+    const values = {
+      cond: condition,
+      ids: data
+    }
+    dispatch({
+      type: 'SELECT_MAIL',
+      payload: values,
+    });
+  };

@@ -87,7 +87,10 @@ const MainContent = () => {
   const type = useSelector((state)=>state.folder.src)
   const [moveDialog, setMoveDialg] = useState(false)
   const [threads, setThreads] = useState([])
+  const [isFavorite, setIsFavorite] = useState(content.flagStatus === "flagged" ? true : false);
   // console.log(type, "++++TYPE")
+  // console.log((content.isRead === '1' || content.isRead === 'READ'))
+  // console.log(content)
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
   const handleClick = (event) => {
@@ -185,6 +188,7 @@ const MainContent = () => {
   }
   const handleMenuItemClick = (data) => {
     // console.log(data, '+++++')
+    setIsFavorite(!isFavorite)
     setAnchorEl(null)
     const formData = new FormData()
     formData.append('message_id', content.mail_id)
@@ -285,6 +289,57 @@ const MainContent = () => {
   useEffect(()=> {
     getMailThreads()
   }, [content])
+  const handleFavoriteClick = (val) => {
+    setIsFavorite(!isFavorite);
+    const formData = new FormData()
+    formData.append('message_id', content.mail_id)
+    formData.append('mail_id',content.id )
+    if(val === 'FAV') {
+        if(type === 'Google') {
+          const formDataG = new FormData()
+          formDataG.append('id',content.id)
+          dispatch(flagEmailGoogle(formDataG)).then((result) => {
+            // sweetalertFunc("Email flagged Successfully")
+  
+          }).catch((err) => {
+            setLoadingM(false)
+            console.log(err)
+          });
+        }
+        else {
+          dispatch(flagEmail(formData)).then((result) => {
+            setLoadingM(false)
+            // Success("Email Flagged Successfully!")
+          }).catch((err) => {
+            setLoadingM(false)
+            console.log(err)
+          });
+        }
+      
+    }
+    else if (val === 'UNFAV') {
+      if(type === 'Google') {
+        const formDataG = new FormData()
+        formDataG.append('id',content.id)
+        dispatch(unFlagEmailGoogle(formDataG)).then((result) => {
+          // sweetalertFunc("Removed from favorites Successfully")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
+      else {
+
+        dispatch(unFlagEmail(formData)).then((result) => {
+          // sweetalertFunc("Removed from favorites Successfully")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+          
+        });
+      }
+    }
+  };
   return (
     <StyledRoot>
       {
@@ -323,30 +378,35 @@ const MainContent = () => {
                 <Typography sx={{ fontWeight: 'bold' }}>{content?.subject || ''}</Typography>
               </Box>
             </Box>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', alignItems:'center' }}>
               <ReplyIcon sx={{ mr: 2 }} />
               <DeleteIcon sx={{ mr: 2, cursor:'pointer' }} onClick={handleDelete}/>
-              <ReplyIcon sx={{ mr: 2, transform: 'scaleX(-1)', cursor:'pointer' }}
+              <ReplyIcon sx={{ mr: 1, transform: 'scaleX(-1)', cursor:'pointer' }}
               onClick={()=>setForwardOpen(true)}
               />
-              {
-                content.flagStatus === "notFlagged" &&
+              {/* {
+                (content.flagStatus === "notFlagged" ) &&
               <Tooltip title="Add to favorite">
               <FavoriteBorderIcon 
               onClick={()=>handleMenuItemClick({title:'Flag'})}
               sx={{ mr: 2, cursor:'pointer'}} 
               />
               </Tooltip>
-              }
-              {
-                content.flagStatus === "flagged" &&
+              } */}
+              {/* {
+                (content.flagStatus === "flagged") &&
               <Tooltip title="Remove from favorite">
-              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'gold'}}
+              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'#040263'}}
               onClick={()=>handleMenuItemClick({title:'Unflag'})}
               
               />
               </Tooltip>
-              }
+              } */}
+               <Tooltip title={isFavorite ? "Remove from favorites" : "Add to favorites"}>
+              <IconButton >
+                {isFavorite ? <FavoriteIcon sx={{color:'#040263'}} onClick={()=>handleFavoriteClick('UNFAV')} /> : <FavoriteBorderIcon onClick={()=>handleFavoriteClick('FAV')}/>}
+              </IconButton>
+            </Tooltip>
               <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer',  }} onClick={handleClick} />
             </Box>
           </Box>
@@ -571,43 +631,9 @@ const MainContent = () => {
        </Grid>
       </Menu>
       <Loading title="Deleting Please Wait" open={open} />
-       {/* <Dialog open={open}>
-        <DialogTitle>Deleting please wait...</DialogTitle>
-        <DialogContent>
-          <Box sx={{
-            display:'flex',
-            justifyContent:'center',
-            alignItems:'center'
-          }}>
-             <RotatingLines
-                strokeColor="#040263"
-                strokeWidth="5"
-                animationDuration="0.75"
-                width="30"
-                visible={true} 
-                />
-          </Box>
-        </DialogContent>
-       </Dialog> */}
        {
         loadingM &&
       <Loading open={true} styleeee={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }} title="Please Wait"/>
-
-      //  <Dialog open={true} PaperProps={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }}>
-          
-      //     <DialogContent sx={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center'}}>
-      //     <RotatingLines
-      //           strokeColor="#fff"
-      //           strokeWidth="5"
-      //           animationDuration="0.75"
-      //           width="50"
-      //           visible={true} 
-      //           />
-      //           <Typography variant='h5' sx={{color:'#fff'}}>
-      //             Please Wait
-      //           </Typography>
-      //     </DialogContent>
-      //  </Dialog>
               }
        <ForwardEmail 
        open={forwardOpen}

@@ -14,6 +14,7 @@ import TaskIcon from '@mui/icons-material/Task';
 import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { createMeeting } from '../../../../store/actions/folderActions';
+import { useSelector } from 'react-redux';
 const icons = [
     { id: 1, icon: <EmailIcon style={iconStyles} /> },
     { id: 2, icon: <CalendarMonthIcon style={iconStyles} /> },
@@ -25,11 +26,11 @@ const icons = [
 ]
 
 const data = [
-    { icon: <Delete sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Delete' },
-    { icon: < Archive sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Archive' },
-    { icon: <CleaningServicesIcon sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Sweep' },
-    { icon: <DriveFileMoveIcon sx={{ color: '#BEBDBD', cursor: 'pointer' }} />, title: 'Move to' },
-    { icon: <CheckBoxIcon sx={{ color: '#02013B', cursor: 'pointer' }} />, title: 'Mark All Read' }
+    { icon: <Delete sx={{ color: '#BEBDBD', }} />, title: 'Delete' },
+    { icon: < Archive sx={{ color: '#BEBDBD', }} />, title: 'Archive' },
+    { icon: <CleaningServicesIcon sx={{ color: '#BEBDBD', }} />, title: 'Sweep' },
+    { icon: <DriveFileMoveIcon sx={{ color: '#BEBDBD', }} />, title: 'Move to' },
+    { icon: <CheckBoxIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark All Read' }
 
 ]
 
@@ -38,6 +39,8 @@ const SideBar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
+    const isShow = useSelector((state)=>state.folder?.selected_state)
+
     const handleTask = () => {
         navigate('/taskManagement')
         // alert('Hello ')
@@ -82,9 +85,9 @@ const SideBar = () => {
                     {
                         data.map((val, ind) => {
                             return (
-                                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1 }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1,cursor: isShow ? 'pointer' : 'not-allowed'  }}>
                                     {val.icon}
-                                    <Typography sx={{ ml: 1, mt: 0.25, color: ind == 4 ? '#02013B' : '#BEBDBD', cursor: 'pointer' }}>
+                                    <Typography sx={{ ml: 1, mt: 0.25, color: isShow ? '#02013B' : '#BEBDBD', }}>
                                         {val.title}
                                     </Typography>
                                 </Box>
