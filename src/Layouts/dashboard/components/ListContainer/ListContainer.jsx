@@ -33,6 +33,8 @@ import { useNavigate } from 'react-router';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { Success } from '../../../../Components/alerts/Success';
+import { deleteGroup } from '../../../../store/actions/mailActions';
+import Loading from '../../../../Components/loaders/loading';
 const ListContainer = () => {
   const data = useSelector((state)=>state.folder)
   const type = useSelector((state)=>state.folder.src)
@@ -61,6 +63,8 @@ const ListContainer = () => {
   const [groups, setGroups] = useState([])
   const [anchorEl2, setAnchorEl2] = React.useState(null);
   const [folderVal, setFolderVal] = useState('')
+  const [groupId, setGroupId] = useState('')
+  const [loading, setLoading] = useState(false)
   const open2 = Boolean(anchorEl2);
   const handleClick2 = (event, val) => {
     setFolderVal(val)
@@ -158,11 +162,23 @@ const ListContainer = () => {
   }, [data.folders, data_google, current_state, group]);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openM = Boolean(anchorEl);
-  const handleClickM = (event) => {
+  const handleClickM = (event, val) => {
     setAnchorEl(event.currentTarget);
+    setGroupId(val.id)
   };
   const handleClose = () => {
+    setLoading(true)
     setAnchorEl(null);
+    const formData = new FormData()
+    formData.append('group_id', groupId)
+    dispatch(deleteGroup(formData)).then((result) => {
+      setLoading(false)
+      groupsData()
+      Success('Group Deleted!')
+    }).catch((err) => {
+      setLoading(false)
+      console.log(err)
+    });
   };
   const handleDialogOpen = (title, name) => {
     setDtitle(title)
@@ -196,7 +212,7 @@ const ListContainer = () => {
     setLabel(true)
     setSelectedGroup([])
   }
-  useLayoutEffect(()=> {
+  const getAllDataList = () => {
     if(type==='Outlook' && current_state ==='Outlook') {
       dispatch(getListData(selectedItem?.folder_id)).then((result) => {
         setListData(result.data.payload)
@@ -214,6 +230,9 @@ const ListContainer = () => {
       });
       dispatch(resetLoading())
     }
+  }
+  useLayoutEffect(()=> {
+    getAllDataList()
   },[selectedItem])
   useLayoutEffect(()=> {
     if(type === 'Outlook') {
@@ -241,7 +260,7 @@ const ListContainer = () => {
           console.log(err);
         });
       } else {
-        console.log('Code parameter is not present in the URL');
+        // console.log('Code parameter is not present in the URL');
       }
     }
     else if (sourceValue === 'Google') {
@@ -473,9 +492,9 @@ const ListContainer = () => {
                         {val.name.length > 8 ? val.name.slice(0, 8) + '...' : val.name}
                       </Typography>
                       <Add sx={{fontSize:'15px', ml:3}}
-                      // onClick={
-                      //   handleClickM
-                      // }
+                      onClick={
+                        (e)=>handleClickM(e, val)
+                      }
                       />
                     </Box>
                   } />
@@ -489,8 +508,7 @@ const ListContainer = () => {
       </Collapse>
           </List>
         </Box>
-        <>
-        </>
+       
         {/* {
           type === 'Outlook' && (
           )
@@ -516,9 +534,7 @@ const ListContainer = () => {
           'aria-labelledby': 'basic-button',
         }}
       >
-        <MenuItem onClick={handleClose}>Profile</MenuItem>
-        <MenuItem onClick={handleClose}>My account</MenuItem>
-        <MenuItem onClick={handleClose}>Logout</MenuItem>
+        <MenuItem onClick={handleClose}>Delete Group</MenuItem>
       </Menu>
       <DialogLoader />
       <Menu
@@ -531,14 +547,22 @@ const ListContainer = () => {
         }}
       >
         <MenuItem onClick={handleClose2}>Delete</MenuItem>
-        
       </Menu>
+      {
+        loading &&
+        <Loading 
+        title="Deleting please wait..."
+        open={true}
+        />
+
+      }
       <ListDataContainer 
       data={listData}
       type={type}
       group={group}
       groupData={groupData}
       memberSuccess={groupsData}
+      success={getAllDataList}
       />
 
     </>

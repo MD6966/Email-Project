@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -29,7 +30,7 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail, flagEmail, flagEmailGoogle, getGoogleThreads, getOutlookThreads, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
+import { deleteMail, flagEmail, flagEmailGoogle, getGoogleThreads, getOutlookThreads, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, snoozeEmail, snoozeEmailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
@@ -46,6 +47,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NoContent from './components/NoContent';
 import Loading from '../../../../Components/loaders/loading';
+import Snooze from '@mui/icons-material/Snooze';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -61,7 +63,7 @@ const menuData = [
   { icon: <RemoveCircleOutlineIcon />, title: 'Unflag' },
   {icon: <MarkEmailUnreadIcon />, title:'Mark as unread'},
   { icon: <DriveFileMoveIcon />, title: 'Move' },
-  { icon: <ContentCopyIcon />, title: 'Copy' },
+  { icon: <Snooze />, title: 'Snooze' },
   { icon: <CallIcon />, title: 'Call' },
   { icon: <VideoCallIcon />, title: 'Video' },
 ];
@@ -87,7 +89,38 @@ const MainContent = () => {
   const type = useSelector((state)=>state.folder.src)
   const [moveDialog, setMoveDialg] = useState(false)
   const [threads, setThreads] = useState([])
+  const [isFavorite, setIsFavorite] = useState(content.flagStatus === "flagged" ? true : false);
+  const [snoozeDialogOpen, setSnoozeDialogOpen] = useState(false);
+  const [selectedSnoozeDate, setSelectedSnoozeDate] = useState(null);
+  const handleSnoozeDialogOpen = () => {
+    setSnoozeDialogOpen(true);
+  };
+  
+  const handleSnoozeDialogClose = () => {
+    setSnoozeDialogOpen(false);
+  };
+  const handleSnoozeSubmit = () => {
+    setLoadingM(true)
+    const formData = new FormData()
+    formData.append('message_id', content.mail_id)
+    formData.append('mail_id',content.id )
+    formData.append('date', selectedSnoozeDate)
+      dispatch(type=== 'Outlook' ? snoozeEmail(formData) : snoozeEmailGoogle(formData)).then((result) => {
+        console.log(result)
+        setLoadingM(false)
+        Success(`Email snoozed at ${selectedSnoozeDate}`)
+        setSelectedSnoozeDate(null)
+      }).catch((err) => {
+        setLoadingM(false)
+        console.log(err)
+      });
+   
+  
+    handleSnoozeDialogClose();
+  };
   // console.log(type, "++++TYPE")
+  // console.log((content.isRead === '1' || content.isRead === 'READ'))
+  // console.log(content)
   const dispatch = useDispatch()
   const {enqueueSnackbar} = useSnackbar()
   const handleClick = (event) => {
@@ -185,11 +218,17 @@ const MainContent = () => {
   }
   const handleMenuItemClick = (data) => {
     // console.log(data, '+++++')
+    setIsFavorite(!isFavorite)
     setAnchorEl(null)
-    const formData = new FormData()
-    formData.append('message_id', content.mail_id)
-    formData.append('mail_id',content.id )
-    if (data.title === "Mark as unread")
+    // const formData = new FormData()
+    // formData.append('message_id', content.mail_id)
+    // formData.append('mail_id',content.id )
+    if(data.title === "Snooze") {
+      handleSnoozeDialogOpen();
+
+    }
+
+    else if (data.title === "Mark as unread")
     {
       setLoadingM(true)
       if(type === 'Google') {
@@ -217,9 +256,12 @@ const MainContent = () => {
     else if (data.title === 'Flag') {
       setLoadingM(true)
       if(type === 'Google') {
-        const formDataG = new FormData()
-        formDataG.append('id',content.id)
-        dispatch(flagEmailGoogle(formDataG)).then((result) => {
+        const body = {
+          id: [content.id]
+        }
+        // const formDataG = new FormData()
+        // formDataG.append('id',content.id)
+        dispatch(flagEmailGoogle(body)).then((result) => {
           setLoadingM(false)
           sweetalertFunc("Email flagged Successfully")
 
@@ -229,7 +271,11 @@ const MainContent = () => {
         });
       }
       else {
-        dispatch(flagEmail(formData)).then((result) => {
+        const body2 = {
+          mail_id :[content.id ]
+        }
+        console.log(body2)
+        dispatch(flagEmail(body2)).then((result) => {
           setLoadingM(false)
           Success("Email Flagged Successfully!")
         }).catch((err) => {
@@ -241,9 +287,12 @@ const MainContent = () => {
     else if (data.title === 'Unflag') {
       setLoadingM(true)
       if(type === 'Google') {
-        const formDataG = new FormData()
-        formDataG.append('id',content.id)
-        dispatch(unFlagEmailGoogle(formDataG)).then((result) => {
+        // const formDataG = new FormData()
+        // formDataG.append('id',content.id)
+        const body = {
+          id: [content.id]
+        }
+        dispatch(unFlagEmailGoogle(body)).then((result) => {
           setLoadingM(false)
           sweetalertFunc("Eamil added to favorites Successfully")
         }).catch((err) => {
@@ -252,6 +301,9 @@ const MainContent = () => {
         });
       }
       else {
+        const body = {
+          mail_id:[content.id]
+        }
         dispatch(unFlagEmail(formData)).then((result) => {
           setLoadingM(false)
           sweetalertFunc("Removed from favorites Successfully")
@@ -285,6 +337,61 @@ const MainContent = () => {
   useEffect(()=> {
     getMailThreads()
   }, [content])
+  const handleFavoriteClick = (val) => {
+    setIsFavorite(!isFavorite);
+    const formData = new FormData()
+    formData.append('message_id', content.mail_id)
+    formData.append('mail_id',content.id )
+    const body = {
+      mail_id:[content.id]
+    }
+    const body2 = {
+      id:[content.id]
+    }
+    if(val === 'FAV') {
+        if(type === 'Google') {
+          dispatch(flagEmailGoogle(body2)).then((result) => {
+            // sweetalertFunc("Email flagged Successfully")
+  
+          }).catch((err) => {
+            setLoadingM(false)
+            console.log(err)
+          });
+        }
+        else {
+          dispatch(flagEmail(body)).then((result) => {
+            setLoadingM(false)
+            // Success("Email Flagged Successfully!")
+          }).catch((err) => {
+            setLoadingM(false)
+            console.log(err)
+          });
+        }
+      
+    }
+    else if (val === 'UNFAV') {
+      if(type === 'Google') {
+        const formDataG = new FormData()
+        formDataG.append('id',content.id)
+        dispatch(unFlagEmailGoogle(body2)).then((result) => {
+          // sweetalertFunc("Removed from favorites Successfully")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+        });
+      }
+      else {
+
+        dispatch(unFlagEmail(body)).then((result) => {
+          // sweetalertFunc("Removed from favorites Successfully")
+        }).catch((err) => {
+          setLoadingM(false)
+          console.log(err)
+          
+        });
+      }
+    }
+  };
   return (
     <StyledRoot>
       {
@@ -323,30 +430,35 @@ const MainContent = () => {
                 <Typography sx={{ fontWeight: 'bold' }}>{content?.subject || ''}</Typography>
               </Box>
             </Box>
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', alignItems:'center' }}>
               <ReplyIcon sx={{ mr: 2 }} />
               <DeleteIcon sx={{ mr: 2, cursor:'pointer' }} onClick={handleDelete}/>
-              <ReplyIcon sx={{ mr: 2, transform: 'scaleX(-1)', cursor:'pointer' }}
+              <ReplyIcon sx={{ mr: 1, transform: 'scaleX(-1)', cursor:'pointer' }}
               onClick={()=>setForwardOpen(true)}
               />
-              {
-                content.flagStatus === "notFlagged" &&
+              {/* {
+                (content.flagStatus === "notFlagged" ) &&
               <Tooltip title="Add to favorite">
               <FavoriteBorderIcon 
               onClick={()=>handleMenuItemClick({title:'Flag'})}
               sx={{ mr: 2, cursor:'pointer'}} 
               />
               </Tooltip>
-              }
-              {
-                content.flagStatus === "flagged" &&
+              } */}
+              {/* {
+                (content.flagStatus === "flagged") &&
               <Tooltip title="Remove from favorite">
-              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'gold'}}
+              <FavoriteIcon sx={{ mr: 2, cursor:'pointer', color:'#040263'}}
               onClick={()=>handleMenuItemClick({title:'Unflag'})}
               
               />
               </Tooltip>
-              }
+              } */}
+               <Tooltip title={isFavorite ? "Remove from favorites" : "Add to favorites"}>
+              <IconButton >
+                {isFavorite ? <FavoriteIcon sx={{color:'#040263'}} onClick={()=>handleFavoriteClick('UNFAV')} /> : <FavoriteBorderIcon onClick={()=>handleFavoriteClick('FAV')}/>}
+              </IconButton>
+            </Tooltip>
               <MoreHorizIcon sx={{ mr: 2, cursor: 'pointer',  }} onClick={handleClick} />
             </Box>
           </Box>
@@ -571,43 +683,9 @@ const MainContent = () => {
        </Grid>
       </Menu>
       <Loading title="Deleting Please Wait" open={open} />
-       {/* <Dialog open={open}>
-        <DialogTitle>Deleting please wait...</DialogTitle>
-        <DialogContent>
-          <Box sx={{
-            display:'flex',
-            justifyContent:'center',
-            alignItems:'center'
-          }}>
-             <RotatingLines
-                strokeColor="#040263"
-                strokeWidth="5"
-                animationDuration="0.75"
-                width="30"
-                visible={true} 
-                />
-          </Box>
-        </DialogContent>
-       </Dialog> */}
        {
         loadingM &&
       <Loading open={true} styleeee={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }} title="Please Wait"/>
-
-      //  <Dialog open={true} PaperProps={{ style: { backgroundColor: 'transparent', boxShadow: 'none'  } }}>
-          
-      //     <DialogContent sx={{display:'flex', justifyContent:'center', flexDirection:'column', alignItems:'center'}}>
-      //     <RotatingLines
-      //           strokeColor="#fff"
-      //           strokeWidth="5"
-      //           animationDuration="0.75"
-      //           width="50"
-      //           visible={true} 
-      //           />
-      //           <Typography variant='h5' sx={{color:'#fff'}}>
-      //             Please Wait
-      //           </Typography>
-      //     </DialogContent>
-      //  </Dialog>
               }
        <ForwardEmail 
        open={forwardOpen}
@@ -622,7 +700,27 @@ const MainContent = () => {
        type={type}
        
        />
-
+      <Dialog open={snoozeDialogOpen} onClose={handleSnoozeDialogClose}>
+      <DialogTitle>Select Snooze Date</DialogTitle>
+      <DialogContent>
+      <TextField
+      type="datetime-local"
+      label="Snooze Until"
+      value={selectedSnoozeDate}
+      onChange={(e) => setSelectedSnoozeDate(e.target.value)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      inputProps={{
+        min: new Date().toISOString().split("T")[0],
+      }}
+    />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleSnoozeDialogClose}>Cancel</Button>
+        <Button onClick={handleSnoozeSubmit} color="primary">Submit</Button>
+      </DialogActions>
+    </Dialog>
     </StyledRoot>
   );
 };

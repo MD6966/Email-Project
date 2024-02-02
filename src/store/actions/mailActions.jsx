@@ -140,6 +140,19 @@ api.interceptors.request.use(
       throw err;
     }
   };
+  export const markAsUnRead = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-unread-email', body);
+      dispatch({
+        type: 'UNREAD_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
   export const markAsReadGoogle = (body) => async (dispatch) => {
     try {
       const res = await api.post('api/google-read-email', body);
@@ -154,6 +167,7 @@ api.interceptors.request.use(
     }
   };
   export const flagEmail = (body) => async (dispatch) => {
+    // console.log(body, "FALG")
     try {
       const res = await api.post('api/outlook-flagged-email', body);
       dispatch({
@@ -167,6 +181,7 @@ api.interceptors.request.use(
     }
   };
   export const flagEmailGoogle = (body) => async (dispatch) => {
+    // console.log(body, "BODY")
     try {
       const res = await api.post('api/google-flagged-email', body);
       dispatch({
@@ -253,6 +268,121 @@ api.interceptors.request.use(
       const res = await api.post('api/outlook-archive-email', body);
       dispatch({
         type: 'ARCHIVE_EMAIL',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+
+  export const selectMail = (condition, data) => async (dispatch) => {
+    const values = {
+      cond: condition,
+      ids: data
+    }
+    dispatch({
+      type: 'SELECT_MAIL',
+      payload: values,
+    });
+  };
+  export const markAllReadGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/group-google-read-email', body);
+      dispatch({
+        type: 'MARK_ALL_READ_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const markAllUnreadGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/group-google-unread-email', body);
+      dispatch({
+        type: 'MARK_ALL_UN_READ_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const snoozeEmail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-snooze-email', body);
+      dispatch({
+        type: 'SNOOZE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const snoozeEmailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-snooze-email', body);
+      dispatch({
+        type: 'SNOOZE_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const deleteAllGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-delete-email', body);
+      dispatch({
+        type: 'DELETE_ALL_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const archiveAllGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-archive-email', body);
+      dispatch({
+        type: 'ARCHIVE_ALL_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const unArchiveAllGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-archive-email', body);
+      dispatch({
+        type: 'ARCHIVE_ALL_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const deleteGroup = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-delete-group', body);
+      dispatch({
+        type: 'DELETE GROUP',
         // payload: res.data.payload,
       });
   
