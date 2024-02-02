@@ -5,6 +5,7 @@ import {
   Button,
   Card,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Grid,
@@ -29,7 +30,7 @@ import CallIcon from '@mui/icons-material/Call';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import { Editor } from 'primereact/editor';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteMail, flagEmail, flagEmailGoogle, getGoogleThreads, getOutlookThreads, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
+import { deleteMail, flagEmail, flagEmailGoogle, getGoogleThreads, getOutlookThreads, markAsRead, markAsReadGoogle, replyMail, replyMailGoogle, snoozeEmail, snoozeEmailGoogle, unFlagEmail, unFlagEmailGoogle } from '../../../../store/actions/mailActions';
 import { RotatingLines } from 'react-loader-spinner';
 import { useSnackbar } from 'notistack';
 import ForwardEmail from './components/ForwardEmail';
@@ -46,6 +47,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import NoContent from './components/NoContent';
 import Loading from '../../../../Components/loaders/loading';
+import Snooze from '@mui/icons-material/Snooze';
 const MySwal = withReactContent(Swal)
 const StyledRoot = styled(Box)(({ theme }) => ({
   padding: theme.spacing(10, 5),
@@ -61,7 +63,7 @@ const menuData = [
   { icon: <RemoveCircleOutlineIcon />, title: 'Unflag' },
   {icon: <MarkEmailUnreadIcon />, title:'Mark as unread'},
   { icon: <DriveFileMoveIcon />, title: 'Move' },
-  { icon: <ContentCopyIcon />, title: 'Copy' },
+  { icon: <Snooze />, title: 'Snooze' },
   { icon: <CallIcon />, title: 'Call' },
   { icon: <VideoCallIcon />, title: 'Video' },
 ];
@@ -88,6 +90,34 @@ const MainContent = () => {
   const [moveDialog, setMoveDialg] = useState(false)
   const [threads, setThreads] = useState([])
   const [isFavorite, setIsFavorite] = useState(content.flagStatus === "flagged" ? true : false);
+  const [snoozeDialogOpen, setSnoozeDialogOpen] = useState(false);
+  const [selectedSnoozeDate, setSelectedSnoozeDate] = useState(null);
+  const handleSnoozeDialogOpen = () => {
+    setSnoozeDialogOpen(true);
+  };
+  
+  const handleSnoozeDialogClose = () => {
+    setSnoozeDialogOpen(false);
+  };
+  const handleSnoozeSubmit = () => {
+    setLoadingM(true)
+    const formData = new FormData()
+    formData.append('message_id', content.mail_id)
+    formData.append('mail_id',content.id )
+    formData.append('date', selectedSnoozeDate)
+      dispatch(type=== 'Outlook' ? snoozeEmail(formData) : snoozeEmailGoogle(formData)).then((result) => {
+        console.log(result)
+        setLoadingM(false)
+        Success(`Email snoozed at ${selectedSnoozeDate}`)
+        setSelectedSnoozeDate(null)
+      }).catch((err) => {
+        setLoadingM(false)
+        console.log(err)
+      });
+   
+  
+    handleSnoozeDialogClose();
+  };
   // console.log(type, "++++TYPE")
   // console.log((content.isRead === '1' || content.isRead === 'READ'))
   // console.log(content)
@@ -193,7 +223,12 @@ const MainContent = () => {
     const formData = new FormData()
     formData.append('message_id', content.mail_id)
     formData.append('mail_id',content.id )
-    if (data.title === "Mark as unread")
+    if(data.title === "Snooze") {
+      handleSnoozeDialogOpen();
+
+    }
+
+    else if (data.title === "Mark as unread")
     {
       setLoadingM(true)
       if(type === 'Google') {
@@ -648,7 +683,27 @@ const MainContent = () => {
        type={type}
        
        />
-
+      <Dialog open={snoozeDialogOpen} onClose={handleSnoozeDialogClose}>
+      <DialogTitle>Select Snooze Date</DialogTitle>
+      <DialogContent>
+      <TextField
+      type="datetime-local"
+      label="Snooze Until"
+      value={selectedSnoozeDate}
+      onChange={(e) => setSelectedSnoozeDate(e.target.value)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+      inputProps={{
+        min: new Date().toISOString().split("T")[0],
+      }}
+    />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleSnoozeDialogClose}>Cancel</Button>
+        <Button onClick={handleSnoozeSubmit} color="primary">Submit</Button>
+      </DialogActions>
+    </Dialog>
     </StyledRoot>
   );
 };

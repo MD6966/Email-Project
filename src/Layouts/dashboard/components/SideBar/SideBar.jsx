@@ -15,6 +15,10 @@ import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { createMeeting } from '../../../../store/actions/folderActions';
 import { useSelector } from 'react-redux';
+import { deleteAllGoogle, markAllReadGoogle, markAllUnreadGoogle } from '../../../../store/actions/mailActions';
+import Loading from '../../../../Components/loaders/loading';
+import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
+import { Success } from '../../../../Components/alerts/Success';
 const icons = [
     { id: 1, icon: <EmailIcon style={iconStyles} /> },
     { id: 2, icon: <CalendarMonthIcon style={iconStyles} /> },
@@ -28,9 +32,9 @@ const icons = [
 const data = [
     { icon: <Delete sx={{ color: '#BEBDBD', }} />, title: 'Delete' },
     { icon: < Archive sx={{ color: '#BEBDBD', }} />, title: 'Archive' },
-    { icon: <CleaningServicesIcon sx={{ color: '#BEBDBD', }} />, title: 'Sweep' },
-    { icon: <DriveFileMoveIcon sx={{ color: '#BEBDBD', }} />, title: 'Move to' },
-    { icon: <CheckBoxIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark All Read' }
+    // { icon: <CleaningServicesIcon sx={{ color: '#BEBDBD', }} />, title: 'Sweep' },
+    { icon: <CheckBoxIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark All Read' },
+    { icon: <MarkChatUnreadIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark all unread' },
 
 ]
 
@@ -39,8 +43,11 @@ const SideBar = () => {
     const navigate = useNavigate()
     const dispatch = useDispatch()
     const [loading, setLoading] = useState(false)
+    const [loader, setLoader] = useState(false)
     const isShow = useSelector((state)=>state.folder?.selected_state)
-
+    const selectedIds = useSelector((state)=>state.folder?.selectedIds)
+    const type = useSelector((state)=>state.folder.src)
+    // console.log(type)
     const handleTask = () => {
         navigate('/taskManagement')
         // alert('Hello ')
@@ -56,6 +63,50 @@ const SideBar = () => {
             setLoading(false)
             console.log(err)
         });
+    }
+    const handleIconsClick = (val) => {
+        const body = {
+            id: selectedIds
+        }
+        if(val.title === 'Mark All Read') {
+            setLoader(true)
+            if(type === 'Google') {
+                dispatch(markAllReadGoogle(body)).then((result) => {
+                    setLoader(false)
+                    alert("All mails are marked as read")
+                    window.location.reload()
+                    console.log(result)
+                }).catch((err) => {
+                    setLoader(false)
+                    console.log(err)
+                });
+            }
+        }
+        else if(val.title === 'Mark all unread') {
+            setLoader(true)
+            if(type === 'Google') {
+                dispatch(markAllUnreadGoogle(body)).then((result) => {
+                    setLoader(false)
+                    alert("All mails are marked as unread")
+                    window.location.reload()
+                    console.log(result)
+                }).catch((err) => {
+                    setLoader(false)
+                    console.log(err)
+                });
+            }
+        }
+        else if (val.title === 'Delete') {
+            setLoader(true)
+            dispatch(deleteAllGoogle(body)).then((result) => {
+                setLoader(false)
+                    alert("All mails are deleted")
+                    window.location.reload()
+            }).catch((err) => {
+                setLoader(false)
+                console.log(err)
+            });
+        }
     }
     return (
         <>
@@ -85,7 +136,9 @@ const SideBar = () => {
                     {
                         data.map((val, ind) => {
                             return (
-                                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1,cursor: isShow ? 'pointer' : 'not-allowed'  }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1,cursor: isShow ? 'pointer' : 'not-allowed'  }}
+                                onClick={()=>handleIconsClick(val)}
+                                >
                                     {val.icon}
                                     <Typography sx={{ ml: 1, mt: 0.25, color: isShow ? '#02013B' : '#BEBDBD', }}>
                                         {val.title}
@@ -111,7 +164,13 @@ const SideBar = () => {
                     </Button>
                 </Box>
             </Box>
-
+                {
+                    loader &&
+                    <Loading 
+                    title="Please Wait"
+                    open={true}
+                    />
+                }
         </>
     )
 }

@@ -272,3 +272,68 @@ api.interceptors.request.use(
       payload: values,
     });
   };
+  export const markAllReadGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/group-google-read-email', body);
+      dispatch({
+        type: 'MARK_ALL_READ_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const markAllUnreadGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/group-google-unread-email', body);
+      dispatch({
+        type: 'MARK_ALL_UN_READ_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const snoozeEmail = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-snooze-email', body);
+      dispatch({
+        type: 'SNOOZE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const snoozeEmailGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/outlook-snooze-email', body);
+      dispatch({
+        type: 'SNOOZE_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };
+  export const deleteAllGoogle = (body) => async (dispatch) => {
+    try {
+      const res = await api.post('api/google-delete-email', body);
+      dispatch({
+        type: 'DELETE_ALL_GOOGLE',
+        // payload: res.data.payload,
+      });
+  
+      return res ;
+    } catch (err) {
+      throw err;
+    }
+  };

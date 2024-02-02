@@ -175,6 +175,9 @@ useEffect(()=> {
     dispatch(selectMail(true, selectedItems))
   }
 },[selectAll])
+useEffect(()=> {
+  setSelectAll(false)
+},[])
 return (
   <>
     <Box sx={listDataContainer}>
