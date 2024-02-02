@@ -21,7 +21,7 @@ import { Archive, CheckBox, Delete,  } from '@mui/icons-material';
 import Pusher from 'pusher-js';
 import { Success } from '../../../../Components/alerts/Success';
 import Loading from '../../../../Components/loaders/loading';
-const ListDataContainer = ({data, type, group, groupData, memberSuccess, label}) => {
+const ListDataContainer = ({data, type, group, groupData, memberSuccess, label,}) => {
   // console.log(group, "DATA FROM CONTAINER")
   useEffect(() => {
 		const pusher = new Pusher('82628df56f67349095e7', {
@@ -87,13 +87,17 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label})
   const handleContent = (cont, index) => {
     setSelectedItem(index)
     setSelectedContent(cont)
-    // console.log(content, '++++++')
+    console.log(cont, '++++++')
     dispatch(content(cont))
     if(type === 'Outlook') {
-      const formData = new FormData()
-      formData.append('message_id', content.mail_id)
-      formData.append('mail_id',content.id )
-      dispatch(markAsRead(formData)).then((result) => {
+      // const formData = new FormData()
+      // formData.append('message_id', cont.mail_id)
+      // formData.append('mail_id',cont.id )
+      const body = {
+        // message_id : cont.mail_id ,
+        mail_id:[cont.id]
+      }
+      dispatch(markAsRead(body)).then((result) => {
         console.log(result)
       }).catch((err) => {
         console.log(err)
@@ -168,13 +172,13 @@ const toggleSelectAll = () => {
 };
 // console.log(selectedItems)
 useEffect(()=> {
-  if(selectedItems.length == 0) {
+  if(selectedItems.length < 1 ) {
     dispatch(selectMail(false, selectedItems))
   }
   else {
     dispatch(selectMail(true, selectedItems))
   }
-},[selectAll])
+},[selectAll, selectedItem])
 useEffect(()=> {
   setSelectAll(false)
 },[])

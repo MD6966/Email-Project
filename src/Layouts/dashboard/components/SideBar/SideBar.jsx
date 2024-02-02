@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router';
 import { useDispatch } from 'react-redux';
 import { createMeeting } from '../../../../store/actions/folderActions';
 import { useSelector } from 'react-redux';
-import { deleteAllGoogle, markAllReadGoogle, markAllUnreadGoogle } from '../../../../store/actions/mailActions';
+import { archiveAllGoogle, deleteAllGoogle, markAllReadGoogle, markAllUnreadGoogle, markAsRead, markAsUnRead } from '../../../../store/actions/mailActions';
 import Loading from '../../../../Components/loaders/loading';
 import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
 import { Success } from '../../../../Components/alerts/Success';
@@ -68,10 +68,12 @@ const SideBar = () => {
         const body = {
             id: selectedIds
         }
+        const body2 ={
+            mail_id : selectedIds
+        }
         if(val.title === 'Mark All Read') {
             setLoader(true)
-            if(type === 'Google') {
-                dispatch(markAllReadGoogle(body)).then((result) => {
+                dispatch(type==='Gogle' ?markAllReadGoogle(body): markAsRead(body2)).then((result) => {
                     setLoader(false)
                     alert("All mails are marked as read")
                     window.location.reload()
@@ -80,12 +82,11 @@ const SideBar = () => {
                     setLoader(false)
                     console.log(err)
                 });
-            }
+           
         }
         else if(val.title === 'Mark all unread') {
             setLoader(true)
-            if(type === 'Google') {
-                dispatch(markAllUnreadGoogle(body)).then((result) => {
+                dispatch(type == 'Google' ? markAllUnreadGoogle(body) : markAsUnRead(body2)).then((result) => {
                     setLoader(false)
                     alert("All mails are marked as unread")
                     window.location.reload()
@@ -94,13 +95,23 @@ const SideBar = () => {
                     setLoader(false)
                     console.log(err)
                 });
-            }
         }
         else if (val.title === 'Delete') {
             setLoader(true)
             dispatch(deleteAllGoogle(body)).then((result) => {
                 setLoader(false)
                     alert("All mails are deleted")
+                    window.location.reload()
+            }).catch((err) => {
+                setLoader(false)
+                console.log(err)
+            });
+        }
+        else if (val.title === 'Archive') {
+            setLoader(true)
+            dispatch(archiveAllGoogle(body)).then((result) => {
+                    setLoader(false)
+                    alert("All mails are archived")
                     window.location.reload()
             }).catch((err) => {
                 setLoader(false)

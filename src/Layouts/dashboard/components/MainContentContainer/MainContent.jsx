@@ -220,9 +220,9 @@ const MainContent = () => {
     // console.log(data, '+++++')
     setIsFavorite(!isFavorite)
     setAnchorEl(null)
-    const formData = new FormData()
-    formData.append('message_id', content.mail_id)
-    formData.append('mail_id',content.id )
+    // const formData = new FormData()
+    // formData.append('message_id', content.mail_id)
+    // formData.append('mail_id',content.id )
     if(data.title === "Snooze") {
       handleSnoozeDialogOpen();
 
@@ -256,9 +256,12 @@ const MainContent = () => {
     else if (data.title === 'Flag') {
       setLoadingM(true)
       if(type === 'Google') {
-        const formDataG = new FormData()
-        formDataG.append('id',content.id)
-        dispatch(flagEmailGoogle(formDataG)).then((result) => {
+        const body = {
+          id: [content.id]
+        }
+        // const formDataG = new FormData()
+        // formDataG.append('id',content.id)
+        dispatch(flagEmailGoogle(body)).then((result) => {
           setLoadingM(false)
           sweetalertFunc("Email flagged Successfully")
 
@@ -268,7 +271,11 @@ const MainContent = () => {
         });
       }
       else {
-        dispatch(flagEmail(formData)).then((result) => {
+        const body2 = {
+          mail_id :[content.id ]
+        }
+        console.log(body2)
+        dispatch(flagEmail(body2)).then((result) => {
           setLoadingM(false)
           Success("Email Flagged Successfully!")
         }).catch((err) => {
@@ -280,9 +287,12 @@ const MainContent = () => {
     else if (data.title === 'Unflag') {
       setLoadingM(true)
       if(type === 'Google') {
-        const formDataG = new FormData()
-        formDataG.append('id',content.id)
-        dispatch(unFlagEmailGoogle(formDataG)).then((result) => {
+        // const formDataG = new FormData()
+        // formDataG.append('id',content.id)
+        const body = {
+          id: [content.id]
+        }
+        dispatch(unFlagEmailGoogle(body)).then((result) => {
           setLoadingM(false)
           sweetalertFunc("Eamil added to favorites Successfully")
         }).catch((err) => {
@@ -291,6 +301,9 @@ const MainContent = () => {
         });
       }
       else {
+        const body = {
+          mail_id:[content.id]
+        }
         dispatch(unFlagEmail(formData)).then((result) => {
           setLoadingM(false)
           sweetalertFunc("Removed from favorites Successfully")
@@ -329,11 +342,15 @@ const MainContent = () => {
     const formData = new FormData()
     formData.append('message_id', content.mail_id)
     formData.append('mail_id',content.id )
+    const body = {
+      mail_id:[content.id]
+    }
+    const body2 = {
+      id:[content.id]
+    }
     if(val === 'FAV') {
         if(type === 'Google') {
-          const formDataG = new FormData()
-          formDataG.append('id',content.id)
-          dispatch(flagEmailGoogle(formDataG)).then((result) => {
+          dispatch(flagEmailGoogle(body2)).then((result) => {
             // sweetalertFunc("Email flagged Successfully")
   
           }).catch((err) => {
@@ -342,7 +359,7 @@ const MainContent = () => {
           });
         }
         else {
-          dispatch(flagEmail(formData)).then((result) => {
+          dispatch(flagEmail(body)).then((result) => {
             setLoadingM(false)
             // Success("Email Flagged Successfully!")
           }).catch((err) => {
@@ -356,7 +373,7 @@ const MainContent = () => {
       if(type === 'Google') {
         const formDataG = new FormData()
         formDataG.append('id',content.id)
-        dispatch(unFlagEmailGoogle(formDataG)).then((result) => {
+        dispatch(unFlagEmailGoogle(body2)).then((result) => {
           // sweetalertFunc("Removed from favorites Successfully")
         }).catch((err) => {
           setLoadingM(false)
@@ -365,7 +382,7 @@ const MainContent = () => {
       }
       else {
 
-        dispatch(unFlagEmail(formData)).then((result) => {
+        dispatch(unFlagEmail(body)).then((result) => {
           // sweetalertFunc("Removed from favorites Successfully")
         }).catch((err) => {
           setLoadingM(false)

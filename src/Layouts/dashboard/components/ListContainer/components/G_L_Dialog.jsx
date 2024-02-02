@@ -48,7 +48,7 @@ const G_L_Dialog = ({open,close,name, group, type}) => {
         else {
           dispatch(createGroup(formValues)).then((result) => {
               setLoading(false)
-              alert(result.data.message)
+              Success("Group created!")
               group()
               close()
               SetFormValues(initialValues)
