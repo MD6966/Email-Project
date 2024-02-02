@@ -18,6 +18,7 @@ import { useSelector } from 'react-redux';
 import { archiveAllGoogle, deleteAllGoogle, markAllReadGoogle, markAllUnreadGoogle, markAsRead, markAsUnRead } from '../../../../store/actions/mailActions';
 import Loading from '../../../../Components/loaders/loading';
 import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
+import UnarchiveIcon from '@mui/icons-material/Unarchive';
 import { Success } from '../../../../Components/alerts/Success';
 const icons = [
     { id: 1, icon: <EmailIcon style={iconStyles} /> },
@@ -32,7 +33,7 @@ const icons = [
 const data = [
     { icon: <Delete sx={{ color: '#BEBDBD', }} />, title: 'Delete' },
     { icon: < Archive sx={{ color: '#BEBDBD', }} />, title: 'Archive' },
-    // { icon: <CleaningServicesIcon sx={{ color: '#BEBDBD', }} />, title: 'Sweep' },
+    { icon: <UnarchiveIcon sx={{ color: '#BEBDBD', }} />, title: 'Unarchive' },
     { icon: <CheckBoxIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark All Read' },
     { icon: <MarkChatUnreadIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark all unread' },
 
@@ -73,7 +74,7 @@ const SideBar = () => {
         }
         if(val.title === 'Mark All Read') {
             setLoader(true)
-                dispatch(type==='Gogle' ?markAllReadGoogle(body): markAsRead(body2)).then((result) => {
+                dispatch(type==='Google' ?markAllReadGoogle(body): markAsRead(body2)).then((result) => {
                     setLoader(false)
                     alert("All mails are marked as read")
                     window.location.reload()
@@ -86,7 +87,7 @@ const SideBar = () => {
         }
         else if(val.title === 'Mark all unread') {
             setLoader(true)
-                dispatch(type == 'Google' ? markAllUnreadGoogle(body) : markAsUnRead(body2)).then((result) => {
+                dispatch(type === 'Google' ? markAllUnreadGoogle(body) : markAsUnRead(body2)).then((result) => {
                     setLoader(false)
                     alert("All mails are marked as unread")
                     window.location.reload()
@@ -107,7 +108,7 @@ const SideBar = () => {
                 console.log(err)
             });
         }
-        else if (val.title === 'Archive') {
+        else if (val.title === 'Archive' || val.title === 'Unarchive') {
             setLoader(true)
             dispatch(archiveAllGoogle(body)).then((result) => {
                     setLoader(false)
