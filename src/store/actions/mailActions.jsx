@@ -365,19 +365,6 @@ api.interceptors.request.use(
       throw err;
     }
   };
-  export const unArchiveAllGoogle = (body) => async (dispatch) => {
-    try {
-      const res = await api.post('api/google-archive-email', body);
-      dispatch({
-        type: 'ARCHIVE_ALL_GOOGLE',
-        // payload: res.data.payload,
-      });
-  
-      return res ;
-    } catch (err) {
-      throw err;
-    }
-  };
   export const deleteGroup = (body) => async (dispatch) => {
     try {
       const res = await api.post('api/outlook-delete-group', body);
@@ -390,4 +377,17 @@ api.interceptors.request.use(
     } catch (err) {
       throw err;
     }
+  };
+
+  export const stateManager = () => async (dispatch) => {
+    dispatch({
+      type: 'STATE_CHANGER',
+    });
+   
+  };
+  export const resetCheckBox = () => async (dispatch) => {
+    dispatch({
+      type: 'RESET_CB',
+    });
+   
   };

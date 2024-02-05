@@ -65,6 +65,8 @@ const ListContainer = () => {
   const [folderVal, setFolderVal] = useState('')
   const [groupId, setGroupId] = useState('')
   const [loading, setLoading] = useState(false)
+  const api_state = useSelector((state)=>state.folder.api_state)
+  // console.log(api_state)
   const open2 = Boolean(anchorEl2);
   const handleClick2 = (event, val) => {
     setFolderVal(val)
@@ -231,6 +233,10 @@ const ListContainer = () => {
       dispatch(resetLoading())
     }
   }
+  useEffect(()=> {
+    getAllDataList()
+  }, [api_state])
+  // console.log(api_state)
   useLayoutEffect(()=> {
     getAllDataList()
   },[selectedItem])

@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Groups from './components/Groups/Groups';
 import { content, resetLoading } from '../../../../store/actions/folderActions';
 import { RotatingLines } from 'react-loader-spinner';
-import { archiveEmail, deleteMail, markAsRead, markAsReadGoogle, selectMail } from '../../../../store/actions/mailActions';
+import { archiveEmail, deleteMail, markAsRead, markAsReadGoogle, resetCheckBox, selectMail, stateManager } from '../../../../store/actions/mailActions';
 import Labels from './components/Labels/Labels';
 import Pagination from '@mui/material/Pagination';
 import Stack from '@mui/material/Stack';
@@ -54,6 +54,7 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label,}
   const [open, setOpen] = useState(false)
   const [a_open, set_a_open] = useState(false)
   const cont_data = useSelector((state)=>state.folder.content)
+  const c_b = useSelector((state)=>state.folder.c_b)
   const dispatch = useDispatch()
   const isSelected = (index) => {
     return selectedItem === index;
@@ -105,8 +106,12 @@ const ListDataContainer = ({data, type, group, groupData, memberSuccess, label,}
     }
     else {
       const formDataG = new FormData()
-      formDataG.append('id', content.id)
-      dispatch(markAsReadGoogle(formDataG))
+      formDataG.append('id', cont.id)
+      dispatch(markAsReadGoogle(formDataG)).then((result) => {
+        dispatch(stateManager())
+      }).catch((err) => {
+        
+      });
     }
   }
   const [page, setPage] = useState(1);
@@ -129,10 +134,15 @@ const handleMouseLeave = () => {
 };
 const handleArchive = () => {
   set_a_open(true)
-  const formData = new FormData()
-  formData.append('message_id', cont_data?.mail_id || '')
-  formData.append("mail_id", cont_data?.id || '')
-  dispatch(archiveEmail(formData)).then((result) => {
+  // const formData = new FormData()
+  // formData.append('message_id', cont_data?.mail_id || '')
+  // formData.append("mail_id", cont_data?.id || '')
+  const body = {
+    mail_id : [cont_data?.id || ''],
+    slug:'archive'
+
+  }
+  dispatch(archiveEmail(body)).then((result) => {
     console.log(result)
     set_a_open(false)
     Success("Archived Successfully ")
@@ -178,10 +188,15 @@ useEffect(()=> {
   else {
     dispatch(selectMail(true, selectedItems))
   }
-},[selectAll, selectedItem])
+},[selectAll, selectedItems])
 useEffect(()=> {
   setSelectAll(false)
 },[])
+useEffect(()=> {
+  setSelectAll(false)
+  setSelectedItems([]);
+},[c_b])
+
 return (
   <>
     <Box sx={listDataContainer}>
@@ -275,7 +290,6 @@ return (
                     boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.5)',
                   },
                 }}
-                onClick={()=>handleContent(val, index)}
               >
                 <Checkbox
                   checked={selectedItems.includes(val.id)}
@@ -327,6 +341,7 @@ return (
     )}
   </React.Fragment>
   }
+  onClick={()=>handleContent(val, index)}
 />
                 </Box>
               </ListItem>
@@ -354,3 +369,4 @@ return (
 };
 
 export default ListDataContainer;
+

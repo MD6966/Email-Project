@@ -1,190 +1,253 @@
-import { Box, Button, Drawer, Stack, Typography } from '@mui/material'
-import React, { useState } from 'react'
-import { SideBarStyles, bottomBar, drawerStyles, iconStyles } from './styles'
-import EmailIcon from '@mui/icons-material/Email';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
-import UpcomingIcon from '@mui/icons-material/Upcoming';
-import FilterListIcon from '@mui/icons-material/FilterList';
-import { Archive, Delete, VideoCall } from '@mui/icons-material';
-import CleaningServicesIcon from '@mui/icons-material/CleaningServices';
-import DriveFileMoveIcon from '@mui/icons-material/DriveFileMove';
-import CheckBoxIcon from '@mui/icons-material/CheckBox';
-import TaskIcon from '@mui/icons-material/Task';
-import { useNavigate } from 'react-router';
-import { useDispatch } from 'react-redux';
-import { createMeeting } from '../../../../store/actions/folderActions';
-import { useSelector } from 'react-redux';
-import { archiveAllGoogle, deleteAllGoogle, markAllReadGoogle, markAllUnreadGoogle, markAsRead, markAsUnRead } from '../../../../store/actions/mailActions';
-import Loading from '../../../../Components/loaders/loading';
-import MarkChatUnreadIcon from '@mui/icons-material/MarkChatUnread';
-import UnarchiveIcon from '@mui/icons-material/Unarchive';
-import { Success } from '../../../../Components/alerts/Success';
+import { Box, Button, Drawer, Stack, Typography } from "@mui/material";
+import React, { useState } from "react";
+import { SideBarStyles, bottomBar, drawerStyles, iconStyles } from "./styles";
+import EmailIcon from "@mui/icons-material/Email";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
+import UpcomingIcon from "@mui/icons-material/Upcoming";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import { Archive, Delete, VideoCall } from "@mui/icons-material";
+import CleaningServicesIcon from "@mui/icons-material/CleaningServices";
+import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import TaskIcon from "@mui/icons-material/Task";
+import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { createMeeting } from "../../../../store/actions/folderActions";
+import { useSelector } from "react-redux";
+import {
+  archiveAllGoogle,
+  archiveEmail,
+  deleteAllGoogle,
+  markAllReadGoogle,
+  markAllUnreadGoogle,
+  markAsRead,
+  markAsUnRead,
+  resetCheckBox,
+  stateManager,
+} from "../../../../store/actions/mailActions";
+import Loading from "../../../../Components/loaders/loading";
+import MarkChatUnreadIcon from "@mui/icons-material/MarkChatUnread";
+import UnarchiveIcon from "@mui/icons-material/Unarchive";
+import { Success } from "../../../../Components/alerts/Success";
 const icons = [
-    { id: 1, icon: <EmailIcon style={iconStyles} /> },
-    { id: 2, icon: <CalendarMonthIcon style={iconStyles} /> },
-    { id: 4, icon: <PermContactCalendarIcon style={iconStyles} /> },
-    { id: 5, icon: <UpcomingIcon style={iconStyles} /> },
-    { id: 6, icon: <FilterListIcon style={iconStyles} /> },
-    // { id: 7, icon: <TaskIcon style={iconStyles} /> },
-
-]
+  { id: 1, icon: <EmailIcon style={iconStyles} /> },
+  { id: 2, icon: <CalendarMonthIcon style={iconStyles} /> },
+  { id: 4, icon: <PermContactCalendarIcon style={iconStyles} /> },
+  { id: 5, icon: <UpcomingIcon style={iconStyles} /> },
+  { id: 6, icon: <FilterListIcon style={iconStyles} /> },
+  // { id: 7, icon: <TaskIcon style={iconStyles} /> },
+];
 
 const data = [
-    { icon: <Delete sx={{ color: '#BEBDBD', }} />, title: 'Delete' },
-    { icon: < Archive sx={{ color: '#BEBDBD', }} />, title: 'Archive' },
-    { icon: <UnarchiveIcon sx={{ color: '#BEBDBD', }} />, title: 'Unarchive' },
-    { icon: <CheckBoxIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark All Read' },
-    { icon: <MarkChatUnreadIcon sx={{ color: '#BEBDBD', }} />, title: 'Mark all unread' },
-
-]
+  { icon: <Delete sx={{ color: "#BEBDBD" }} />, title: "Delete" },
+  { icon: <Archive sx={{ color: "#BEBDBD" }} />, title: "Archive" },
+  { icon: <UnarchiveIcon sx={{ color: "#BEBDBD" }} />, title: "Unarchive" },
+  { icon: <CheckBoxIcon sx={{ color: "#BEBDBD" }} />, title: "Mark All Read" },
+  {
+    icon: <MarkChatUnreadIcon sx={{ color: "#BEBDBD" }} />,
+    title: "Mark all unread",
+  },
+];
 
 const SideBar = () => {
-
-    const navigate = useNavigate()
-    const dispatch = useDispatch()
-    const [loading, setLoading] = useState(false)
-    const [loader, setLoader] = useState(false)
-    const isShow = useSelector((state)=>state.folder?.selected_state)
-    const selectedIds = useSelector((state)=>state.folder?.selectedIds)
-    const type = useSelector((state)=>state.folder.src)
-    // console.log(type)
-    const handleTask = () => {
-        navigate('/taskManagement')
-        // alert('Hello ')
-    }
-    const handleZoomMeeting = () => {
-        setLoading(true)
-        dispatch(createMeeting()).then((result) => {
-            setLoading(false)
-            // console.log(result.data[0])
-            window.open(result.data[0]?.start_url, '_blank');
-            // window.location.href = result.data[0]?.start_url
-        }).catch((err) => {
-            setLoading(false)
-            console.log(err)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
+  const [loader, setLoader] = useState(false);
+  const isShow = useSelector((state) => state.folder?.selected_state);
+  const selectedIds = useSelector((state) => state.folder?.selectedIds);
+  const type = useSelector((state) => state.folder.src);
+  // console.log(type)
+  const handleTask = () => {
+    navigate("/taskManagement");
+    // alert('Hello ')
+  };
+  const handleZoomMeeting = () => {
+    setLoading(true);
+    dispatch(createMeeting())
+      .then((result) => {
+        setLoading(false);
+        // console.log(result.data[0])
+        window.open(result.data[0]?.start_url, "_blank");
+        // window.location.href = result.data[0]?.start_url
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+  const handleIconsClick = (val) => {
+    const body = {
+      id: selectedIds,
+    };
+    const body2 = {
+      mail_id: selectedIds,
+    };
+    if (val.title === "Mark All Read") {
+      setLoader(true);
+      dispatch(type === "Google" ? markAllReadGoogle(body) : markAsRead(body2))
+        .then((result) => {
+          setLoader(false);
+          dispatch(stateManager());
+          dispatch(resetCheckBox());
+          Success("All mails are marked as read");
+          console.log(result);
+        })
+        .catch((err) => {
+          setLoader(false);
+          console.log(err);
+        });
+    } else if (val.title === "Mark all unread") {
+      setLoader(true);
+      dispatch(
+        type === "Google" ? markAllUnreadGoogle(body) : markAsUnRead(body2)
+      )
+        .then((result) => {
+          setLoader(false);
+          Success("All mails are marked as unread");
+          dispatch(stateManager());
+          dispatch(resetCheckBox());
+          console.log(result);
+        })
+        .catch((err) => {
+          setLoader(false);
+          console.log(err);
+        });
+    } else if (val.title === "Delete") {
+      setLoader(true);
+      dispatch(deleteAllGoogle(body))
+        .then((result) => {
+          setLoader(false);
+          dispatch(stateManager());
+          dispatch(resetCheckBox());
+          Success("All mails are deleted");
+        })
+        .catch((err) => {
+          setLoader(false);
+          console.log(err);
+        });
+    } else if (val.title === "Archive") {
+      const archiveBody = {
+        ...body2,
+        slug: "archive",
+      };
+      setLoader(true);
+      dispatch(
+        type === "Google" ? archiveAllGoogle(body) : archiveEmail(archiveBody)
+      )
+        .then((result) => {
+          setLoader(false);
+          dispatch(stateManager());
+          dispatch(resetCheckBox());
+          Success("All mails are archived");
+        })
+        .catch((err) => {
+          setLoader(false);
+          console.log(err);
+        });
+    } else if (val.title === "Unarchive") {
+      const archiveBody = {
+        ...body2,
+        slug: "unarchive",
+      };
+      setLoader(true);
+      dispatch(
+        type === "Google" ? archiveAllGoogle(body) : archiveEmail(archiveBody)
+      )
+        .then((result) => {
+          setLoader(false);
+          dispatch(stateManager());
+          dispatch(resetCheckBox());
+          Success("All mails are unarchived");
+        })
+        .catch((err) => {
+          setLoader(false);
+          console.log(err);
         });
     }
-    const handleIconsClick = (val) => {
-        const body = {
-            id: selectedIds
-        }
-        const body2 ={
-            mail_id : selectedIds
-        }
-        if(val.title === 'Mark All Read') {
-            setLoader(true)
-                dispatch(type==='Google' ?markAllReadGoogle(body): markAsRead(body2)).then((result) => {
-                    setLoader(false)
-                    alert("All mails are marked as read")
-                    window.location.reload()
-                    console.log(result)
-                }).catch((err) => {
-                    setLoader(false)
-                    console.log(err)
-                });
-           
-        }
-        else if(val.title === 'Mark all unread') {
-            setLoader(true)
-                dispatch(type === 'Google' ? markAllUnreadGoogle(body) : markAsUnRead(body2)).then((result) => {
-                    setLoader(false)
-                    alert("All mails are marked as unread")
-                    window.location.reload()
-                    console.log(result)
-                }).catch((err) => {
-                    setLoader(false)
-                    console.log(err)
-                });
-        }
-        else if (val.title === 'Delete') {
-            setLoader(true)
-            dispatch(deleteAllGoogle(body)).then((result) => {
-                setLoader(false)
-                    alert("All mails are deleted")
-                    window.location.reload()
-            }).catch((err) => {
-                setLoader(false)
-                console.log(err)
-            });
-        }
-        else if (val.title === 'Archive' || val.title === 'Unarchive') {
-            setLoader(true)
-            dispatch(archiveAllGoogle(body)).then((result) => {
-                    setLoader(false)
-                    alert("All mails are archived")
-                    window.location.reload()
-            }).catch((err) => {
-                setLoader(false)
-                console.log(err)
-            });
-        }
-    }
-    return (
-        <>
-            <Drawer variant='permanent' sx={{ zIndex: -5 }}
-                PaperProps={{
-                    sx: drawerStyles,
+  };
+  // console.log(isShow)
+  return (
+    <>
+      <Drawer
+        variant="permanent"
+        sx={{ zIndex: -5 }}
+        PaperProps={{
+          sx: drawerStyles,
+        }}
+      >
+        <Box sx={{ mt: 11 }}>
+          {icons.map((icon) => {
+            return (
+              <Stack
+                sx={{ display: "flex", alignItems: "center" }}
+                key={icon.id}
+              >
+                {icon.icon}
+              </Stack>
+            );
+          })}
+        </Box>
+      </Drawer>
+      <Box>
+        <Box style={bottomBar}>
+          <Button
+            size="small"
+            variant="contained"
+            sx={{ background: "#02013B" }}
+          >
+            All Mails
+          </Button>
+          {data.map((val, ind) => {
+            return (
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  ml: 1,
+                  cursor: isShow ? "pointer" : "not-allowed",
                 }}
-            >
-                <Box sx={{ mt: 11 }}>
-                    {
-                        icons.map((icon) => {
-                            return (
-                                <Stack sx={{ display: 'flex', alignItems: 'center', }} key={icon.id}>
-                                    {icon.icon}
-                                </Stack>
-                            )
-                        })
-                    }
+                onClick={() => {
+                  if (isShow) {
+                    handleIconsClick(val);
+                  }
+                }}
+              >
+                {val.icon}
+                <Typography
+                  sx={{
+                    ml: 1,
+                    mt: 0.25,
+                    color: isShow ? "#02013B" : "#BEBDBD",
+                  }}
+                >
+                  {val.title}
+                </Typography>
+              </Box>
+            );
+          })}
+          <Button
+            onClick={handleTask}
+            size="small"
+            variant="contained"
+            sx={{ background: "#02013B" }}
+          >
+            task
+          </Button>
+          <Button
+            onClick={!loading ? handleZoomMeeting : ""}
+            variant="contained"
+            startIcon={<VideoCall />}
+            sx={{ background: "#02013B" }}
+          >
+            {loading ? "Generating Link..." : "Zoom Meeting"}
+          </Button>
+        </Box>
+      </Box>
+      {loader && <Loading title="Please Wait" open={true} />}
+    </>
+  );
+};
 
-                </Box>
-            </Drawer >
-            <Box>
-                <Box style={bottomBar}>
-                    <Button size='small' variant='contained' sx={{ background: '#02013B' }}>
-                        All Mails
-                    </Button>
-                    {
-                        data.map((val, ind) => {
-                            return (
-                                <Box sx={{ display: 'flex', alignItems: 'center', ml: 1,cursor: isShow ? 'pointer' : 'not-allowed'  }}
-                                onClick={()=>handleIconsClick(val)}
-                                >
-                                    {val.icon}
-                                    <Typography sx={{ ml: 1, mt: 0.25, color: isShow ? '#02013B' : '#BEBDBD', }}>
-                                        {val.title}
-                                    </Typography>
-                                </Box>
-                            )
-                        })
-                    }
-                    <Button onClick={handleTask} size='small' variant='contained' sx={{ background: '#02013B' }}>
-                        task
-                    </Button>
-                    <Button 
-                    onClick={!loading ? handleZoomMeeting : ''}
-                    variant='contained' 
-                    startIcon={<VideoCall />}
-                    sx={{ background: '#02013B' }}>
-                        {
-                            loading ? 
-                            'Generating Link...' :
-                            'Zoom Meeting'
-
-                        }
-                    </Button>
-                </Box>
-            </Box>
-                {
-                    loader &&
-                    <Loading 
-                    title="Please Wait"
-                    open={true}
-                    />
-                }
-        </>
-    )
-}
-
-export default SideBar
+export default SideBar;

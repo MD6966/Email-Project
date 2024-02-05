@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import TopBar from './components/TopBar/TopBar';
-import SideBar from './components/SideBar/SideBar';
-import { Box, Stack, Typography, CircularProgress } from '@mui/material';
-import ListContainer from './components/ListContainer/ListContainer';
-import ListDataContainer from './components/ListDataContainer/ListDataContainer';
-import MainContent from './components/MainContentContainer/MainContent';
-import { useDispatch, useSelector } from 'react-redux';
-import { getAllFoldersGoogle } from '../../store/actions/folderActions';
+import React, { useEffect, useState } from "react";
+import TopBar from "./components/TopBar/TopBar";
+import SideBar from "./components/SideBar/SideBar";
+import { Box, Stack, Typography, CircularProgress } from "@mui/material";
+import ListContainer from "./components/ListContainer/ListContainer";
+import ListDataContainer from "./components/ListDataContainer/ListDataContainer";
+import MainContent from "./components/MainContentContainer/MainContent";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllFoldersGoogle } from "../../store/actions/folderActions";
 
 const Dashboard = ({ setprogress }) => {
   const type = useSelector((state) => state.folder.src);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   useEffect(() => {
     setprogress(20);
     // if(type === 'Google') {
@@ -28,16 +28,23 @@ const Dashboard = ({ setprogress }) => {
   }, []);
 
   return (
-    <div style={{ overflow: 'hidden' }}>
+    <div style={{ overflow: "hidden" }}>
       {loading ? (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+          }}
+        >
           <CircularProgress />
         </div>
       ) : (
         <Stack>
           <TopBar />
           <SideBar />
-          <Box sx={{ ml: '4%', display: 'flex' }}>
+          <Box sx={{ ml: "4%", display: "flex" }}>
             <ListContainer type={type} />
             {/* <ListDataContainer /> */}
             <MainContent />

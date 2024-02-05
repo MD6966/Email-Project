@@ -89,7 +89,7 @@ const MainContent = () => {
   const type = useSelector((state)=>state.folder.src)
   const [moveDialog, setMoveDialg] = useState(false)
   const [threads, setThreads] = useState([])
-  const [isFavorite, setIsFavorite] = useState(content.flagStatus === "flagged" ? true : false);
+  const [isFavorite, setIsFavorite] = useState(false);
   const [snoozeDialogOpen, setSnoozeDialogOpen] = useState(false);
   const [selectedSnoozeDate, setSelectedSnoozeDate] = useState(null);
   const handleSnoozeDialogOpen = () => {

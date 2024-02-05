@@ -38,7 +38,9 @@ const initialState = {
     hit_src:'',
     current_state:'',
     selected_state: false,
-    selectedIds:[]
+    selectedIds:[],
+    api_state : false,
+    c_b:false
 
 }
 
@@ -125,6 +127,18 @@ const folderReducer = (state=initialState, action) => {
             return {
                 ...state,
                 content:action.payload
+            };
+        }
+        case 'STATE_CHANGER': {
+            return {
+                ...state,
+               api_state: !state.api_state
+            };
+        }
+        case 'RESET_CB': {
+            return {
+                ...state,
+               c_b: !state.c_b
             };
         }
         case 'LOGIN_SRC': {
