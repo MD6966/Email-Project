@@ -202,6 +202,7 @@ const SideBar = () => {
           {data.map((val, ind) => {
             return (
               <Box
+                key={ind}
                 sx={{
                   display: "flex",
                   alignItems: "center",
