@@ -279,8 +279,23 @@ const ListContainer = () => {
       dispatch(resetLoading());
     }
   };
+
   useEffect(() => {
-    getAllDataList();
+    if (type === "Google") {
+      dispatch(getListDataGoogle(selectedItem?.folder_id, current_page)).then(
+        (result) => {
+          // console.log(result.data.payload[0], 'RESULT GOOGLE')
+          setListData(result.data.payload[0]);
+        }
+      );
+    } else {
+      console.log("Outloooook");
+      dispatch(getListData(selectedItem?.folder_id, current_page)).then(
+        (result) => {
+          setListData(result.data.payload);
+        }
+      );
+    }
   }, [api_state]);
   // console.log(api_state)
   useLayoutEffect(() => {

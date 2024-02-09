@@ -113,7 +113,7 @@ const ListDataContainer = ({
   const handleContent = (cont, index) => {
     setSelectedItem(index);
     setSelectedContent(cont);
-    console.log(cont, "++++++");
+    // console.log(cont, "++++++");
     dispatch(content(cont));
     if (type === "Outlook") {
       // const formData = new FormData()
@@ -126,6 +126,7 @@ const ListDataContainer = ({
       dispatch(markAsRead(body))
         .then((result) => {
           console.log(result);
+          dispatch(stateManager());
         })
         .catch((err) => {
           console.log(err);
@@ -146,8 +147,8 @@ const ListDataContainer = ({
     setPage(value);
   };
 
-  console.log(data, "This is Data");
   // const startIndex = (page - 1) * itemsPerPage;
+  // console.log(data, "This is Data");
   // const endIndex = startIndex + itemsPerPage;
   // const currentPageData = data.slice(startIndex, endIndex);
   const handleMouseEnter = (index) => {
