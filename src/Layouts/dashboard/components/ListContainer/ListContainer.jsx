@@ -152,16 +152,13 @@ const ListContainer = () => {
     dispatch(getAllGroups())
       .then((result) => {
         setGroups(result.data.payload);
-        // console.log(result.data.payload)
       })
       .catch((err) => {
         console.log(err);
       });
   };
   useEffect(() => {
-    if (type === "Outlook") {
-      groupsData();
-    }
+    groupsData();
   }, []);
   const handleComposeClick = () => {
     setComposeOpen(true);
@@ -559,7 +556,11 @@ const ListContainer = () => {
                 }}
               >
                 <ListItemText primary="Groups" />
-                {openG ? <ExpandLess /> : <ExpandMore />}
+                {openG ? (
+                  <ExpandLess />
+                ) : (
+                  <ExpandMore onClick={() => groupsData()} />
+                )}
               </ListItemButton>
               <Collapse in={openG} timeout="auto" unmountOnExit>
                 <Button

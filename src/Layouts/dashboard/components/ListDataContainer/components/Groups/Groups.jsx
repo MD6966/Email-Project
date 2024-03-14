@@ -62,7 +62,7 @@ const Groups = ({ groupData, memberSuccess }) => {
   const [dialog, setDialog] = useState(false);
   const [memberDialog, setMemberDialg] = useState(false);
   const [composeOpen, setComposeOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
@@ -241,9 +241,80 @@ const Groups = ({ groupData, memberSuccess }) => {
         <List
           sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
         >
+          {/* {console.log(
+            !loading ? data.payload[0].outlookMails.length : "NO DATA",
+            "DATA+++++++"
+          )} */}
           {!loading ? (
-            data.length > 1 ? (
-              data.map((val, index) => (
+            data.payload[0].outlookMails.length > 0 ? (
+              data.payload[0].outlookMails.map((val, index) => {
+                // console.log(val);
+                return (
+                  <React.Fragment key={index}>
+                    <ListItem
+                      alignItems="flex-start"
+                      sx={{
+                        cursor: "pointer",
+                        "&:hover": {
+                          background: "#e2e2e2",
+                        },
+                        background: "inherit",
+                      }}
+                    >
+                      <ListItemAvatar>
+                        <Avatar
+                          alt="Remy Sharp"
+                          src="/static/images/avatar/1.jpg"
+                        />
+                      </ListItemAvatar>
+                      <Box>
+                        <ListItemText
+                          primary={
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                              }}
+                            >
+                              <Typography>{val.sender_name}</Typography>
+
+                              <Typography sx={{ fontSize: "12px" }}>
+                                {val.sentDateTime}
+                              </Typography>
+                            </Box>
+                          }
+                          secondary={
+                            <React.Fragment>
+                              <Typography
+                                sx={{ display: "inline" }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                              >
+                                {val.desc}
+                              </Typography>
+                            </React.Fragment>
+                          }
+                        />
+                      </Box>
+                    </ListItem>
+                    <Divider variant="inset" component="li" />
+                  </React.Fragment>
+                );
+              })
+            ) : (
+              <Typography sx={{ textAlign: "center" }}>
+                No mails found
+              </Typography>
+            )
+          ) : (
+            <Groupskeleton />
+          )}
+          {/* {!loading && data.payload.length < 1 ? "No Mails Found" : null} */}
+          {/* {!loading &&
+            (data.payload.length > 1 ? (
+              data.payload[0]?.outlookMails?.map((val, index) => (
                 <React.Fragment key={index}>
                   <ListItem
                     alignItems="flex-start"
@@ -300,10 +371,8 @@ const Groups = ({ groupData, memberSuccess }) => {
               <Typography sx={{ textAlign: "center" }}>
                 No mails found
               </Typography>
-            )
-          ) : (
-            <Groupskeleton />
-          )}
+            ))}
+          {loading && <Groupskeleton />} */}
         </List>
       </Box>
       <Menu
